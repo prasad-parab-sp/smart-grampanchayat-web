@@ -1,0 +1,54 @@
+<div id="loginScreen">
+  
+  <!-- Hero Banner Component -->
+  <app-hero-banner [config]="heroBannerConfig"></app-hero-banner>
+
+  <!-- Contact Banner Component -->
+  <app-contact-banner [config]="contactBannerConfig"></app-contact-banner>
+
+  <!-- Admin Notice Banner (hidden by default) -->
+  <div 
+    id="adminNoticeBanner" 
+    class="admin-notice-banner" 
+    style="display: none;">
+    <div class="notice-title">📢 <span>Admin सूचना</span></div>
+    <div class="notice-text"></div>
+  </div>
+
+  <!-- Login Container -->
+  <div class="login-container">
+    <h2>{{ icons.LOGIN }} लॉगिन करा</h2>
+    <p class="sub">Admin पासवर्ड किंवा मोबाईल नंबर टाका</p>
+
+    <div class="login-form">
+      <div class="form-group">
+        <label>पासवर्ड / मोबाईल <span class="req">*</span></label>
+        <div class="input-container">
+          <input 
+            [type]="showPassword ? 'text' : 'password'"
+            [(ngModel)]="loginInput"
+            placeholder="पासवर्ड किंवा 10 अंकी मोबाईल"
+            class="login-input"
+            (keydown)="onEnterKeyPress($event)"
+            autocomplete="off">
+          <button 
+            type="button" 
+            class="password-toggle"
+            (click)="togglePasswordVisibility()"
+            title="दाखवा/लपवा">
+            {{ showPassword ? icons.HIDE : icons.SHOW }}
+          </button>
+        </div>
+      </div>
+      <button 
+        class="btn btn-g login-btn" 
+        (click)="doLogin()">
+        {{ icons.SUCCESS }} लॉगिन करा
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer Brand Component -->
+  <app-footer-brand [config]="footerBrandConfig"></app-footer-brand>
+
+</div>

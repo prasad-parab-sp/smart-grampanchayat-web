@@ -1,0 +1,346 @@
+/* Global Styles - Based on the original SmartGramPanchayat design */
+
+/* CSS Reset and Variables */
+*, *::before, *::after { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+}
+
+:root {
+  /* Colors */
+  --green  : #2E7D32; 
+  --gdk    : #1B5E20; 
+  --glt    : #E8F5E9;
+  --navy   : #0D1B5E; 
+  --blue   : #1565C0; 
+  --blt    : #E3F2FD;
+  --red    : #C62828; 
+  --rlt    : #FFEBEE;
+  --orange : #E65100; 
+  --olt    : #FFF3E0;
+  --purple : #6A1B9A; 
+  --plt    : #F3E5F5;
+  --border : #E0E0E0; 
+  --bg     : #EFEFEF;
+  --text   : #212121; 
+  --sub    : #757575;
+  
+  /* Shared */
+  --r      : 12px;
+  --shadow : 0 2px 12px rgba(0,0,0,.10);
+}
+
+body {
+  font-family: 'Noto Sans Devanagari', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  border: none;
+  outline: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+input, select, textarea {
+  cursor: text;
+}
+
+/* Utility Classes */
+.card {
+  background: #fff;
+  border-radius: var(--r);
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+
+.chip {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  color: var(--sub);
+  cursor: pointer;
+}
+
+.chip.on { 
+  background: var(--green); 
+  color: #fff; 
+  border-color: var(--green); 
+}
+
+.chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-bottom: 14px;
+}
+
+.chips::-webkit-scrollbar { 
+  display: none; 
+}
+
+/* Grid */
+.grid2 { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  gap: 10px; 
+}
+
+/* Stat card */
+.stat-card {
+  background: #fff;
+  border-radius: var(--r);
+  padding: 14px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.stat-n { 
+  font-size: 24px; 
+  font-weight: 800; 
+  color: var(--green); 
+}
+
+.stat-l { 
+  font-size: 11px; 
+  color: var(--sub); 
+  font-weight: 700; 
+  margin-top: 2px; 
+}
+
+/* Section title */
+.sec-title { 
+  font-size: 16px; 
+  font-weight: 800; 
+  margin-bottom: 12px; 
+  color: var(--gdk); 
+}
+
+/* Badges */
+.badge   { 
+  padding: 3px 10px; 
+  border-radius: 12px; 
+  font-size: 11px; 
+  font-weight: 700; 
+}
+
+.badge-g { 
+  background: var(--glt); 
+  color: var(--green); 
+}
+
+.badge-r { 
+  background: var(--rlt); 
+  color: var(--red); 
+}
+
+.badge-b { 
+  background: var(--blt); 
+  color: var(--blue); 
+}
+
+.badge-o { 
+  background: var(--olt); 
+  color: var(--orange); 
+}
+
+.badge-p { 
+  background: var(--plt); 
+  color: var(--purple); 
+}
+
+/* Row / Sep */
+.row { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+}
+
+.sep { 
+  height: 1px; 
+  background: var(--border); 
+  margin: 10px 0; 
+}
+
+.hint {
+  background: var(--glt);
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 12px;
+  color: var(--gdk);
+  line-height: 1.6;
+}
+
+/* Form Elements */
+.fg { 
+  margin-bottom: 14px; 
+}
+
+.fg label {
+  font-size: 13px;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.fg label .req { 
+  color: #FF6B00; 
+}
+
+.fg input,
+.fg select,
+.fg textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  font-size: 14px;
+  background: #fff;
+  transition: border .2s;
+}
+
+.fg input:focus,
+.fg select:focus,
+.fg textarea:focus { 
+  border-color: var(--green); 
+}
+
+.fr { 
+  display: flex; 
+  gap: 10px; 
+}
+
+.fr .fg { 
+  flex: 1; 
+}
+
+/* Buttons */
+.btn {
+  width: 100%;
+  padding: 13px;
+  border-radius: var(--r);
+  font-size: 14px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn:active { 
+  opacity: .85; 
+}
+
+.btn-g { 
+  background: linear-gradient(135deg, var(--green), var(--gdk)); 
+  color: #fff; 
+}
+
+.btn-b { 
+  background: linear-gradient(135deg, #1565C0, #0D47A1); 
+  color: #fff; 
+}
+
+.btn-o { 
+  background: #fff; 
+  border: 1.5px solid var(--border); 
+  color: var(--text); 
+}
+
+.btn-wa { 
+  background: #25D366; 
+  color: #fff; 
+}
+
+.btn-sm { 
+  width: auto; 
+  padding: 7px 14px; 
+  font-size: 12px; 
+  border-radius: 8px; 
+}
+
+/* Toast notifications */
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 10000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  max-width: 90%;
+  text-align: center;
+}
+
+.toast-success {
+  background: #4CAF50;
+  color: white;
+}
+
+.toast-error {
+  background: #f44336;
+  color: white;
+}
+
+.toast-warning {
+  background: #FF9800;
+  color: white;
+}
+
+.toast-info {
+  background: #2196F3;
+  color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  body {
+    max-width: 100%;
+  }
+  
+  .btn {
+    font-size: 13px;
+    padding: 12px;
+  }
+  
+  .fg input,
+  .fg select,
+  .fg textarea {
+    font-size: 13px;
+    padding: 11px 12px;
+  }
+}
+
+/* Print Styles */
+@media print {
+  body {
+    max-width: none;
+    background: white;
+  }
+  
+  .btn {
+    display: none;
+  }
+}

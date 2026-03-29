@@ -1,0 +1,16 @@
+<!-- Hero Banner -->
+<div class="lhero">
+  <img 
+    [src]="config.bannerUrl" 
+    alt="Banner"
+    *ngIf="config.bannerUrl"
+    class="banner-image">
+  <div class="lhero-ov">
+    <img 
+      class="logo" 
+      [src]="config.logoUrl || defaultLogoUrl"
+      alt="Logo">
+    <h1>{{ config.gpName }}</h1>
+    <p *ngIf="config.gpLocation">{{ config.gpLocation }}</p>
+  </div>
+</div>
