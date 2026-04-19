@@ -1,16 +1,16 @@
 <!-- Hero Banner -->
 <div class="lhero">
   <img 
-    [src]="config.bannerUrl" 
-    alt="Banner"
-    *ngIf="config.bannerUrl"
+    [src]="resolvedBannerUrl" 
+    [attr.alt]="'COMMON.BANNER_ALT' | translate"
     class="banner-image">
   <div class="lhero-ov">
     <img 
       class="logo" 
       [src]="config.logoUrl || defaultLogoUrl"
-      alt="Logo">
-    <h1>{{ config.gpName }}</h1>
-    <p *ngIf="config.gpLocation">{{ config.gpLocation }}</p>
+      (error)="onLogoError($event)"
+      [attr.alt]="'COMMON.LOGO_ALT' | translate">
+    <h1>{{ config.gpName | translate }}</h1>
+    <p *ngIf="config.gpLocation">{{ config.gpLocation | translate }}</p>
   </div>
 </div>

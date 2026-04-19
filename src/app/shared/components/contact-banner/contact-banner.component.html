@@ -2,7 +2,7 @@
 <div class="contact-banner" *ngIf="config.contactNumber">
   <span class="contact-icon">☎️</span>
   <div>
-    <div class="contact-label">{{ config.contactLabel }}</div>
+    <div class="contact-label">{{ config.contactLabel | translate }}</div>
     <a 
       [href]="'tel:' + config.contactNumber" 
       class="contact-number">

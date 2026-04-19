@@ -11,23 +11,23 @@
     id="adminNoticeBanner" 
     class="admin-notice-banner" 
     style="display: none;">
-    <div class="notice-title">📢 <span>Admin सूचना</span></div>
+    <div class="notice-title">📢 <span>{{ 'LOGIN.ADMIN_NOTICE_TITLE' | translate }}</span></div>
     <div class="notice-text"></div>
   </div>
 
   <!-- Login Container -->
   <div class="login-container">
-    <h2>{{ icons.LOGIN }} लॉगिन करा</h2>
-    <p class="sub">Admin पासवर्ड किंवा मोबाईल नंबर टाका</p>
+    <h2>{{ icons.LOGIN }} {{ 'LOGIN.TITLE' | translate }}</h2>
+    <p class="sub">{{ 'LOGIN.SUBTITLE' | translate }}</p>
 
     <div class="login-form">
       <div class="form-group">
-        <label>पासवर्ड / मोबाईल <span class="req">*</span></label>
+        <label>{{ 'LOGIN.LABEL_INPUT' | translate }} <span class="req">*</span></label>
         <div class="input-container">
           <input 
             [type]="showPassword ? 'text' : 'password'"
             [(ngModel)]="loginInput"
-            placeholder="पासवर्ड किंवा 10 अंकी मोबाईल"
+            [placeholder]="'LOGIN.PLACEHOLDER_INPUT' | translate"
             class="login-input"
             (keydown)="onEnterKeyPress($event)"
             autocomplete="off">
@@ -35,7 +35,7 @@
             type="button" 
             class="password-toggle"
             (click)="togglePasswordVisibility()"
-            title="दाखवा/लपवा">
+            [title]="'LOGIN.TOGGLE_PASSWORD_TITLE' | translate">
             {{ showPassword ? icons.HIDE : icons.SHOW }}
           </button>
         </div>
@@ -43,7 +43,7 @@
       <button 
         class="btn btn-g login-btn" 
         (click)="doLogin()">
-        {{ icons.SUCCESS }} लॉगिन करा
+        {{ icons.SUCCESS }} {{ 'LOGIN.BUTTON' | translate }}
       </button>
     </div>
   </div>

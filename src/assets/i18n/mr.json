@@ -1,0 +1,35 @@
+{
+  "COMMON": {
+    "LANGUAGE": "भाषा",
+    "BANNER_ALT": "बॅनर",
+    "LOGO_ALT": "लोगो"
+  },
+  "LANG": {
+    "MR": "मराठी",
+    "EN": "English"
+  },
+  "GP": {
+    "NAME": "ग्रामपंचायत आडाळी",
+    "LOCATION": "तालुका: दोडामार्ग, जिल्हा: सिंधुदुर्ग"
+  },
+  "CONTACT": {
+    "HELPLINE": "हेल्पलाइन नंबर"
+  },
+  "LOGIN": {
+    "TITLE": "लॉगिन करा",
+    "SUBTITLE": "Admin पासवर्ड किंवा मोबाईल नंबर टाका",
+    "LABEL_INPUT": "पासवर्ड / मोबाईल",
+    "PLACEHOLDER_INPUT": "पासवर्ड किंवा 10 अंकी मोबाईल",
+    "TOGGLE_PASSWORD_TITLE": "दाखवा/लपवा",
+    "BUTTON": "लॉगिन करा",
+    "ADMIN_NOTICE_TITLE": "Admin सूचना",
+    "ERROR_EMPTY": "कृपया पासवर्ड किंवा मोबाईल नंबर टाका",
+    "SUCCESS_ADMIN": "Admin म्हणून लॉगिन झाले!",
+    "SUCCESS_CITIZEN": "नागरिक म्हणून लॉगिन झाले!",
+    "ERROR_INVALID": "चुकीचा पासवर्ड किंवा मोबाईल नंबर"
+  },
+  "FOOTER": {
+    "DEVELOPED_BY": "विकसित करणारे",
+    "COPYRIGHT": "सर्व हक्क राखीव © {{year}}"
+  }
+}

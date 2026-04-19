@@ -2,7 +2,7 @@
 <div class="footer-brand">
   <div class="brand-name">⚡ {{ config.brandName }}</div>
   <div class="brand-credits">
-    Developed by <strong>{{ config.developerName }}</strong> •
-    All Rights Reserved © {{ config.year }}
+    {{ 'FOOTER.DEVELOPED_BY' | translate }} <strong>{{ config.developerName }}</strong> •
+    {{ 'FOOTER.COPYRIGHT' | translate:{ year: config.year } }}
   </div>
 </div>

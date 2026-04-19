@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { HeroBannerComponent, HeroBannerConfig } from '../shared/components/hero-banner/hero-banner.component';
 import { ContactBannerComponent, ContactBannerConfig } from '../shared/components/contact-banner/contact-banner.component';
 import { FooterBrandComponent, FooterBrandConfig } from '../shared/components/footer-brand/footer-brand.component';
 import { ICONS, ICON_GROUPS } from '../shared';
+import { I18nService } from '../i18n/i18n.service';
 
 @Component({
   selector: 'app-login',
@@ -12,6 +14,7 @@ import { ICONS, ICON_GROUPS } from '../shared';
   imports: [
     CommonModule, 
     FormsModule, 
+    TranslateModule,
     HeroBannerComponent, 
     ContactBannerComponent, 
     FooterBrandComponent
@@ -29,15 +32,15 @@ export class LoginComponent implements OnInit {
   
   // Component configurations
   heroBannerConfig: HeroBannerConfig = {
-    gpName: 'ग्रामपंचायत आडाळी',
-    gpLocation: 'तालुका: दोडामार्ग, जिल्हा: सिंधुदुर्ग',
-    logoUrl: '',
+    gpName: 'GP.NAME',
+    gpLocation: 'GP.LOCATION',
+    logoUrl: '/assets/images/logo.png',
     bannerUrl: ''
   };
 
   contactBannerConfig: ContactBannerConfig = {
     contactNumber: '9876543210',
-    contactLabel: 'हेल्पलाइन नंबर'
+    contactLabel: 'CONTACT.HELPLINE'
   };
 
   footerBrandConfig: FooterBrandConfig = {
@@ -51,24 +54,26 @@ export class LoginComponent implements OnInit {
     // Future: Load GP configuration from service
   }
 
+  constructor(public readonly i18n: I18nService) {}
+
   doLogin() {
     if (!this.loginInput.trim()) {
-      this.showToast('कृपया पासवर्ड किंवा मोबाईल नंबर टाका', 'error');
+      this.showToast(this.i18n.translate('LOGIN.ERROR_EMPTY'), 'error');
       return;
     }
 
     // Simulate login logic (would be replaced with actual authentication)
     if (this.loginInput === 'SMART@123' || this.loginInput === 'admin') {
-      this.showToast(`${this.icons.SUCCESS} Admin म्हणून लॉगिन झाले!`, 'success');
+      this.showToast(`${this.icons.SUCCESS} ${this.i18n.translate('LOGIN.SUCCESS_ADMIN')}`, 'success');
       // Redirect to admin dashboard
       console.log('Admin login successful');
     } else if (/^\d{10}$/.test(this.loginInput)) {
       // Mobile number validation
-      this.showToast(`${this.icons.SUCCESS} नागरिक म्हणून लॉगिन झाले!`, 'success');
+      this.showToast(`${this.icons.SUCCESS} ${this.i18n.translate('LOGIN.SUCCESS_CITIZEN')}`, 'success');
       // Redirect to citizen dashboard
       console.log('Citizen login successful');
     } else {
-      this.showToast(`${this.icons.ERROR} चुकीचा पासवर्ड किंवा मोबाईल नंबर`, 'error');
+      this.showToast(`${this.icons.ERROR} ${this.i18n.translate('LOGIN.ERROR_INVALID')}`, 'error');
     }
   }
 
