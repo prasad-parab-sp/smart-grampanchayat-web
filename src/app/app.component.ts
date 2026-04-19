@@ -25,7 +25,7 @@ import { LanguageSwitcherComponent } from './shared/components/language-switcher
     }
 
     .app-top-actions {
-      position: fixed;
+      position: absolute;
       top: 12px;
       right: 12px;
       z-index: 50;
