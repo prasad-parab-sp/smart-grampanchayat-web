@@ -1,0 +1,35 @@
+{
+  "COMMON": {
+    "LANGUAGE": "Language",
+    "BANNER_ALT": "Banner",
+    "LOGO_ALT": "Logo"
+  },
+  "LANG": {
+    "MR": "Marathi",
+    "EN": "English"
+  },
+  "GP": {
+    "NAME": "Adali Gram Panchayat",
+    "LOCATION": "Taluka: Dodamarg, District: Sindhudurg"
+  },
+  "CONTACT": {
+    "HELPLINE": "Helpline number"
+  },
+  "LOGIN": {
+    "TITLE": "Login",
+    "SUBTITLE": "Enter admin password or mobile number",
+    "LABEL_INPUT": "Password / Mobile",
+    "PLACEHOLDER_INPUT": "Password or 10-digit mobile",
+    "TOGGLE_PASSWORD_TITLE": "Show/Hide",
+    "BUTTON": "Login",
+    "ADMIN_NOTICE_TITLE": "Admin notice",
+    "ERROR_EMPTY": "Please enter password or mobile number",
+    "SUCCESS_ADMIN": "Logged in as Admin!",
+    "SUCCESS_CITIZEN": "Logged in as Citizen!",
+    "ERROR_INVALID": "Incorrect password or mobile number"
+  },
+  "FOOTER": {
+    "DEVELOPED_BY": "Developed by",
+    "COPYRIGHT": "All Rights Reserved © {{year}}"
+  }
+}

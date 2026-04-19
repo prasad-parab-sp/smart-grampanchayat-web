@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 export interface ContactBannerConfig {
   contactNumber: string;
@@ -9,7 +10,7 @@ export interface ContactBannerConfig {
 @Component({
   selector: 'app-contact-banner',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './contact-banner.component.html',
   styleUrls: ['./contact-banner.component.scss']
 })

@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 export interface FooterBrandConfig {
   brandName?: string;
@@ -9,10 +10,11 @@ export interface FooterBrandConfig {
 @Component({
   selector: 'app-footer-brand',
   standalone: true,
-  imports: [],
+  imports: [TranslateModule],
   templateUrl: './footer-brand.component.html',
   styleUrls: ['./footer-brand.component.scss']
 })
+
 export class FooterBrandComponent {
   @Input() config: FooterBrandConfig = {
     brandName: 'Smart Grampanchayat',

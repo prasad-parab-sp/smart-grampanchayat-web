@@ -1,0 +1,32 @@
+<div class="lang-root">
+  <button
+    type="button"
+    class="lang-trigger"
+    [attr.aria-label]="'COMMON.LANGUAGE' | translate"
+    aria-haspopup="menu"
+    [attr.aria-expanded]="isOpen">
+    <span class="lang-icon" aria-hidden="true">🌐</span>
+    <span class="lang-abbr" aria-hidden="true">{{ currentAbbr }}</span>
+  </button>
+
+  <div class="lang-menu" role="menu" *ngIf="isOpen">
+    <button
+      type="button"
+      role="menuitemradio"
+      class="lang-item"
+      [attr.aria-checked]="i18n.currentLang === 'mr'"
+      (click)="choose('mr')">
+      <span class="label">{{ 'LANG.MR' | translate }}</span>
+      <span class="check" aria-hidden="true" *ngIf="i18n.currentLang === 'mr'">✓</span>
+    </button>
+    <button
+      type="button"
+      role="menuitemradio"
+      class="lang-item"
+      [attr.aria-checked]="i18n.currentLang === 'en'"
+      (click)="choose('en')">
+      <span class="label">{{ 'LANG.EN' | translate }}</span>
+      <span class="check" aria-hidden="true" *ngIf="i18n.currentLang === 'en'">✓</span>
+    </button>
+  </div>
+</div>

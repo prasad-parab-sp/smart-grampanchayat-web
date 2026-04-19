@@ -1,21 +1,19 @@
-/* 
- * Login Component - Self-contained styles
- * No dependencies on global styles - completely standalone
+/**
+ * Login Component Styles - Refactored & Optimized
+ * Removed unused styles, better organization
  */
 
-// Import shared variables
 @import '../shared/styles/variables';
 
-/* Component Reset */
+// ===== COMPONENT RESET & BASE =====
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* Main Login Screen Container */
-#loginScreen { 
-  min-height: 100vh; 
+#loginScreen {
+  min-height: 100vh;
   background: #EFEFEF;
   font-family: 'Noto Sans Devanagari', Arial, sans-serif;
   color: #212121;
@@ -24,61 +22,41 @@
   margin: 0 auto;
 }
 
-/* Admin Notice Banner (hidden by default) */
+// ===== ADMIN NOTICE BANNER =====
 .admin-notice-banner {
   background: linear-gradient(135deg, #0D1B5E, #1565C0);
   color: #fff;
   padding: 12px 16px;
   font-size: 12px;
   line-height: 1.6;
+
+  .notice-title {
+    font-weight: 800;
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  .notice-text {
+    font-size: 12px;
+  }
 }
 
-.notice-title {
-  font-weight: 800;
-  font-size: 13px;
-  margin-bottom: 4px;
-}
-
-.notice-text {
-  font-size: 12px;
-}
-
-/* Login Container */
+// ===== LOGIN CONTAINER =====
 .login-container {
   background: $color-white;
   padding: 24px 20px;
-  margin: 0;
-}
 
-.login-container h2 {
-  font-size: 20px;
-  font-weight: 800;
-  color: #1B5E20;
-  text-align: center;
-  margin: 0 0 4px 0;
-  font-family: inherit;
-  
-  /* Optimized emoji rendering */
-  line-height: 1.3;
-  letter-spacing: 0.5px;
-  
-  /* Ensure consistent emoji display */
-  font-variant-emoji: emoji;
-  
-  /* Subtle enhancement */
-  text-shadow: 0 1px 2px rgba(0,0,0,0.08);
-}
-
-/* Lucide Icon Styling */
-.building-icon {
-  color: #1B5E20; /* Same green as the heading */
-  stroke-width: 2;
-  
-  // Alternative colors you can use:
-  // color: #FF6B00; /* Orange */
-  // color: #1565C0; /* Blue */
-  // color: #D32F2F; /* Red */
-  // color: #7B1FA2; /* Purple */
+  h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1B5E20;
+    text-align: center;
+    margin: 0 0 4px 0;
+    line-height: 1.3;
+    letter-spacing: 0.5px;
+    font-variant-emoji: emoji;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  }
 }
 
 .sub {
@@ -88,30 +66,27 @@
   margin: 4px 0 20px;
 }
 
-/* Login Form */
+// ===== FORM ELEMENTS =====
 .login-form {
   width: 100%;
 }
 
-/* Form Group */
-.form-group { 
-  margin-bottom: 14px; 
+.form-group {
+  margin-bottom: 14px;
+
+  label {
+    font-size: 13px;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 5px;
+    color: #212121;
+
+    .req {
+      color: #FF6B00;
+    }
+  }
 }
 
-.form-group label {
-  font-size: 13px;
-  font-weight: 700;
-  display: block;
-  margin-bottom: 5px;
-  color: #212121;
-  font-family: inherit;
-}
-
-.req { 
-  color: #FF6B00; 
-}
-
-/* Input Container */
 .input-container {
   position: relative;
   width: 100%;
@@ -125,21 +100,17 @@
   font-size: 14px;
   background: #fff;
   transition: border-color 0.2s ease;
-  font-family: inherit;
-  box-sizing: border-box;
   outline: none;
+
+  &:focus {
+    border-color: #2E7D32;
+  }
+
+  &::placeholder {
+    color: #BDBDBD;
+  }
 }
 
-.login-input:focus {
-  border-color: #2E7D32;
-}
-
-.login-input::placeholder {
-  color: #BDBDBD;
-  font-family: inherit;
-}
-
-/* Password Toggle Button */
 .password-toggle {
   position: absolute;
   right: 10px;
@@ -153,14 +124,14 @@
   padding: 4px;
   transition: color 0.2s ease;
   outline: none;
+
+  &:hover,
+  &:focus {
+    color: #2E7D32;
+  }
 }
 
-.password-toggle:hover,
-.password-toggle:focus {
-  color: #2E7D32;
-}
-
-/* Login Button */
+// ===== BUTTON STYLES =====
 .btn {
   width: 100%;
   padding: 13px;
@@ -173,252 +144,74 @@
   gap: 8px;
   border: none;
   cursor: pointer;
-  font-family: inherit;
   transition: all 0.2s ease;
   outline: none;
+
+  &:active {
+    opacity: 0.85;
+    transform: translateY(1px);
+  }
+
+  &.btn-g {
+    background: linear-gradient(135deg, #2E7D32, #1B5E20);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(46, 125, 50, 0.3);
+
+    &:hover {
+      background: linear-gradient(135deg, #388E3C, #2E7D32);
+      box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4);
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
+    }
+  }
+
+  &.login-btn {
+    margin-top: 8px;
+  }
 }
 
-.btn:active { 
-  opacity: 0.85; 
-  transform: translateY(1px);
-}
-
-.btn-g {
-  background: linear-gradient(135deg, #2E7D32, #1B5E20);
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(46, 125, 50, 0.3);
-}
-
-.btn-g:hover {
-  background: linear-gradient(135deg, #388E3C, #2E7D32);
-  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4);
-}
-
-.btn-g:focus {
-  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
-}
-
-.login-btn {
-  margin-top: 8px;
-}
-
-/* Responsive Design */
+// ===== RESPONSIVE DESIGN =====
 @media (max-width: 480px) {
   #loginScreen {
     max-width: 100%;
   }
-  
+
   .login-container {
     padding: 20px 16px;
+
+    h2 {
+      font-size: 18px;
+    }
   }
-  
-  .login-container h2 {
-    font-size: 18px;
-  }
-  
+
   .login-input {
     font-size: 13px;
     padding: 11px 40px 11px 12px;
   }
-  
+
   .btn {
     font-size: 13px;
     padding: 12px;
   }
 }
 
-/* High contrast mode support */
+// ===== ACCESSIBILITY =====
 @media (prefers-contrast: high) {
   .login-input {
     border-width: 2px;
-  }
-  
-  .login-input:focus {
-    border-width: 3px;
+
+    &:focus {
+      border-width: 3px;
+    }
   }
 }
 
-/* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   .login-input,
   .password-toggle,
   .btn {
     transition: none;
-  }
-}
-
-/* 
- * Shared Components Styles - Embedded for self-containment
- * These styles are for the child components used in this login screen
- */
-
-/* Hero Banner Component Styles */
-::ng-deep app-hero-banner {
-  .lhero { 
-    position: relative; 
-    height: 220px; 
-    overflow: hidden; 
-  }
-
-  .lhero .banner-image { 
-    width: 100%; 
-    height: 100%; 
-    object-fit: cover; 
-    opacity: 0.45; 
-  }
-
-  .lhero-ov {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-    background: linear-gradient(rgba(13, 27, 94, 0.3), rgba(13, 27, 94, 0.8));
-  }
-
-  .lhero-ov .logo {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #fff;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-    margin-bottom: 10px;
-  }
-
-  .lhero-ov h1 {
-    font-size: 17px;
-    font-weight: 800;
-    color: #A5D6A7;
-    text-align: center;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
-    line-height: 1.3;
-    margin: 0;
-    font-family: inherit;
-  }
-
-  .lhero-ov p { 
-    font-size: 11px; 
-    color: rgba(255, 255, 255, 0.9); 
-    margin-top: 4px; 
-    text-align: center;
-    margin-bottom: 0;
-  }
-}
-
-/* Contact Banner Component Styles */
-::ng-deep app-contact-banner {
-  .contact-banner {
-    background: linear-gradient(135deg, #1B5E20, #2E7D32);
-    color: #fff;
-    text-align: center;
-    padding: 10px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  .contact-icon {
-    font-size: 18px;
-  }
-
-  .contact-label {
-    font-size: 11px;
-    opacity: 0.85;
-  }
-
-  .contact-number {
-    color: #A5D6A7;
-    font-size: 16px;
-    font-weight: 900;
-    text-decoration: none;
-    font-family: inherit;
-  }
-
-  .contact-number:hover {
-    color: #C8E6C9;
-    text-decoration: underline;
-  }
-}
-
-/* Footer Brand Component Styles */
-::ng-deep app-footer-brand {
-  .footer-brand {
-    background: linear-gradient(135deg, #1B5E20, #0D1B5E);
-    color: #fff;
-    text-align: center;
-    padding: 14px 16px;
-  }
-
-  .brand-name {
-    font-size: 15px;
-    font-weight: 900;
-    letter-spacing: 0.5px;
-    color: #A5D6A7;
-    font-family: inherit;
-  }
-
-  .brand-credits {
-    font-size: 10px;
-    margin-top: 5px;
-    opacity: 0.85;
-  }
-
-  .brand-credits strong {
-    color: #A5D6A7;
-  }
-}
-
-/* Toast Notification Styles - Used by component logic */
-.toast {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  z-index: 10000;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  max-width: 90%;
-  text-align: center;
-  font-family: inherit;
-}
-
-.toast-success {
-  background: #4CAF50;
-  color: white;
-}
-
-.toast-error {
-  background: #f44336;
-  color: white;
-}
-
-.toast-warning {
-  background: #FF9800;
-  color: white;
-}
-
-.toast-info {
-  background: #2196F3;
-  color: white;
-}
-
-/* Responsive adjustments for shared components */
-@media (max-width: 480px) {
-  ::ng-deep app-hero-banner {
-    .lhero-ov .logo {
-      width: 80px;
-      height: 80px;
-    }
-    
-    .lhero-ov h1 {
-      font-size: 16px;
-    }
   }
 }
