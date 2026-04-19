@@ -18,8 +18,7 @@ import { LanguageSwitcherComponent } from './shared/components/language-switcher
   `,
   styles: [`
     .app-container {
-      max-width: 480px;
-      margin: 0 auto;
+      width: 100%;
       min-height: 100vh;
       background: #fff;
       position: relative;
@@ -27,9 +26,16 @@ import { LanguageSwitcherComponent } from './shared/components/language-switcher
 
     .app-top-actions {
       position: absolute;
-      top: 10px;
-      right: 10px;
+      top: 12px;
+      right: 12px;
       z-index: 50;
+    }
+
+    @media (min-width: 768px) {
+      .app-top-actions {
+        top: 16px;
+        right: 16px;
+      }
     }
   `]
 })
