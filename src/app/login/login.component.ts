@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { HeroBannerComponent, HeroBannerConfig } from '../shared/components/hero-banner/hero-banner.component';
 import { ContactBannerComponent, ContactBannerConfig } from '../shared/components/contact-banner/contact-banner.component';
@@ -54,7 +55,10 @@ export class LoginComponent implements OnInit {
     // Future: Load GP configuration from service
   }
 
-  constructor(public readonly i18n: I18nService) {}
+  constructor(
+    public readonly i18n: I18nService,
+    private readonly router: Router
+  ) {}
 
   doLogin() {
     if (!this.loginInput.trim()) {
@@ -65,13 +69,10 @@ export class LoginComponent implements OnInit {
     // Simulate login logic (would be replaced with actual authentication)
     if (this.loginInput === 'SMART@123' || this.loginInput === 'admin') {
       this.showToast(`${this.icons.SUCCESS} ${this.i18n.translate('LOGIN.SUCCESS_ADMIN')}`, 'success');
-      // Redirect to admin dashboard
-      console.log('Admin login successful');
+      void this.router.navigate(['/home']);
     } else if (/^\d{10}$/.test(this.loginInput)) {
-      // Mobile number validation
       this.showToast(`${this.icons.SUCCESS} ${this.i18n.translate('LOGIN.SUCCESS_CITIZEN')}`, 'success');
-      // Redirect to citizen dashboard
-      console.log('Citizen login successful');
+      void this.router.navigate(['/home']);
     } else {
       this.showToast(`${this.icons.ERROR} ${this.i18n.translate('LOGIN.ERROR_INVALID')}`, 'error');
     }
