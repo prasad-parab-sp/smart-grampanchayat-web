@@ -1,0 +1,20 @@
+<div class="home-shell">
+  <app-gram-app-header (logout)="logout()" />
+
+  <main class="home-main">
+    <router-outlet />
+  </main>
+
+  <nav class="bottom-nav" aria-label="Primary">
+    <button
+      type="button"
+      class="bottom-nav-item"
+      *ngFor="let n of navItems"
+      [routerLink]="n.link"
+      routerLinkActive="on"
+      [routerLinkActiveOptions]="n.exact ? { exact: true } : { exact: false }">
+      <span class="bottom-nav-icon">{{ n.icon }}</span>
+      {{ n.labelKey | translate }}
+    </button>
+  </nav>
+</div>

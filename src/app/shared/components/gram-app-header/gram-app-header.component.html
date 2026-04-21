@@ -1,0 +1,19 @@
+<header class="gram-header">
+  <img class="gram-header-banner" [src]="bannerUrl" alt="" />
+  <div class="gram-header-overlay">
+    <img
+      class="gram-header-logo"
+      [src]="logoUrl"
+      (error)="onLogoError($event)"
+      [attr.alt]="'COMMON.LOGO_ALT' | translate" />
+    <div class="gram-header-text">
+      <h1>{{ 'GP.NAME' | translate }}</h1>
+      <p>{{ 'GP.LOCATION' | translate }}</p>
+    </div>
+  </div>
+  <div class="gram-header-actions">
+    <app-language-switcher />
+    <button type="button" class="gram-header-logout" (click)="onLogout()">{{ 'HOME.LOGOUT' | translate }}</button>
+  </div>
+  <div class="gram-header-user-badge">{{ 'HOME.USER_BADGE' | translate }}</div>
+</header>

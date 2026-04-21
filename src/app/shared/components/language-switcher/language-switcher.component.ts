@@ -38,7 +38,7 @@ export class LanguageSwitcherComponent {
       return;
     }
 
-    const trigger = root.querySelector('.lang-trigger');
+    const trigger = root.querySelector('.language-switcher-trigger');
     if (trigger?.contains(target)) {
       this.isOpen = !this.isOpen;
     }

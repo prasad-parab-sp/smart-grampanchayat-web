@@ -1,6 +1,5 @@
-/* Contact Banner Styles */
 .contact-banner {
-  background: linear-gradient(135deg,#1B5E20,#2E7D32);
+  background: linear-gradient(135deg, #1b5e20, #2e7d32);
   color: #fff;
   text-align: center;
   padding: 10px 16px;
@@ -8,26 +7,30 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.10);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
 }
 
-.contact-icon {
+.contact-banner-icon {
   font-size: 18px;
 }
 
-.contact-label {
-  font-size: 11px;
-  opacity: .85;
+.contact-banner-body {
+  text-align: left;
 }
 
-.contact-number {
-  color: #A5D6A7;
+.contact-banner-label {
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.contact-banner-phone {
+  color: #a5d6a7;
   font-size: 16px;
   font-weight: 900;
   text-decoration: none;
 }
 
-.contact-number:hover {
-  color: #C8E6C9;
+.contact-banner-phone:hover {
+  color: #c8e6c9;
   text-decoration: underline;
 }

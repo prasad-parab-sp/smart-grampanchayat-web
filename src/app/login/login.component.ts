@@ -8,17 +8,19 @@ import { ContactBannerComponent, ContactBannerConfig } from '../shared/component
 import { FooterBrandComponent, FooterBrandConfig } from '../shared/components/footer-brand/footer-brand.component';
 import { ICONS, ICON_GROUPS } from '../shared';
 import { I18nService } from '../i18n/i18n.service';
+import { LanguageSwitcherComponent } from '../shared/components/language-switcher/language-switcher.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    CommonModule, 
-    FormsModule, 
+    CommonModule,
+    FormsModule,
     TranslateModule,
-    HeroBannerComponent, 
-    ContactBannerComponent, 
-    FooterBrandComponent
+    HeroBannerComponent,
+    ContactBannerComponent,
+    FooterBrandComponent,
+    LanguageSwitcherComponent
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']

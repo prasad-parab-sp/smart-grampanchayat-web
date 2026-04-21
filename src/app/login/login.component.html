@@ -1,62 +1,48 @@
-<div id="loginScreen">
-  
-  <!-- Hero Banner Component -->
-  <div class="full-bleed">
-    <app-hero-banner [config]="heroBannerConfig"></app-hero-banner>
+<div class="login-screen">
+  <div class="login-top-actions">
+    <app-language-switcher />
   </div>
 
-  <!-- Contact Banner Component -->
-  <div class="full-bleed">
-    <app-contact-banner [config]="contactBannerConfig"></app-contact-banner>
-  </div>
+  <app-hero-banner [config]="heroBannerConfig"></app-hero-banner>
 
-  <div class="page">
-    <!-- Admin Notice Banner (hidden by default) -->
-    <div 
-      id="adminNoticeBanner" 
-      class="admin-notice-banner" 
-      style="display: none;">
-      <div class="notice-title">📢 <span>{{ 'LOGIN.ADMIN_NOTICE_TITLE' | translate }}</span></div>
-      <div class="notice-text"></div>
+  <app-contact-banner [config]="contactBannerConfig"></app-contact-banner>
+
+  <div class="login-page">
+    <div class="login-admin-notice" style="display: none">
+      <div class="login-admin-notice-title">📢 <span>{{ 'LOGIN.ADMIN_NOTICE_TITLE' | translate }}</span></div>
+      <div class="login-admin-notice-body"></div>
     </div>
 
-    <!-- Login Container -->
-    <div class="login-container">
+    <div class="login-panel">
       <h2>{{ icons.LOGIN }} {{ 'LOGIN.TITLE' | translate }}</h2>
-      <p class="sub">{{ 'LOGIN.SUBTITLE' | translate }}</p>
+      <p class="login-subtitle">{{ 'LOGIN.SUBTITLE' | translate }}</p>
 
       <div class="login-form">
-        <div class="form-group">
+        <div class="login-form-group">
           <label>{{ 'LOGIN.LABEL_INPUT' | translate }} <span class="req">*</span></label>
-          <div class="input-container">
-            <input 
+          <div class="login-input-wrap">
+            <input
               [type]="showPassword ? 'text' : 'password'"
               [(ngModel)]="loginInput"
               [placeholder]="'LOGIN.PLACEHOLDER_INPUT' | translate"
-              class="login-input"
+              class="login-input-field"
               (keydown)="onEnterKeyPress($event)"
-              autocomplete="off">
-            <button 
-              type="button" 
-              class="password-toggle"
+              autocomplete="off" />
+            <button
+              type="button"
+              class="login-password-toggle"
               (click)="togglePasswordVisibility()"
               [title]="'LOGIN.TOGGLE_PASSWORD_TITLE' | translate">
               {{ showPassword ? icons.HIDE : icons.SHOW }}
             </button>
           </div>
         </div>
-        <button 
-          class="btn btn-g login-btn" 
-          (click)="doLogin()">
+        <button type="button" class="btn btn-g login-submit-btn" (click)="doLogin()">
           {{ icons.SUCCESS }} {{ 'LOGIN.BUTTON' | translate }}
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Footer Brand Component -->
-  <div class="full-bleed">
-    <app-footer-brand [config]="footerBrandConfig"></app-footer-brand>
-  </div>
-
+  <app-footer-brand [config]="footerBrandConfig"></app-footer-brand>
 </div>
