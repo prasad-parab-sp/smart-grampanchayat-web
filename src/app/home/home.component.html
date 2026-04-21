@@ -1,56 +1,18 @@
-<div class="home-shell">
-  <header class="ahero">
-    <img class="ahero__banner" [src]="bannerUrl" alt="" />
-    <div class="ahov">
-      <img
-        class="logo"
-        [src]="logoUrl"
-        (error)="onLogoError($event)"
-        [attr.alt]="'COMMON.LOGO_ALT' | translate" />
-      <div class="ahov-txt">
-        <h1>{{ 'GP.NAME' | translate }}</h1>
-        <p>{{ 'GP.LOCATION' | translate }}</p>
-      </div>
+<div>
+  <h2 class="sec-title">{{ 'HOME.INFO_TITLE' | translate }}</h2>
+  <div class="grid2 home-stats">
+    <div class="stat-card" *ngFor="let s of stats">
+      <div [ngClass]="statValueClass(s.valueModifier)">{{ s.value }}</div>
+      <div class="stat-l">{{ s.labelKey | translate }}</div>
     </div>
-    <button type="button" class="lbtn" (click)="logout()">{{ 'HOME.LOGOUT' | translate }}</button>
-    <div class="ubadge">{{ 'HOME.USER_BADGE' | translate }}</div>
-  </header>
+  </div>
 
-  <main class="home-main">
-    <ng-container *ngIf="activeNav === 'home'">
-      <h2 class="sec-title">{{ 'HOME.INFO_TITLE' | translate }}</h2>
-      <div class="grid2 home-stats">
-        <div class="stat-card" *ngFor="let s of stats">
-          <div [ngClass]="statValueClass(s.valueModifier)">{{ s.value }}</div>
-          <div class="stat-l">{{ s.labelKey | translate }}</div>
-        </div>
-      </div>
-
-      <h2 class="sec-title home-quick-title">{{ 'HOME.QUICK_LINKS_TITLE' | translate }}</h2>
-      <div class="ag">
-        <div class="ac" *ngFor="let q of quickLinks">
-          <div class="ai">{{ q.icon }}</div>
-          <div class="at">{{ q.titleKey | translate }}</div>
-          <div class="as">{{ q.subKey | translate }}</div>
-        </div>
-      </div>
-    </ng-container>
-
-    <section *ngIf="activeNav !== 'home'" class="sec-placeholder card">
-      <h2 class="sec-title">{{ 'HOME.SECTION_PLACEHOLDER_TITLE' | translate }}</h2>
-      <p class="sec-placeholder__text">{{ 'HOME.SECTION_PLACEHOLDER_BODY' | translate }}</p>
-    </section>
-  </main>
-
-  <nav class="bnav" aria-label="Primary">
-    <button
-      type="button"
-      class="nb"
-      *ngFor="let n of navItems"
-      [class.on]="activeNav === n.id"
-      (click)="setNav(n.id)">
-      <span class="ni">{{ n.icon }}</span>
-      {{ n.labelKey | translate }}
-    </button>
-  </nav>
+  <h2 class="sec-title home-quick-title">{{ 'HOME.QUICK_LINKS_TITLE' | translate }}</h2>
+  <div class="home-quick-links">
+    <div class="home-quick-link" *ngFor="let q of quickLinks" (click)="onQuickLink(q)">
+      <div class="home-quick-link-icon">{{ q.icon }}</div>
+      <div class="home-quick-link-title">{{ q.titleKey | translate }}</div>
+      <div class="home-quick-link-subtitle">{{ q.subKey | translate }}</div>
+    </div>
+  </div>
 </div>

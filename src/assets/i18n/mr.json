@@ -2,7 +2,8 @@
   "COMMON": {
     "LANGUAGE": "भाषा",
     "BANNER_ALT": "बॅनर",
-    "LOGO_ALT": "लोगो"
+    "LOGO_ALT": "लोगो",
+    "CLOSE": "डायलॉग बंद करा"
   },
   "LANG": {
     "MR": "मराठी",
@@ -72,5 +73,220 @@
     "QL_COMPLAINT_SUB": "नोंदवा / पाठवा",
     "SECTION_PLACEHOLDER_TITLE": "लवकरच उपलब्ध",
     "SECTION_PLACEHOLDER_BODY": "पूर्ण मॉड्यूल जोडल्यावर हा भाग थेट डेटासह दिसेल."
+  },
+  "DAKHALE": {
+    "PAGE_TITLE": "📋 दाखले, सेवा, सुचना व तक्रारी",
+    "SUCHANA_BOX_TITLE": "💡 सुचना पेटी",
+    "SUCHANA_HEAD": "🏗️ विकास आराखडा सुचना",
+    "SUCHANA_BODY": "गावच्या येणाऱ्या आर्थिक विकास आराखड्यात कोणती कामे असावीत याबाबत आपली सुचना नोंदवा.",
+    "SUCHANA_CTA": "💡 सुचना नोंदवा",
+    "APPLY_TITLE": "अर्ज",
+    "APPLY_SUB": "सर्व माहिती अचूक भरा",
+    "REQ_DOCS": "📎 आवश्यक कागदपत्रे / माहिती:",
+    "LABEL_NAME": "पूर्ण नाव",
+    "LABEL_PHONE": "मोबाईल",
+    "LABEL_PURPOSE": "कशासाठी",
+    "LABEL_ADDRESS": "पत्ता",
+    "LABEL_SUBJECT": "विषय",
+    "LABEL_LOCATION": "ठिकाण",
+    "LABEL_DETAILS": "तपशील",
+    "LABEL_SUCHANA_TYPE": "सुचनेचा प्रकार",
+    "LABEL_SUCHANA_DETAIL": "सुचना तपशील",
+    "LABEL_SUCHANA_BENEFIT": "अपेक्षित लाभ (पर्यायी)",
+    "PH_NAME": "अर्जदाराचे पूर्ण नाव",
+    "PH_PHONE": "10 अंकी",
+    "PH_ADDRESS": "राहण्याचा पत्ता...",
+    "PURPOSE_PICK": "निवडा…",
+    "FEE_LABEL": "दाखला शुल्क",
+    "TOTAL_LABEL": "एकूण",
+    "FREE": "मोफत",
+    "FEE_AMOUNT": "₹{{amount}} शुल्क",
+    "FEE_TAIL_WHATSAPP": "सरपंच व ग्रामसेवक WhatsApp वर",
+    "SUBMIT_APPLY": "✅ अर्ज सादर करा",
+    "COMPLAINT_TITLE": "📣 तक्रार अर्ज",
+    "COMPLAINT_SUB": "तक्रार सरपंच व ग्रामसेवक यांच्या WhatsApp वर जाईल (API जोडल्यावर).",
+    "SUBMIT_COMPLAINT": "📣 तक्रार पाठवा",
+    "SUCHANA_MODAL_TITLE": "💡 सुचना नोंदवा",
+    "SUCHANA_MODAL_SUB": "ग्रामपंचायतीला आपली सुचना द्या. विकास आराखड्यात विचार केला जाईल.",
+    "SUCHANA_MODAL_HINT": "गावाच्या भविष्यातील विकास कामांसाठी आपल्या कल्पना व सुचना शेअर करा.",
+    "SUBMIT_SUCHANA": "💡 सुचना पाठवा",
+    "STUB_APPLY_ACK": "अर्ज स्थानिकरित्या नोंदला. सर्व्हरला पाठवण्यास API जोडा.",
+    "STUB_COMPLAINT_ACK": "तक्रार स्थानिकरित्या नोंदली. सर्व्हरला पाठवण्यास API जोडा.",
+    "STUB_SUCHANA_ACK": "सुचना स्थानिकरित्या नोंदली. सर्व्हरला पाठवण्यास API जोडा.",
+    "SECTION": {
+      "CERTIFICATES": "दाखले",
+      "REGISTRATION": "नोंदणी",
+      "PERMISSIONS": "परवाने",
+      "SAMPLE_8": "नमुना ८",
+      "COMPLAINTS": "तक्रार"
+    },
+    "DAYS": {
+      "D1_2": "1-2 दिवस",
+      "D2_3": "2-3 दिवस",
+      "D3_4": "3-4 दिवस",
+      "D2_4": "2-4 दिवस",
+      "D3_5": "3-5 दिवस",
+      "D7_15": "7-15 दिवस",
+      "D7_10": "7-10 दिवस",
+      "DASH": "-"
+    },
+    "FMT": {
+      "GHARPATRAK": "घरपत्रक"
+    },
+    "TYPES": {
+      "BIRTH_CERT": {
+        "NAME": "जन्म दाखला",
+        "DESC": "जन्म नोंदणी प्रमाणपत्र"
+      },
+      "DEATH_CERT": {
+        "NAME": "मृत्यू दाखला",
+        "DESC": "मृत्यू नोंदणी प्रमाणपत्र"
+      },
+      "MARRIAGE_CERT": {
+        "NAME": "विवाह दाखला",
+        "DESC": "विवाह नोंदणी प्रमाणपत्र"
+      },
+      "POPULATION_CERT": {
+        "NAME": "लोकसंख्या दाखला",
+        "DESC": "गावातील लोकसंख्या नोंद"
+      },
+      "RESIDENCE_CERT": {
+        "NAME": "रहिवास दाखला",
+        "DESC": "गावात राहण्याचा पुरावा"
+      },
+      "INCOME_CERT": {
+        "NAME": "उत्पन्नाचा दाखला",
+        "DESC": "वार्षिक उत्पन्न"
+      },
+      "ALIVE_CERT": {
+        "NAME": "हयातीचा दाखला",
+        "DESC": "जीवित असल्याचे प्रमाणपत्र"
+      },
+      "CASTE_CERT": {
+        "NAME": "जातीचा दाखला",
+        "DESC": "जात शिफारस पत्र"
+      },
+      "NO_OBJ": {
+        "NAME": "ना हरकत दाखला",
+        "DESC": "ना हरकत प्रमाणपत्र"
+      },
+      "FARMER_CERT": {
+        "NAME": "शेतकरी दाखला",
+        "DESC": "शेती असल्याचे प्रमाणपत्र"
+      },
+      "REG_BIRTH": {
+        "NAME": "जन्म नोंदणी",
+        "DESC": "बाळाची जन्म नोंद"
+      },
+      "REG_DEATH": {
+        "NAME": "मृत्यू नोंदणी",
+        "DESC": "मृत्यूची अधिकृत नोंद"
+      },
+      "REG_MARRIAGE": {
+        "NAME": "विवाह नोंदणी",
+        "DESC": "लग्नाची अधिकृत नोंद"
+      },
+      "PERM_BUILD": {
+        "NAME": "बांधकाम परवानगी",
+        "DESC": "घर / इमारत बांधणी परवाना"
+      },
+      "PERM_BUSINESS": {
+        "NAME": "व्यवसाय परवानगी",
+        "DESC": "दुकान / व्यवसाय परवाना"
+      },
+      "SAMPLE_8": {
+        "NAME": "नमुना ८ (घरपत्रक उतारा)",
+        "DESC": "घरपट्टी कर आकारणी नोंदवहीचा अधिकृत उतारा"
+      },
+      "COMPLAINT": {
+        "NAME": "तक्रार अर्ज",
+        "DESC": "ग्रामपंचायतीकडे तक्रार"
+      }
+    },
+    "DOCS": {
+      "AADHAAR": "आधार कार्ड",
+      "LAND_712_IF_FARM": "शेतजमीन असल्यास ७/१२ उतारा",
+      "CASTE_PROOF_LINEAGE": "जात पुरावा (वडिलांचा / आजोबांचा)",
+      "SCHOOL_LEAVING": "शाळा सोडल्याचा दाखला",
+      "EXTRACT_712": "७/१२ उतारा",
+      "HOSP_BIRTH_CERT": "रुग्णालयाचे जन्म प्रमाणपत्र",
+      "PARENTS_AADHAAR": "आई-वडिलांचे आधार कार्ड",
+      "HOSP_DEATH_IF_ANY": "रुग्णालयाचे मृत्यू प्रमाणपत्र (असल्यास)",
+      "DECEASED_AADHAAR": "मृत व्यक्तीचे आधार कार्ड",
+      "GROOM_AADHAAR": "नवऱ्याचे आधार कार्ड",
+      "BRIDE_AADHAAR": "वधूचे आधार कार्ड",
+      "WEDDING_PHOTO_TWO": "लग्नाचा फोटो (2)",
+      "WITNESS_AADHAAR": "साक्षीदारांचे आधार कार्ड",
+      "WEDDING_INVITE": "लग्नपत्रिका",
+      "SITE_712_APPLICANT": "बांधकाम जागेचा ७/१२ उतारा (अर्जदाराच्या नावाने)",
+      "NOTARY_PROPERTY_IF_NEEDED": "अर्जदाराचे नाव ७/१२ वर नसल्यास — जमीन मालकाचे नोटराईज्ड संपत्ती पत्र",
+      "COOWNER_NOC_IF_NEEDED": "७/१२ वर इतर नावे असल्यास — सहधारकांचे संमतीपत्र किंवा स्वयंघोषणापत्र",
+      "BUILDING_PLAN": "बांधकाम नकाशा / आराखडा",
+      "SHOP_TITLE_OR_LEASE": "दुकानाचे / जागेचे मालकी पत्र किंवा भाडेपट्टा करार",
+      "PASSPORT_PHOTO": "फोटो (पासपोर्ट साईज)",
+      "PREMISES_ADDRESS_PROOF": "जागेचा पत्ता पुरावा",
+      "HOUSE_ADDRESS_PROOF": "घराचा पत्ता पुरावा"
+    },
+    "UPLOADS": {
+      "AADHAAR": "आधार कार्ड",
+      "EXTRACT_712_IF_ANY": "७/१२ उतारा (असल्यास)",
+      "AADHAAR_PHOTO": "आधार कार्ड फोटो",
+      "CASTE_PROOF": "जात पुरावा",
+      "SCHOOL_LEAVING": "शाळा सोडल्याचा दाखला",
+      "HOSP_BIRTH_CERT": "रुग्णालय जन्म प्रमाणपत्र",
+      "MOTHER_AADHAAR": "आईचे आधार कार्ड",
+      "FATHER_AADHAAR": "वडिलांचे आधार कार्ड",
+      "HOSP_DEATH_CERT": "मृत्यू प्रमाणपत्र (रुग्णालय)",
+      "DECEASED_AADHAAR": "मृत व्यक्तीचे आधार कार्ड",
+      "GROOM_AADHAAR": "नवऱ्याचे आधार कार्ड",
+      "BRIDE_AADHAAR": "वधूचे आधार कार्ड",
+      "WEDDING_PHOTO": "लग्नाचा फोटो",
+      "WITNESS1_AADHAAR": "साक्षीदार १ आधार",
+      "WITNESS2_AADHAAR": "साक्षीदार २ आधार",
+      "WEDDING_INVITE": "लग्नपत्रिका",
+      "APPLICANT_SIGN_PHOTO": "अर्जदाराची सही (फोटो)",
+      "WITNESS1_SIGN_PHOTO": "साक्षीदार १ सही (फोटो)",
+      "WITNESS2_SIGN_PHOTO": "साक्षीदार २ सही (फोटो)",
+      "EXTRACT_712": "७/१२ उतारा",
+      "EXTRACT_712_BUILD_PLOT": "७/१२ उतारा (बांधकाम जागा)",
+      "NOTARY_PROPERTY_IF_ANY": "नोटराईज्ड संपत्ती पत्र (लागू असल्यास)",
+      "COOWNER_NOC_IF_ANY": "संमतीपत्र / स्वयंघोषणापत्र (लागू असल्यास)",
+      "BUILDING_PLAN": "बांधकाम नकाशा / आराखडा",
+      "TITLE_OR_LEASE": "मालकी पत्र / भाडेपट्टा",
+      "PHOTO": "फोटो",
+      "COMPLAINT_EVIDENCE": "तक्रारीचा पुरावा / फोटो (असल्यास)"
+    },
+    "PURPOSE": {
+      "GOVERNMENT": "सरकारी",
+      "BANK": "बँक",
+      "SCHOOL": "शाळा/कॉलेज",
+      "SCHOLARSHIP": "शिष्यवृत्ती",
+      "PERSONAL": "वैयक्तिक",
+      "COURT": "न्यायालय",
+      "OTHER": "इतर"
+    },
+    "COMPLAINT_SUBJ": {
+      "ROAD": "रस्त्याची समस्या",
+      "WATER": "पाणीपुरवठा समस्या",
+      "SANITATION": "स्वच्छता / कचरा",
+      "STREETLIGHT": "दिवाबत्ती बंद",
+      "DRAIN": "गटार / ड्रेनेज",
+      "PROPERTY_DAMAGE": "सार्वजनिक मालमत्तेची हानी",
+      "UNAUTH_BUILD": "अनधिकृत बांधकाम",
+      "CORRUPTION": "भ्रष्टाचार",
+      "OTHER": "इतर"
+    },
+    "SUCHANA_CAT": {
+      "DEV_PLAN": "🏗️ विकास आराखडा (रस्ते / इमारती)",
+      "WATER_IMPROVE": "💧 पाणीपुरवठा सुधारणा",
+      "ENV_TREE": "🌳 पर्यावरण / वृक्षारोपण",
+      "HEALTH": "🏥 आरोग्य सुविधा",
+      "EDUCATION": "🎓 शिक्षण सुविधा",
+      "POWER_LIGHT": "💡 दिवाबत्ती / वीज",
+      "FARM_IRRIG": "🌾 शेती / सिंचन",
+      "WOMEN_CHILD": "👩 महिला / बालकल्याण",
+      "SPORTS": "🏟️ क्रीडा / मनोरंजन",
+      "OTHER": "📋 इतर"
+    }
   }
 }

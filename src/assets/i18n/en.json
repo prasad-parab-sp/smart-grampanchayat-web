@@ -2,7 +2,8 @@
   "COMMON": {
     "LANGUAGE": "Language",
     "BANNER_ALT": "Banner",
-    "LOGO_ALT": "Logo"
+    "LOGO_ALT": "Logo",
+    "CLOSE": "Close dialog"
   },
   "LANG": {
     "MR": "Marathi",
@@ -72,5 +73,220 @@
     "QL_COMPLAINT_SUB": "Register / send",
     "SECTION_PLACEHOLDER_TITLE": "Coming soon",
     "SECTION_PLACEHOLDER_BODY": "This area will load live data when the full module is connected."
+  },
+  "DAKHALE": {
+    "PAGE_TITLE": "📋 Certificates, services, suggestions & complaints",
+    "SUCHANA_BOX_TITLE": "💡 Suggestion box",
+    "SUCHANA_HEAD": "🏗️ Development plan suggestion",
+    "SUCHANA_BODY": "Share which works you would like included in the village’s upcoming annual development plan.",
+    "SUCHANA_CTA": "💡 Submit a suggestion",
+    "APPLY_TITLE": "Application",
+    "APPLY_SUB": "Fill all details accurately",
+    "REQ_DOCS": "📎 Required documents / information:",
+    "LABEL_NAME": "Full name",
+    "LABEL_PHONE": "Mobile",
+    "LABEL_PURPOSE": "Purpose",
+    "LABEL_ADDRESS": "Address",
+    "LABEL_SUBJECT": "Subject",
+    "LABEL_LOCATION": "Location",
+    "LABEL_DETAILS": "Details",
+    "LABEL_SUCHANA_TYPE": "Suggestion type",
+    "LABEL_SUCHANA_DETAIL": "Suggestion details",
+    "LABEL_SUCHANA_BENEFIT": "Expected benefit (optional)",
+    "PH_NAME": "Applicant’s full name",
+    "PH_PHONE": "10 digits",
+    "PH_ADDRESS": "Residential address…",
+    "PURPOSE_PICK": "Select…",
+    "FEE_LABEL": "Certificate fee",
+    "TOTAL_LABEL": "Total",
+    "FREE": "Free",
+    "FEE_AMOUNT": "₹{{amount}} fee",
+    "FEE_TAIL_WHATSAPP": "Sarpanch & Gramsevak on WhatsApp",
+    "SUBMIT_APPLY": "✅ Submit application",
+    "COMPLAINT_TITLE": "📣 Complaint",
+    "COMPLAINT_SUB": "Will be sent to Sarpanch and Gramsevak (WhatsApp when connected).",
+    "SUBMIT_COMPLAINT": "📣 Send complaint",
+    "SUCHANA_MODAL_TITLE": "💡 Submit a suggestion",
+    "SUCHANA_MODAL_SUB": "Tell the Gram Panchayat your suggestion; it will be considered for the development plan.",
+    "SUCHANA_MODAL_HINT": "Share ideas for future development works in the village.",
+    "SUBMIT_SUCHANA": "💡 Send suggestion",
+    "STUB_APPLY_ACK": "Application recorded locally. Connect the API to submit to the server.",
+    "STUB_COMPLAINT_ACK": "Complaint recorded locally. Connect the API to submit to the server.",
+    "STUB_SUCHANA_ACK": "Suggestion recorded locally. Connect the API to submit to the server.",
+    "SECTION": {
+      "CERTIFICATES": "Certificates",
+      "REGISTRATION": "Registration",
+      "PERMISSIONS": "Permissions",
+      "SAMPLE_8": "Sample 8",
+      "COMPLAINTS": "Complaints"
+    },
+    "DAYS": {
+      "D1_2": "1–2 days",
+      "D2_3": "2–3 days",
+      "D3_4": "3–4 days",
+      "D2_4": "2–4 days",
+      "D3_5": "3–5 days",
+      "D7_15": "7–15 days",
+      "D7_10": "7–10 days",
+      "DASH": "—"
+    },
+    "FMT": {
+      "GHARPATRAK": "House register"
+    },
+    "TYPES": {
+      "BIRTH_CERT": {
+        "NAME": "Birth certificate",
+        "DESC": "Birth registration certificate"
+      },
+      "DEATH_CERT": {
+        "NAME": "Death certificate",
+        "DESC": "Death registration certificate"
+      },
+      "MARRIAGE_CERT": {
+        "NAME": "Marriage certificate",
+        "DESC": "Marriage registration certificate"
+      },
+      "POPULATION_CERT": {
+        "NAME": "Population certificate",
+        "DESC": "Village population record"
+      },
+      "RESIDENCE_CERT": {
+        "NAME": "Residence certificate",
+        "DESC": "Proof of residence in the village"
+      },
+      "INCOME_CERT": {
+        "NAME": "Income certificate",
+        "DESC": "Annual income"
+      },
+      "ALIVE_CERT": {
+        "NAME": "Life certificate",
+        "DESC": "Certificate of being alive"
+      },
+      "CASTE_CERT": {
+        "NAME": "Caste certificate",
+        "DESC": "Caste recommendation letter"
+      },
+      "NO_OBJ": {
+        "NAME": "No objection certificate",
+        "DESC": "No objection certificate"
+      },
+      "FARMER_CERT": {
+        "NAME": "Farmer certificate",
+        "DESC": "Proof of farming"
+      },
+      "REG_BIRTH": {
+        "NAME": "Birth registration",
+        "DESC": "Child birth record"
+      },
+      "REG_DEATH": {
+        "NAME": "Death registration",
+        "DESC": "Official death record"
+      },
+      "REG_MARRIAGE": {
+        "NAME": "Marriage registration",
+        "DESC": "Official marriage record"
+      },
+      "PERM_BUILD": {
+        "NAME": "Building permission",
+        "DESC": "House / building construction permit"
+      },
+      "PERM_BUSINESS": {
+        "NAME": "Business permission",
+        "DESC": "Shop / business license"
+      },
+      "SAMPLE_8": {
+        "NAME": "Sample 8 (house register extract)",
+        "DESC": "Official extract of house tax assessment register"
+      },
+      "COMPLAINT": {
+        "NAME": "Complaint application",
+        "DESC": "Complaint to the Gram Panchayat"
+      }
+    },
+    "DOCS": {
+      "AADHAAR": "Aadhaar card",
+      "LAND_712_IF_FARM": "7/12 extract if you have agricultural land",
+      "CASTE_PROOF_LINEAGE": "Caste proof (father’s / grandfather’s)",
+      "SCHOOL_LEAVING": "School leaving certificate",
+      "EXTRACT_712": "7/12 extract",
+      "HOSP_BIRTH_CERT": "Hospital birth certificate",
+      "PARENTS_AADHAAR": "Parents’ Aadhaar cards",
+      "HOSP_DEATH_IF_ANY": "Hospital death certificate (if any)",
+      "DECEASED_AADHAAR": "Deceased person’s Aadhaar card",
+      "GROOM_AADHAAR": "Groom’s Aadhaar card",
+      "BRIDE_AADHAAR": "Bride’s Aadhaar card",
+      "WEDDING_PHOTO_TWO": "Wedding photos (2)",
+      "WITNESS_AADHAAR": "Witnesses’ Aadhaar cards",
+      "WEDDING_INVITE": "Wedding invitation",
+      "SITE_712_APPLICANT": "7/12 extract for the build site (in applicant’s name)",
+      "NOTARY_PROPERTY_IF_NEEDED": "If applicant’s name is not on 7/12 — notarized property letter from land owner",
+      "COOWNER_NOC_IF_NEEDED": "If other names on 7/12 — co-owner consent or self-declaration",
+      "BUILDING_PLAN": "Building plan / blueprint",
+      "SHOP_TITLE_OR_LEASE": "Shop / premises ownership papers or lease deed",
+      "PASSPORT_PHOTO": "Photo (passport size)",
+      "PREMISES_ADDRESS_PROOF": "Proof of premises address",
+      "HOUSE_ADDRESS_PROOF": "Proof of house address"
+    },
+    "UPLOADS": {
+      "AADHAAR": "Aadhaar card",
+      "EXTRACT_712_IF_ANY": "7/12 extract (if applicable)",
+      "AADHAAR_PHOTO": "Aadhaar card photo",
+      "CASTE_PROOF": "Caste proof",
+      "SCHOOL_LEAVING": "School leaving certificate",
+      "HOSP_BIRTH_CERT": "Hospital birth certificate",
+      "MOTHER_AADHAAR": "Mother’s Aadhaar card",
+      "FATHER_AADHAAR": "Father’s Aadhaar card",
+      "HOSP_DEATH_CERT": "Death certificate (hospital)",
+      "DECEASED_AADHAAR": "Deceased person’s Aadhaar card",
+      "GROOM_AADHAAR": "Groom’s Aadhaar card",
+      "BRIDE_AADHAAR": "Bride’s Aadhaar card",
+      "WEDDING_PHOTO": "Wedding photo",
+      "WITNESS1_AADHAAR": "Witness 1 Aadhaar",
+      "WITNESS2_AADHAAR": "Witness 2 Aadhaar",
+      "WEDDING_INVITE": "Wedding invitation",
+      "APPLICANT_SIGN_PHOTO": "Applicant’s signature (photo)",
+      "WITNESS1_SIGN_PHOTO": "Witness 1 signature (photo)",
+      "WITNESS2_SIGN_PHOTO": "Witness 2 signature (photo)",
+      "EXTRACT_712": "7/12 extract",
+      "EXTRACT_712_BUILD_PLOT": "7/12 extract (build site)",
+      "NOTARY_PROPERTY_IF_ANY": "Notarized property letter (if applicable)",
+      "COOWNER_NOC_IF_ANY": "Consent / self-declaration (if applicable)",
+      "BUILDING_PLAN": "Building plan / blueprint",
+      "TITLE_OR_LEASE": "Ownership papers / lease deed",
+      "PHOTO": "Photo",
+      "COMPLAINT_EVIDENCE": "Complaint evidence / photo (if any)"
+    },
+    "PURPOSE": {
+      "GOVERNMENT": "Government",
+      "BANK": "Bank",
+      "SCHOOL": "School / college",
+      "SCHOLARSHIP": "Scholarship",
+      "PERSONAL": "Personal",
+      "COURT": "Court",
+      "OTHER": "Other"
+    },
+    "COMPLAINT_SUBJ": {
+      "ROAD": "Road issue",
+      "WATER": "Water supply issue",
+      "SANITATION": "Sanitation / waste",
+      "STREETLIGHT": "Street lights",
+      "DRAIN": "Drain / sewerage",
+      "PROPERTY_DAMAGE": "Damage to public property",
+      "UNAUTH_BUILD": "Unauthorized construction",
+      "CORRUPTION": "Corruption",
+      "OTHER": "Other"
+    },
+    "SUCHANA_CAT": {
+      "DEV_PLAN": "🏗️ Development plan (roads / buildings)",
+      "WATER_IMPROVE": "💧 Water supply improvement",
+      "ENV_TREE": "🌳 Environment / tree planting",
+      "HEALTH": "🏥 Health facilities",
+      "EDUCATION": "🎓 Education facilities",
+      "POWER_LIGHT": "💡 Street lights / electricity",
+      "FARM_IRRIG": "🌾 Farming / irrigation",
+      "WOMEN_CHILD": "👩 Women / child welfare",
+      "SPORTS": "🏟️ Sports / recreation",
+      "OTHER": "📋 Other"
+    }
   }
 }
