@@ -2,7 +2,8 @@
   "COMMON": {
     "LANGUAGE": "Language",
     "BANNER_ALT": "Banner",
-    "LOGO_ALT": "Logo"
+    "LOGO_ALT": "Logo",
+    "CLOSE": "Close dialog"
   },
   "LANG": {
     "MR": "Marathi",

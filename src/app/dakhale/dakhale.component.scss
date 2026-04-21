@@ -55,11 +55,14 @@ button.dakhale-certificate-row {
   flex-shrink: 0;
 }
 
+h3.dakhale-section-head {
+  margin: 14px 0 6px;
+}
+
 .dakhale-section-head {
   background: linear-gradient(135deg, var(--gdk), var(--green));
   color: #fff;
   padding: 10px 16px;
-  margin: 14px 0 6px;
   border-radius: 10px;
   font-weight: 700;
   font-size: 15px;
@@ -142,6 +145,14 @@ button.dakhale-certificate-row {
   border-radius: 10px;
   padding: 12px;
   margin-bottom: 14px;
+}
+
+.dakhale-fee-summary-row-total .dakhale-fee-summary-total-label {
+  font-weight: 800;
+}
+
+.dakhale-fee-summary-row-total .dakhale-fee-summary-total-value {
+  font-size: 15px;
 }
 
 .dakhale-suchana-banner {

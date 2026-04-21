@@ -2,7 +2,8 @@
   "COMMON": {
     "LANGUAGE": "भाषा",
     "BANNER_ALT": "बॅनर",
-    "LOGO_ALT": "लोगो"
+    "LOGO_ALT": "लोगो",
+    "CLOSE": "डायलॉग बंद करा"
   },
   "LANG": {
     "MR": "मराठी",
