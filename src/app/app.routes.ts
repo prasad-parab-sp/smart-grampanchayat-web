@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { DakhaleComponent } from './dakhale/dakhale.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { MainShellComponent } from './shell/main-shell.component';
@@ -14,7 +13,11 @@ export const routes: Routes = [
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'home' },
       { path: 'home', component: HomeComponent },
-      { path: 'dakhale', component: DakhaleComponent },
+      {
+        path: 'certificate',
+        loadChildren: () => import('./certificate/certificate.module').then((m) => m.CertificateModule)
+      },
+      { path: 'stub/:slug', component: ShellPlaceholderComponent },
       { path: 'kar', component: ShellPlaceholderComponent },
       { path: 'notice', component: ShellPlaceholderComponent },
       { path: 'profile', component: ShellPlaceholderComponent }

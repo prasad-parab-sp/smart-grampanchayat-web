@@ -1,0 +1,104 @@
+.certificate-row {
+  background: #fff;
+  border-radius: var(--r);
+  padding: 14px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow);
+}
+
+.certificate-row-icon {
+  font-size: 26px;
+  width: 46px;
+  height: 46px;
+  background: var(--glt);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.certificate-row-text h4 {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.certificate-row-text p {
+  font-size: 12px;
+  color: var(--sub);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.certificate-row-titleline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.certificate-row-titleline h4 {
+  flex: 1;
+  min-width: 0;
+}
+
+.certificate-row-badge {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #c62828;
+  background: var(--rlt);
+  padding: 3px 8px;
+  border-radius: 8px;
+}
+
+.certificate-row-fee {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.certificate-fee-amount {
+  color: var(--blue);
+  font-weight: 800;
+}
+
+.certificate-fee-amount--free {
+  color: var(--green);
+}
+
+.certificate-fee-sep {
+  color: var(--border);
+  font-weight: 400;
+  user-select: none;
+}
+
+.certificate-fee-meta {
+  color: var(--sub);
+  font-weight: 600;
+  font-size: 11px;
+}
+
+button.certificate-row {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  border: none;
+  background: #fff;
+}
+
+.certificate-row-chevron {
+  font-size: 20px;
+  color: var(--sub);
+  flex-shrink: 0;
+}

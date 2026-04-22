@@ -1,0 +1,28 @@
+.certificate-toast {
+  margin-bottom: 12px;
+  background: var(--glt);
+  border: 1.5px solid var(--green);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gdk);
+}
+
+.certificate-toast-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.certificate-toast-dismiss {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--text);
+}

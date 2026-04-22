@@ -1,0 +1,22 @@
+<div class="certificate-toolbar">
+  <label class="certificate-search-label" for="certificate-search-input">{{ 'CERTIFICATE.SEARCH_LABEL' | translate }}</label>
+  <input
+    id="certificate-search-input"
+    class="certificate-search"
+    type="search"
+    autocomplete="off"
+    [attr.placeholder]="'CERTIFICATE.SEARCH_PLACEHOLDER' | translate"
+    [value]="searchQuery"
+    (input)="onSearchInput($event)" />
+</div>
+
+<div class="certificate-chips" role="group" [attr.aria-label]="'CERTIFICATE.FILTER_GROUP' | translate">
+  <button
+    type="button"
+    *ngFor="let p of filterPresets"
+    class="certificate-chip"
+    [class.certificate-chip--on]="activeFilter === p.id"
+    (click)="filterChange.emit(p.id)">
+    {{ p.labelKey | translate }}
+  </button>
+</div>

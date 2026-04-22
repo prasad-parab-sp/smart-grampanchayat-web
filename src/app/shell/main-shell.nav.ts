@@ -11,7 +11,7 @@ export interface MainShellNavItem {
 export const MAIN_SHELL_NAV: MainShellNavItem[] = [
   { link: '/home', icon: '🏠', labelKey: 'HOME.NAV_HOME', exact: true },
   { link: '/kar', icon: '💰', labelKey: 'HOME.NAV_KAR' },
-  { link: '/dakhale', icon: '📋', labelKey: 'HOME.NAV_DAKHALE' },
+  { link: '/certificate', icon: '📋', labelKey: 'HOME.NAV_CERTIFICATE' },
   { link: '/notice', icon: '📢', labelKey: 'HOME.NAV_NOTICE' },
   { link: '/profile', icon: '👤', labelKey: 'HOME.NAV_PROFILE' }
 ];

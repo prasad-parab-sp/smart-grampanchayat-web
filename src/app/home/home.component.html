@@ -1,5 +1,12 @@
 <div>
+  <p class="home-greeting">
+    <span>{{ 'HOME.NAMASTE' | translate }}</span
+    ><span class="home-greeting__sep"> — </span
+    ><span class="home-greeting__date">{{ displayDate }}</span>
+  </p>
+
   <h2 class="sec-title">{{ 'HOME.INFO_TITLE' | translate }}</h2>
+  <p class="home-stat-hint">{{ 'HOME.STAT_DATA_HINT' | translate }}</p>
   <div class="grid2 home-stats">
     <div class="stat-card" *ngFor="let s of stats">
       <div [ngClass]="statValueClass(s.valueModifier)">{{ s.value }}</div>
@@ -8,11 +15,34 @@
   </div>
 
   <h2 class="sec-title home-quick-title">{{ 'HOME.QUICK_LINKS_TITLE' | translate }}</h2>
-  <div class="home-quick-links">
-    <div class="home-quick-link" *ngFor="let q of quickLinks" (click)="onQuickLink(q)">
-      <div class="home-quick-link-icon">{{ q.icon }}</div>
-      <div class="home-quick-link-title">{{ q.titleKey | translate }}</div>
-      <div class="home-quick-link-subtitle">{{ q.subKey | translate }}</div>
-    </div>
+  <p class="home-featured-label">{{ 'HOME.FEATURED_LABEL' | translate }}</p>
+  <div class="home-featured" role="navigation" [attr.aria-label]="'HOME.FEATURED_LABEL' | translate">
+    <a
+      class="home-quick-link home-quick-link--featured"
+      *ngFor="let q of featured"
+      [routerLink]="linkRoute(q)">
+      <span class="home-quick-link-icon" aria-hidden="true">{{ q.icon }}</span>
+      <span class="home-quick-link-text">
+        <span class="home-quick-link-title">{{ q.titleKey | translate }}</span>
+        <span class="home-quick-link-subtitle">{{ q.subKey | translate }}</span>
+      </span>
+    </a>
   </div>
+
+  <ng-container *ngFor="let cat of linkCategories">
+    <h3 class="home-cat-title">{{ cat.labelKey | translate }}</h3>
+    <div
+      class="home-quick-links"
+      role="navigation"
+      [attr.aria-label]="cat.labelKey | translate">
+      <a
+        class="home-quick-link"
+        *ngFor="let q of cat.links"
+        [routerLink]="linkRoute(q)">
+        <span class="home-quick-link-icon" aria-hidden="true">{{ q.icon }}</span>
+        <span class="home-quick-link-title">{{ q.titleKey | translate }}</span>
+        <span class="home-quick-link-subtitle">{{ q.subKey | translate }}</span>
+      </a>
+    </div>
+  </ng-container>
 </div>

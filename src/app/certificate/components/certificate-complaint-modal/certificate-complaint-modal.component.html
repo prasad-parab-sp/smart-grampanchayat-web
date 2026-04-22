@@ -1,0 +1,106 @@
+<div class="certificate-modal-backdrop" (click)="onBackdropClick()">
+  <div
+    #panel
+    class="certificate-modal-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="certificate-dialog-complaint-title"
+    (click)="onPanelClick($event)">
+    <button
+      #closeBtn
+      type="button"
+      class="certificate-modal-close"
+      (click)="close()"
+      [attr.aria-label]="'COMMON.CLOSE' | translate">
+      ✕
+    </button>
+    <h3 id="certificate-dialog-complaint-title">{{ 'CERTIFICATE.COMPLAINT_TITLE' | translate }}</h3>
+    <p class="sub">{{ 'CERTIFICATE.COMPLAINT_SUB' | translate }}</p>
+
+    <div class="fg">
+      <label for="certificate-complaint-name">{{ 'CERTIFICATE.LABEL_NAME' | translate }} <span class="req">*</span></label>
+      <input
+        id="certificate-complaint-name"
+        type="text"
+        [(ngModel)]="complaintForm.name"
+        name="cName"
+        required
+        aria-required="true"
+        [attr.aria-invalid]="complaintFieldErrors['name'] ? 'true' : null" />
+      <p *ngIf="complaintFieldErrors['name']" class="certificate-field-err" role="alert">
+        {{ complaintFieldErrors['name'] | translate }}
+      </p>
+    </div>
+    <div class="fg">
+      <label for="certificate-complaint-phone">{{ 'CERTIFICATE.LABEL_PHONE' | translate }} <span class="req">*</span></label>
+      <input
+        id="certificate-complaint-phone"
+        type="tel"
+        [(ngModel)]="complaintForm.phone"
+        name="cPhone"
+        maxlength="10"
+        inputmode="numeric"
+        required
+        aria-required="true"
+        [attr.aria-invalid]="complaintFieldErrors['phone'] ? 'true' : null" />
+      <p *ngIf="complaintFieldErrors['phone']" class="certificate-field-err" role="alert">
+        {{ complaintFieldErrors['phone'] | translate }}
+      </p>
+    </div>
+    <div class="fg">
+      <label for="certificate-complaint-subject">{{ 'CERTIFICATE.LABEL_SUBJECT' | translate }} <span class="req">*</span></label>
+      <select
+        id="certificate-complaint-subject"
+        [(ngModel)]="complaintForm.subject"
+        name="cSub"
+        required
+        aria-required="true"
+        [attr.aria-invalid]="complaintFieldErrors['subject'] ? 'true' : null">
+        <option value="">{{ 'CERTIFICATE.PURPOSE_PICK' | translate }}</option>
+        <option *ngFor="let s of complaintSubjectKeys" [value]="s">{{ s | translate }}</option>
+      </select>
+      <p *ngIf="complaintFieldErrors['subject']" class="certificate-field-err" role="alert">
+        {{ complaintFieldErrors['subject'] | translate }}
+      </p>
+    </div>
+    <div class="fg">
+      <label for="certificate-complaint-location">{{ 'CERTIFICATE.LABEL_LOCATION' | translate }}</label>
+      <input id="certificate-complaint-location" type="text" [(ngModel)]="complaintForm.location" name="cLoc" />
+    </div>
+    <div class="fg">
+      <label for="certificate-complaint-details">{{ 'CERTIFICATE.LABEL_DETAILS' | translate }} <span class="req">*</span></label>
+      <textarea
+        id="certificate-complaint-details"
+        [(ngModel)]="complaintForm.details"
+        name="cDet"
+        rows="4"
+        required
+        aria-required="true"
+        [attr.aria-invalid]="complaintFieldErrors['details'] ? 'true' : null"></textarea>
+      <p *ngIf="complaintFieldErrors['details']" class="certificate-field-err" role="alert">
+        {{ complaintFieldErrors['details'] | translate }}
+      </p>
+    </div>
+
+    <div *ngIf="sourceRow.uploadKeys?.length" class="certificate-uploads">
+      <p class="certificate-upload-hint">{{ 'CERTIFICATE.COMPLAINT_UPLOAD_HINT' | translate }}</p>
+      <div class="fg">
+        <label for="certificate-complaint-file">{{ 'CERTIFICATE.UPLOADS.COMPLAINT_EVIDENCE' | translate }}</label>
+        <input
+          id="certificate-complaint-file"
+          type="file"
+          accept="image/*,application/pdf"
+          (change)="onComplaintFile($event)" />
+      </div>
+    </div>
+
+    <div class="certificate-modal-actions">
+      <button type="button" class="btn btn-o" (click)="close()">
+        {{ 'CERTIFICATE.CANCEL' | translate }}
+      </button>
+      <button type="button" class="btn btn-g" (click)="submit()">
+        {{ 'CERTIFICATE.SUBMIT_COMPLAINT' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

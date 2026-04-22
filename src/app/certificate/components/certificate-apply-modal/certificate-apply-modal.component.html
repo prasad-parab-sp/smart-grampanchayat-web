@@ -1,0 +1,127 @@
+<div class="certificate-modal-backdrop" (click)="onBackdropClick()">
+  <div
+    #panel
+    class="certificate-modal-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="certificate-dialog-apply-title"
+    (click)="onPanelClick($event)">
+    <button
+      #closeBtn
+      type="button"
+      class="certificate-modal-close"
+      (click)="close()"
+      [attr.aria-label]="'COMMON.CLOSE' | translate">
+      ✕
+    </button>
+    <h3 id="certificate-dialog-apply-title">
+      {{ selected.nameKey | translate }} — {{ 'CERTIFICATE.APPLY_TITLE' | translate }}
+    </h3>
+    <p class="sub">{{ 'CERTIFICATE.APPLY_SUB' | translate }}</p>
+
+    <div *ngIf="selected.docKeys?.length" class="certificate-req-docs">
+      <div class="certificate-req-docs-label">{{ 'CERTIFICATE.REQ_DOCS' | translate }}</div>
+      <ul>
+        <li *ngFor="let d of selected.docKeys">{{ d | translate }}</li>
+      </ul>
+    </div>
+
+    <ng-container *ngIf="selected.uploadKeys?.length">
+      <p class="certificate-upload-hint-top">{{ 'CERTIFICATE.UPLOADS_INTRO' | translate }}</p>
+    </ng-container>
+
+    <div class="fg">
+      <label for="certificate-apply-name">{{ 'CERTIFICATE.LABEL_NAME' | translate }} <span class="req">*</span></label>
+      <input
+        id="certificate-apply-name"
+        type="text"
+        [(ngModel)]="certificateApplicationForm.name"
+        name="aName"
+        required
+        aria-required="true"
+        [attr.aria-invalid]="applyFieldErrors['name'] ? 'true' : null"
+        [placeholder]="'CERTIFICATE.PH_NAME' | translate" />
+      <p *ngIf="applyFieldErrors['name']" class="certificate-field-err" role="alert">
+        {{ applyFieldErrors['name'] | translate }}
+      </p>
+    </div>
+    <div class="fr">
+      <div class="fg">
+        <label for="certificate-apply-phone">{{ 'CERTIFICATE.LABEL_PHONE' | translate }} <span class="req">*</span></label>
+        <input
+          id="certificate-apply-phone"
+          type="tel"
+          [(ngModel)]="certificateApplicationForm.phone"
+          name="aPhone"
+          maxlength="10"
+          inputmode="numeric"
+          required
+          aria-required="true"
+          [attr.aria-invalid]="applyFieldErrors['phone'] ? 'true' : null"
+          [placeholder]="'CERTIFICATE.PH_PHONE' | translate" />
+        <p *ngIf="applyFieldErrors['phone']" class="certificate-field-err" role="alert">
+          {{ applyFieldErrors['phone'] | translate }}
+        </p>
+      </div>
+      <div class="fg">
+        <label for="certificate-apply-purpose">{{ 'CERTIFICATE.LABEL_PURPOSE' | translate }} <span class="req">*</span></label>
+        <select
+          id="certificate-apply-purpose"
+          [(ngModel)]="certificateApplicationForm.purpose"
+          name="aPurpose"
+          required
+          aria-required="true"
+          [attr.aria-invalid]="applyFieldErrors['purpose'] ? 'true' : null">
+          <option value="">{{ 'CERTIFICATE.PURPOSE_PICK' | translate }}</option>
+          <option *ngFor="let p of applyPurposeKeys" [value]="p">{{ p | translate }}</option>
+        </select>
+        <p *ngIf="applyFieldErrors['purpose']" class="certificate-field-err" role="alert">
+          {{ applyFieldErrors['purpose'] | translate }}
+        </p>
+      </div>
+    </div>
+    <div class="fg">
+      <label for="certificate-apply-address">{{ 'CERTIFICATE.LABEL_ADDRESS' | translate }}</label>
+      <textarea
+        id="certificate-apply-address"
+        [(ngModel)]="certificateApplicationForm.address"
+        name="aAddr"
+        rows="2"
+        [placeholder]="'CERTIFICATE.PH_ADDRESS' | translate"></textarea>
+    </div>
+
+    <div *ngIf="selected.uploadKeys?.length" class="certificate-uploads">
+      <div class="certificate-req-docs-label">{{ 'CERTIFICATE.UPLOADS_SECTION' | translate }}</div>
+      <p class="certificate-upload-hint">{{ 'CERTIFICATE.UPLOADS_OPTIONAL' | translate }}</p>
+      <div class="fg" *ngFor="let uk of selected.uploadKeys; let uidx = index">
+        <label [attr.for]="'certificate-apply-up-' + uidx">{{ uk | translate }}</label>
+        <input
+          [id]="'certificate-apply-up-' + uidx"
+          type="file"
+          [attr.accept]="'image/*,application/pdf'"
+          (change)="onApplyFile(uk, $event)" />
+      </div>
+    </div>
+
+    <div class="certificate-fee-summary">
+      <div class="row">
+        <span>{{ 'CERTIFICATE.FEE_LABEL' | translate }}</span>
+        <strong>{{ selected.fee > 0 ? ('₹' + selected.fee) : ('CERTIFICATE.FREE' | translate) }}</strong>
+      </div>
+      <div class="sep"></div>
+      <div class="row certificate-fee-summary-row-total">
+        <span class="certificate-fee-summary-total-label">{{ 'CERTIFICATE.TOTAL_LABEL' | translate }}</span>
+        <strong class="certificate-fee-summary-total-value">{{
+          selected.fee > 0 ? ('₹' + selected.fee) : ('CERTIFICATE.FREE' | translate)
+        }}</strong>
+      </div>
+    </div>
+
+    <div class="certificate-modal-actions">
+      <button type="button" class="btn btn-o" (click)="close()">{{ 'CERTIFICATE.CANCEL' | translate }}</button>
+      <button type="button" class="btn btn-g" (click)="submit()">
+        {{ 'CERTIFICATE.SUBMIT_APPLY' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

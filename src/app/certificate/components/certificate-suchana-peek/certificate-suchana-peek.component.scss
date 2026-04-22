@@ -1,0 +1,35 @@
+.certificate-suchana-peek {
+  margin-bottom: 14px;
+  padding: 12px 14px;
+}
+
+.certificate-suchana-peek-text {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.certificate-suchana-peek-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.certificate-suchana-peek-line {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gdk);
+  line-height: 1.4;
+}
+
+.certificate-suchana-peek-link {
+  margin-top: 6px;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--green);
+  text-decoration: underline;
+  cursor: pointer;
+}
