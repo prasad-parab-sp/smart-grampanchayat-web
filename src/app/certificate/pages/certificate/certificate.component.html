@@ -1,0 +1,54 @@
+<div>
+  <app-certificate-page-header />
+  <app-certificate-suchana-peek (scrollToCard)="scrollToSuchanaBlock()" />
+  <app-certificate-toast
+    *ngIf="submitMessage as toastKey"
+    [messageKey]="toastKey"
+    (dismissed)="dismissToast()" />
+  <app-certificate-toolbar
+    [searchQuery]="searchQuery"
+    (searchQueryChange)="searchQuery = $event"
+    [filterPresets]="filterPresets"
+    [activeFilter]="activeFilter"
+    (filterChange)="setFilter($event)" />
+  <p *ngIf="displayRows.length === 0" class="certificate-empty">
+    {{ 'CERTIFICATE.SEARCH_EMPTY' | translate }}
+  </p>
+  <app-certificate-catalog-list
+    *ngIf="displayRows.length"
+    [displayRows]="displayRows"
+    [trackByRow]="trackRow"
+    (openItem)="openRow($event)" />
+  <section
+    id="certificate-suchana-section"
+    class="certificate-suchana card"
+    aria-labelledby="certificate-suchana-box-title">
+    <h3 class="certificate-suchana-title" id="certificate-suchana-box-title">
+      {{ 'CERTIFICATE.SUCHANA_BOX_TITLE' | translate }}
+    </h3>
+    <div class="certificate-suchana-inner">
+      <div class="certificate-suchana-head">{{ 'CERTIFICATE.SUCHANA_HEAD' | translate }}</div>
+      <p class="certificate-suchana-body">{{ 'CERTIFICATE.SUCHANA_BODY' | translate }}</p>
+    </div>
+    <button type="button" class="btn btn-g" (click)="openSuchana()">
+      {{ 'CERTIFICATE.SUCHANA_CTA' | translate }}
+    </button>
+  </section>
+</div>
+
+<app-certificate-apply-modal
+  *ngIf="certificateApplyModalOpen && selected"
+  [selected]="selected"
+  (cancelled)="closeApply()"
+  (applied)="onApplySubmitted()" />
+
+<app-certificate-complaint-modal
+  *ngIf="complaintOpen && complaintSourceRow"
+  [sourceRow]="complaintSourceRow"
+  (cancelled)="closeComplaint()"
+  (submitted)="onComplaintSubmitted()" />
+
+<app-certificate-suchana-modal
+  *ngIf="suchanaOpen"
+  (cancelled)="closeSuchana()"
+  (submitted)="onSuchanaSubmitted()" />

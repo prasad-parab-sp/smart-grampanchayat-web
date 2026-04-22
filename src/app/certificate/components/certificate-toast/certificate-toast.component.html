@@ -1,0 +1,12 @@
+<div class="certificate-toast card" role="status">
+  <div class="certificate-toast-row">
+    <span>{{ messageKey | translate }}</span>
+    <button
+      type="button"
+      class="certificate-toast-dismiss"
+      (click)="dismissed.emit()"
+      [attr.aria-label]="'CERTIFICATE.TOAST_DISMISS' | translate">
+      ✕
+    </button>
+  </div>
+</div>

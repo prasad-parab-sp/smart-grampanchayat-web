@@ -1,0 +1,20 @@
+:host h3.certificate-section-head {
+  margin: 14px 0 6px;
+}
+
+.certificate-section-head {
+  background: linear-gradient(135deg, var(--gdk), var(--green));
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-left: 4px solid #f5a623;
+}
+
+.certificate-section-head-icon {
+  font-size: 18px;
+}

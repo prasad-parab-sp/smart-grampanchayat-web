@@ -1,0 +1,32 @@
+<button type="button" class="certificate-row" (click)="open.emit(row)">
+  <div class="certificate-row-icon" aria-hidden="true">{{ row.icon }}</div>
+  <div class="certificate-row-text">
+    <div class="certificate-row-titleline">
+      <h4>{{ row.nameKey | translate }}</h4>
+      <span *ngIf="row.isComplaint" class="certificate-row-badge">
+        {{ 'CERTIFICATE.BADGE_COMPLAINT' | translate }}
+      </span>
+    </div>
+    <p>{{ row.descKey | translate }}</p>
+    <div class="certificate-row-fee">
+      <ng-container *ngIf="row.fee > 0; else feeFree">
+        <span class="certificate-fee-amount">
+          {{ 'CERTIFICATE.FEE_AMOUNT' | translate: { amount: row.fee } }}
+        </span>
+      </ng-container>
+      <ng-template #feeFree>
+        <span class="certificate-fee-amount certificate-fee-amount--free">{{
+          'CERTIFICATE.FREE' | translate
+        }}</span>
+      </ng-template>
+      <span class="certificate-fee-sep" aria-hidden="true">·</span>
+      <ng-container *ngIf="row.isComplaint">
+        <span class="certificate-fee-meta">{{ 'CERTIFICATE.FEE_TAIL_WHATSAPP' | translate }}</span>
+      </ng-container>
+      <ng-container *ngIf="!row.isComplaint">
+        <span class="certificate-fee-meta">{{ row.daysKey | translate }}</span>
+      </ng-container>
+    </div>
+  </div>
+  <div class="certificate-row-chevron" aria-hidden="true">›</div>
+</button>

@@ -1,0 +1,11 @@
+<ng-container *ngFor="let row of displayRows; let i = index; trackBy: trackByRow">
+  <app-certificate-section-head
+    *ngIf="isCertificateSectionHeader(row)"
+    [sectionId]="'certificate-sec-' + i"
+    [icon]="row.icon"
+    [titleKey]="row.titleKey" />
+  <app-certificate-row
+    *ngIf="!isCertificateSectionHeader(row)"
+    [row]="$any(row)"
+    (open)="openItem.emit($event)" />
+</ng-container>

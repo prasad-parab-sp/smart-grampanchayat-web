@@ -1,0 +1,99 @@
+<div class="certificate-modal-backdrop" (click)="onBackdropClick()">
+  <div
+    #panel
+    class="certificate-modal-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="certificate-dialog-suchana-title"
+    (click)="onPanelClick($event)">
+    <button
+      #closeBtn
+      type="button"
+      class="certificate-modal-close"
+      (click)="close()"
+      [attr.aria-label]="'COMMON.CLOSE' | translate">
+      ✕
+    </button>
+    <h3 id="certificate-dialog-suchana-title">{{ 'CERTIFICATE.SUCHANA_MODAL_TITLE' | translate }}</h3>
+    <p class="sub">{{ 'CERTIFICATE.SUCHANA_MODAL_SUB' | translate }}</p>
+
+    <div class="certificate-suchana-banner">
+      <div class="certificate-suchana-banner-title">{{ 'CERTIFICATE.SUCHANA_HEAD' | translate }}</div>
+      <p class="certificate-suchana-banner-text">{{ 'CERTIFICATE.SUCHANA_MODAL_HINT' | translate }}</p>
+    </div>
+
+    <div class="fg">
+      <label for="certificate-suchana-name">{{ 'CERTIFICATE.LABEL_NAME' | translate }} <span class="req">*</span></label>
+      <input
+        id="certificate-suchana-name"
+        type="text"
+        [(ngModel)]="suchanaForm.name"
+        name="sName"
+        required
+        aria-required="true"
+        [attr.aria-invalid]="suchanaFieldErrors['name'] ? 'true' : null" />
+      <p *ngIf="suchanaFieldErrors['name']" class="certificate-field-err" role="alert">
+        {{ suchanaFieldErrors['name'] | translate }}
+      </p>
+    </div>
+    <div class="fg">
+      <label for="certificate-suchana-phone">{{ 'CERTIFICATE.LABEL_PHONE' | translate }} <span class="req">*</span></label>
+      <input
+        id="certificate-suchana-phone"
+        type="tel"
+        [(ngModel)]="suchanaForm.phone"
+        name="sPhone"
+        maxlength="10"
+        inputmode="numeric"
+        required
+        aria-required="true"
+        [attr.aria-invalid]="suchanaFieldErrors['phone'] ? 'true' : null" />
+      <p *ngIf="suchanaFieldErrors['phone']" class="certificate-field-err" role="alert">
+        {{ suchanaFieldErrors['phone'] | translate }}
+      </p>
+    </div>
+    <div class="fg">
+      <label for="certificate-suchana-category">{{ 'CERTIFICATE.LABEL_SUCHANA_TYPE' | translate }} <span class="req">*</span></label>
+      <select
+        id="certificate-suchana-category"
+        [(ngModel)]="suchanaForm.category"
+        name="sCat"
+        required
+        aria-required="true"
+        [attr.aria-invalid]="suchanaFieldErrors['category'] ? 'true' : null">
+        <option value="">{{ 'CERTIFICATE.PURPOSE_PICK' | translate }}</option>
+        <option *ngFor="let c of suchanaCategoryKeys" [value]="c">{{ c | translate }}</option>
+      </select>
+      <p *ngIf="suchanaFieldErrors['category']" class="certificate-field-err" role="alert">
+        {{ suchanaFieldErrors['category'] | translate }}
+      </p>
+    </div>
+    <div class="fg">
+      <label for="certificate-suchana-details">{{ 'CERTIFICATE.LABEL_SUCHANA_DETAIL' | translate }} <span class="req">*</span></label>
+      <textarea
+        id="certificate-suchana-details"
+        [(ngModel)]="suchanaForm.details"
+        name="sDet"
+        rows="5"
+        required
+        aria-required="true"
+        [attr.aria-invalid]="suchanaFieldErrors['details'] ? 'true' : null"></textarea>
+      <p *ngIf="suchanaFieldErrors['details']" class="certificate-field-err" role="alert">
+        {{ suchanaFieldErrors['details'] | translate }}
+      </p>
+    </div>
+    <div class="fg">
+      <label for="certificate-suchana-benefit">{{ 'CERTIFICATE.LABEL_SUCHANA_BENEFIT' | translate }}</label>
+      <input id="certificate-suchana-benefit" type="text" [(ngModel)]="suchanaForm.benefit" name="sBen" />
+    </div>
+
+    <div class="certificate-modal-actions">
+      <button type="button" class="btn btn-o" (click)="close()">
+        {{ 'CERTIFICATE.CANCEL' | translate }}
+      </button>
+      <button type="button" class="btn btn-g" (click)="submit()">
+        {{ 'CERTIFICATE.SUBMIT_SUCHANA' | translate }}
+      </button>
+    </div>
+  </div>
+</div>
