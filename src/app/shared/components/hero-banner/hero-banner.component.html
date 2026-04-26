@@ -1,15 +1,19 @@
 <div class="hero-banner">
   <img
-    [src]="resolvedBannerUrl"
+    [src]="(tenantConfig.imageUrl?.trim()) || defaultBannerUrl"
     [attr.alt]="'COMMON.BANNER_ALT' | translate"
     class="hero-banner-image" />
   <div class="hero-banner-overlay">
     <img
       class="hero-banner-logo"
-      [src]="config.logoUrl || defaultLogoUrl"
-      (error)="onLogoError($event)"
+      [src]="(tenantConfig.logoUrl?.trim()) || defaultLogoUrl"
       [attr.alt]="'COMMON.LOGO_ALT' | translate" />
-    <h1>{{ config.gpName | translate }}</h1>
-    <p *ngIf="config.gpLocation">{{ config.gpLocation | translate }}</p>
+    <h1 class="hero-title">
+      <span class="hero-title__prefix">{{ 'GP.TITLE_PREFIX' | translate }}</span>
+      @if (gpTitleName) {
+        <span class="hero-title__name">{{ gpTitleName | translate }}</span>
+      }
+    </h1>
+    <p *ngIf="talukaDistrictLine" class="hero-meta-line">{{ talukaDistrictLine }}</p>
   </div>
 </div>

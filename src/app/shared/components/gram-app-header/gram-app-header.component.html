@@ -1,19 +1,28 @@
 <header class="gram-header">
-  <img class="gram-header-banner" [src]="bannerUrl" alt="" />
+  <img
+    class="gram-header-banner"
+    [src]="(tenantConfig.imageUrl?.trim()) || defaultBannerUrl"
+    [attr.alt]="'COMMON.BANNER_ALT' | translate" />
   <div class="gram-header-overlay">
     <img
       class="gram-header-logo"
-      [src]="logoUrl"
-      (error)="onLogoError($event)"
+      [src]="(tenantConfig.logoUrl?.trim()) || defaultLogoUrl"
       [attr.alt]="'COMMON.LOGO_ALT' | translate" />
     <div class="gram-header-text">
-      <h1>{{ 'GP.NAME' | translate }}</h1>
-      <p>{{ 'GP.LOCATION' | translate }}</p>
+      <h1 class="gram-header-title">
+        <span class="gram-header-title__prefix">{{ 'GP.TITLE_PREFIX' | translate }}</span>
+        @if (gpTitleName) {
+          <span class="gram-header-title__name">{{ gpTitleName | translate }}</span>
+        }
+      </h1>
+      <p *ngIf="talukaDistrictLine" class="gram-header-meta">{{ talukaDistrictLine }}</p>
     </div>
   </div>
   <div class="gram-header-actions">
     <app-language-switcher />
-    <button type="button" class="gram-header-logout" (click)="onLogout()">{{ 'HOME.LOGOUT' | translate }}</button>
+    <button type="button" class="gram-header-logout" (click)="onLogout()">
+      {{ 'HOME.LOGOUT' | translate }}
+    </button>
   </div>
   <div class="gram-header-user-badge">{{ 'HOME.USER_BADGE' | translate }}</div>
 </header>

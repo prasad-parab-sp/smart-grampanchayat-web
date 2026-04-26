@@ -1,13 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 
-export interface HeroBannerConfig {
-  gpName: string;
-  gpLocation: string;
-  logoUrl?: string;
-  bannerUrl?: string;
-}
+import { TenantSessionStore } from '../../../core/tenant-session.store';
+import { I18nService } from '../../../i18n/i18n.service';
+import { HeroBannerConfig } from './hero-banner-config.model';
+import { formatTalukaDistrictLine, heroBannerConfigFromSession } from './hero-banner.mapper';
 
 @Component({
   selector: 'app-hero-banner',
@@ -17,30 +15,21 @@ export interface HeroBannerConfig {
   styleUrls: ['./hero-banner.component.scss']
 })
 export class HeroBannerComponent {
-  @Input() config: HeroBannerConfig = {
-    gpName: 'ग्रामपंचायत',
-    gpLocation: ''
-  };
+  readonly i18n = inject(I18nService);
+  private readonly session = inject(TenantSessionStore);
 
-  private readonly svgLogoFallback =
-    'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><circle cx=%2240%22 cy=%2240%22 r=%2238%22 fill=%22%232E7D32%22/><text x=%2240%22 y=%2248%22 font-size=%2228%22 text-anchor=%22middle%22 fill=%22white%22>🏛️</text></svg>';
+  tenantConfig: HeroBannerConfig = heroBannerConfigFromSession(this.session);
 
-  get resolvedBannerUrl(): string {
-    const url = this.config.bannerUrl?.trim();
-    return url ? url : this.defaultBannerUrl;
+  /** GP name for the active UI language (used with `translate` in the template; API text passes through). */
+  get gpTitleName(): string {
+    const v = this.i18n.currentLang === 'en' ? this.tenantConfig.displayNameEn : this.tenantConfig.displayNameMr;
+    return v.trim();
   }
 
-  get defaultLogoUrl(): string {
-    return '/assets/images/logo.png';
+  get talukaDistrictLine(): string {
+    return formatTalukaDistrictLine(this.tenantConfig, this.i18n.currentLang);
   }
 
-  get defaultBannerUrl(): string {
-    return '/assets/images/Gram-Panchayat.png';
-  }
-
-  onLogoError(event: Event) {
-    const img = event.target as HTMLImageElement | null;
-    if (!img) return;
-    img.src = this.svgLogoFallback;
-  }
+  readonly defaultLogoUrl = '/assets/images/logo.png';
+  readonly defaultBannerUrl = '/assets/images/Gram-Panchayat.png';
 }

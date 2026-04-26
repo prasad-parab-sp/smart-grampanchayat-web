@@ -1,14 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
-import { HeroBannerComponent, HeroBannerConfig } from '../shared/components/hero-banner/hero-banner.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
+import { HeroBannerComponent } from '../shared/components/hero-banner/hero-banner.component';
 import { ContactBannerComponent, ContactBannerConfig } from '../shared/components/contact-banner/contact-banner.component';
 import { FooterBrandComponent, FooterBrandConfig } from '../shared/components/footer-brand/footer-brand.component';
 import { ICONS, ICON_GROUPS } from '../shared';
 import { I18nService } from '../i18n/i18n.service';
 import { LanguageSwitcherComponent } from '../shared/components/language-switcher/language-switcher.component';
+import { TenantService } from '../core/tenant.service';
 
 @Component({
   selector: 'app-login',
@@ -25,21 +27,12 @@ import { LanguageSwitcherComponent } from '../shared/components/language-switche
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   loginInput: string = '';
   showPassword: boolean = false;
-  
-  // Icons from centralized icon system
+
   readonly icons = ICONS;
   readonly iconGroups = ICON_GROUPS;
-  
-  // Component configurations
-  heroBannerConfig: HeroBannerConfig = {
-    gpName: 'GP.NAME',
-    gpLocation: 'GP.LOCATION',
-    logoUrl: '/assets/images/logo.png',
-    bannerUrl: ''
-  };
 
   contactBannerConfig: ContactBannerConfig = {
     contactNumber: '9876543210',
@@ -52,15 +45,37 @@ export class LoginComponent implements OnInit {
     year: 2025
   };
 
-  ngOnInit() {
-    // Component initialization
-    // Future: Load GP configuration from service
-  }
+  private langSub: Subscription | undefined;
 
   constructor(
     public readonly i18n: I18nService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly tenantService: TenantService,
+    private readonly translate: TranslateService
   ) {}
+
+  ngOnInit() {
+    this.applyTenantToUi();
+    this.langSub = this.translate.onLangChange.subscribe(() => this.applyTenantToUi());
+  }
+
+  ngOnDestroy() {
+    this.langSub?.unsubscribe();
+  }
+
+  private applyTenantToUi(): void {
+    const t = this.tenantService.tenant;
+    if (!t) {
+      return;
+    }
+    const mobile = t.contactMobile?.trim();
+    if (mobile) {
+      this.contactBannerConfig = {
+        ...this.contactBannerConfig,
+        contactNumber: mobile
+      };
+    }
+  }
 
   doLogin() {
     if (!this.loginInput.trim()) {
@@ -68,7 +83,6 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    // Simulate login logic (would be replaced with actual authentication)
     if (this.loginInput === 'SMART@123' || this.loginInput === 'admin') {
       this.showToast(`${this.icons.SUCCESS} ${this.i18n.translate('LOGIN.SUCCESS_ADMIN')}`, 'success');
       void this.router.navigate(['/home']);
@@ -90,9 +104,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-
   private showToast(message: string, type: 'success' | 'error') {
-    // Simple toast implementation (would use a proper toast service in real app)
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
     toast.textContent = message;
@@ -110,9 +122,7 @@ export class LoginComponent implements OnInit {
       z-index: 10000;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     `;
-    
     document.body.appendChild(toast);
-    
     setTimeout(() => {
       toast.remove();
     }, 3000);

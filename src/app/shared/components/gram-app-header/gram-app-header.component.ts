@@ -1,8 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
+
+import { TenantSessionStore } from '../../../core/tenant-session.store';
+import { I18nService } from '../../../i18n/i18n.service';
+import { HeroBannerConfig } from '../hero-banner/hero-banner-config.model';
+import { formatTalukaDistrictLine, heroBannerConfigFromSession } from '../hero-banner/hero-banner.mapper';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 
+/**
+ * App shell header (home and other main routes). Same tenant-driven copy and assets
+ * as {@link app-hero-banner} — session + {@link I18nService} for title / taluka·district.
+ */
 @Component({
   selector: 'app-gram-app-header',
   standalone: true,
@@ -11,21 +20,26 @@ import { LanguageSwitcherComponent } from '../language-switcher/language-switche
   styleUrls: ['./gram-app-header.component.scss']
 })
 export class GramAppHeaderComponent {
-  @Input() bannerUrl = '/assets/images/Gram-Panchayat.png';
-  @Input() logoUrl = '/assets/images/logo.png';
+  readonly i18n = inject(I18nService);
+  private readonly session = inject(TenantSessionStore);
+
+  tenantConfig: HeroBannerConfig = heroBannerConfigFromSession(this.session);
+
+  get gpTitleName(): string {
+    const v = this.i18n.currentLang === 'en' ? this.tenantConfig.displayNameEn : this.tenantConfig.displayNameMr;
+    return v.trim();
+  }
+
+  get talukaDistrictLine(): string {
+    return formatTalukaDistrictLine(this.tenantConfig, this.i18n.currentLang);
+  }
+
+  readonly defaultLogoUrl = '/assets/images/logo.png';
+  readonly defaultBannerUrl = '/assets/images/Gram-Panchayat.png';
 
   @Output() logout = new EventEmitter<void>();
 
-  private readonly svgLogoFallback =
-    'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 60 60%22><circle cx=%2230%22 cy=%2230%22 r=%2229%22 fill=%22%232E7D32%22/><text x=%2230%22 y=%2238%22 font-size=%2220%22 text-anchor=%22middle%22 fill=%22white%22>🏛️</text></svg>';
-
-  onLogoError(event: Event) {
-    const img = event.target as HTMLImageElement | null;
-    if (!img) return;
-    img.src = this.svgLogoFallback;
-  }
-
-  onLogout() {
+  onLogout(): void {
     this.logout.emit();
   }
 }

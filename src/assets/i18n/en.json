@@ -3,15 +3,19 @@
     "LANGUAGE": "Language",
     "BANNER_ALT": "Banner",
     "LOGO_ALT": "Logo",
-    "CLOSE": "Close dialog"
+    "CLOSE": "Close dialog",
+    "TALUKA": "Taluka",
+    "DISTRICT": "District"
   },
   "LANG": {
     "MR": "Marathi",
     "EN": "English"
   },
   "GP": {
+    "TITLE_PREFIX": "Group Grampanchayat",
     "NAME": "Adali Gram Panchayat",
-    "LOCATION": "Taluka: Dodamarg, District: Sindhudurg"
+    "LOCATION": "Taluka: Dodamarg, District: Sindhudurg",
+    "LOCATION_API": "Taluka: {{taluka}}, District: {{district}}"
   },
   "CONTACT": {
     "HELPLINE": "Helpline number"

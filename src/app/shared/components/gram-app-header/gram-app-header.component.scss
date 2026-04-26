@@ -23,6 +23,7 @@
   display: flex;
   align-items: center;
   padding: 0 14px;
+  padding-right: 120px; /* room for top-right actions */
   gap: 12px;
 }
 
@@ -35,17 +36,37 @@
   flex-shrink: 0;
 }
 
-.gram-header-text h1 {
-  font-size: 14px;
+.gram-header-text {
+  min-width: 0;
+  flex: 1;
+}
+
+.gram-header-title {
+  max-width: 100%;
+  font-size: clamp(12px, 2.6vw, 15px);
   font-weight: 800;
   color: #a5d6a7;
   line-height: 1.3;
+  margin: 0;
+  text-align: start;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.gram-header-text p {
+.gram-header-title__name {
+  margin-inline-start: 0.35em;
+}
+
+.gram-header-meta {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.8);
-  margin-top: 2px;
+  color: rgba(255, 255, 255, 0.88);
+  margin: 2px 0 0;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .gram-header-actions {
