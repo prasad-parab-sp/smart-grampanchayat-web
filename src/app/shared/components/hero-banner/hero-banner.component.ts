@@ -5,7 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TenantSessionStore } from '../../../core/tenant-session.store';
 import { I18nService } from '../../../i18n/i18n.service';
 import { HeroBannerConfig } from './hero-banner-config.model';
-import { formatTalukaDistrictLine, heroBannerConfigFromSession } from './hero-banner.mapper';
+import { formatTalukaDistrictLine, gpTitleNameForLang, heroBannerConfigFromSession } from './hero-banner.mapper';
 
 @Component({
   selector: 'app-hero-banner',
@@ -20,10 +20,9 @@ export class HeroBannerComponent {
 
   tenantConfig: HeroBannerConfig = heroBannerConfigFromSession(this.session);
 
-  /** GP name for the active UI language (used with `translate` in the template; API text passes through). */
+  /** GP name for the active UI language (API-sourced; not a translation key). */
   get gpTitleName(): string {
-    const v = this.i18n.currentLang === 'en' ? this.tenantConfig.displayNameEn : this.tenantConfig.displayNameMr;
-    return v.trim();
+    return gpTitleNameForLang(this.tenantConfig, this.i18n.currentLang);
   }
 
   get talukaDistrictLine(): string {

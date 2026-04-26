@@ -5,7 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TenantSessionStore } from '../../../core/tenant-session.store';
 import { I18nService } from '../../../i18n/i18n.service';
 import { HeroBannerConfig } from '../hero-banner/hero-banner-config.model';
-import { formatTalukaDistrictLine, heroBannerConfigFromSession } from '../hero-banner/hero-banner.mapper';
+import { formatTalukaDistrictLine, gpTitleNameForLang, heroBannerConfigFromSession } from '../hero-banner/hero-banner.mapper';
 import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 
 /**
@@ -26,8 +26,7 @@ export class GramAppHeaderComponent {
   tenantConfig: HeroBannerConfig = heroBannerConfigFromSession(this.session);
 
   get gpTitleName(): string {
-    const v = this.i18n.currentLang === 'en' ? this.tenantConfig.displayNameEn : this.tenantConfig.displayNameMr;
-    return v.trim();
+    return gpTitleNameForLang(this.tenantConfig, this.i18n.currentLang);
   }
 
   get talukaDistrictLine(): string {

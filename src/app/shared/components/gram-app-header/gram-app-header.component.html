@@ -12,10 +12,12 @@
       <h1 class="gram-header-title">
         <span class="gram-header-title__prefix">{{ 'GP.TITLE_PREFIX' | translate }}</span>
         @if (gpTitleName) {
-          <span class="gram-header-title__name">{{ gpTitleName | translate }}</span>
+          <span class="gram-header-title__name">{{ gpTitleName }}</span>
         }
       </h1>
-      <p *ngIf="talukaDistrictLine" class="gram-header-meta">{{ talukaDistrictLine }}</p>
+      @if (talukaDistrictLine) {
+        <p class="gram-header-meta">{{ talukaDistrictLine }}</p>
+      }
     </div>
   </div>
   <div class="gram-header-actions">

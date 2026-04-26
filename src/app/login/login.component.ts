@@ -11,6 +11,7 @@ import { ICONS, ICON_GROUPS } from '../shared';
 import { I18nService } from '../i18n/i18n.service';
 import { LanguageSwitcherComponent } from '../shared/components/language-switcher/language-switcher.component';
 import { TenantService } from '../core/tenant.service';
+import { ToastService } from '../core/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -42,7 +43,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   footerBrandConfig: FooterBrandConfig = {
     brandName: 'Smart Grampanchayat',
     developerName: 'Amey Infotech',
-    year: 2025
+    year: 2026
   };
 
   private langSub: Subscription | undefined;
@@ -51,7 +52,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     public readonly i18n: I18nService,
     private readonly router: Router,
     private readonly tenantService: TenantService,
-    private readonly translate: TranslateService
+    private readonly translate: TranslateService,
+    private readonly toast: ToastService
   ) {}
 
   ngOnInit() {
@@ -79,18 +81,18 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   doLogin() {
     if (!this.loginInput.trim()) {
-      this.showToast(this.i18n.translate('LOGIN.ERROR_EMPTY'), 'error');
+      this.toast.show(this.i18n.translate('LOGIN.ERROR_EMPTY'), 'error');
       return;
     }
 
     if (this.loginInput === 'SMART@123' || this.loginInput === 'admin') {
-      this.showToast(`${this.icons.SUCCESS} ${this.i18n.translate('LOGIN.SUCCESS_ADMIN')}`, 'success');
+      this.toast.show(`${this.icons.SUCCESS} ${this.i18n.translate('LOGIN.SUCCESS_ADMIN')}`, 'success');
       void this.router.navigate(['/home']);
     } else if (/^\d{10}$/.test(this.loginInput)) {
-      this.showToast(`${this.icons.SUCCESS} ${this.i18n.translate('LOGIN.SUCCESS_CITIZEN')}`, 'success');
+      this.toast.show(`${this.icons.SUCCESS} ${this.i18n.translate('LOGIN.SUCCESS_CITIZEN')}`, 'success');
       void this.router.navigate(['/home']);
     } else {
-      this.showToast(`${this.icons.ERROR} ${this.i18n.translate('LOGIN.ERROR_INVALID')}`, 'error');
+      this.toast.show(`${this.icons.ERROR} ${this.i18n.translate('LOGIN.ERROR_INVALID')}`, 'error');
     }
   }
 
@@ -102,29 +104,5 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (event.key === 'Enter') {
       this.doLogin();
     }
-  }
-
-  private showToast(message: string, type: 'success' | 'error') {
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.textContent = message;
-    toast.style.cssText = `
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: ${type === 'success' ? '#4CAF50' : '#f44336'};
-      color: white;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      z-index: 10000;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    `;
-    document.body.appendChild(toast);
-    setTimeout(() => {
-      toast.remove();
-    }, 3000);
   }
 }

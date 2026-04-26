@@ -33,4 +33,9 @@ export class TenantSessionStore {
   save(data: TenantDto): void {
     this.storage?.setItem(TENANT_SESSION_KEY, JSON.stringify(data));
   }
+
+  /** Removes cached tenant (e.g. after a failed load so the UI does not show stale data). */
+  clear(): void {
+    this.storage?.removeItem(TENANT_SESSION_KEY);
+  }
 }

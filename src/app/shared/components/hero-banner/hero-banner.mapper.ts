@@ -13,6 +13,11 @@ export const DEFAULT_HERO_BANNER_CONFIG: HeroBannerConfig = {
   imageUrl: null
 };
 
+export function gpTitleNameForLang(cfg: HeroBannerConfig, uiLang: 'mr' | 'en'): string {
+  const v = uiLang === 'en' ? cfg.displayNameEn : cfg.displayNameMr;
+  return v.trim();
+}
+
 const districtLabel = (d: DistrictDto, lang: 'mr' | 'en'): string => {
   if (lang === 'en') {
     return (d.displayNameEn?.trim() || d.name).trim();

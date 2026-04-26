@@ -48,17 +48,17 @@ export class TenantService {
       } else {
         this.tenant = null;
         this.loadState = 'error';
+        this.sessionStore.clear();
       }
     });
   }
 
-
   /**
- * Resolves the tenant id for API calls. For now, only the build `environment` value.
- * When multi-tenancy is implemented, extend this (e.g. query string, path, or host) and
- * keep `environment.tenantCode` as the fallback.
- */
-public  resolveTenantCode(): string {
-  return environment.tenantCode;
-}
+   * Resolves the tenant id for API calls. For now, only the build `environment` value.
+   * When multi-tenancy is implemented, extend this (e.g. query string, path, or host) and
+   * keep `environment.tenantCode` as the fallback.
+   */
+  resolveTenantCode(): string {
+    return environment.tenantCode;
+  }
 }
