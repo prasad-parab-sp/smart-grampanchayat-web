@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { TenantService } from './core/services/tenant.service';
 import { I18nService } from './i18n/i18n.service';
 
 @Component({
@@ -21,12 +22,27 @@ import { I18nService } from './i18n/i18n.service';
     }
   `]
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'SmartGramPanchayat';
 
-  constructor(
-    private readonly i18n: I18nService
-  ) {
+  private readonly tenantService = inject(TenantService);
+  private readonly i18n = inject(I18nService);
+
+  constructor() {
     this.i18n.init();
+  }
+
+  ngOnInit(): void {
+    this.tenantService.getDefaultTenant().subscribe({
+      next: (tenant) => {
+        console.log('[SmartGramPanchayat] Tenant (via TenantService + interceptor):', tenant);
+      },
+      error: (err) => {
+        console.warn(
+          '[SmartGramPanchayat] Tenant API failed. Start Spring on :8080 and use `ng serve` (dev proxy to /api).',
+          err
+        );
+      },
+    });
   }
 }

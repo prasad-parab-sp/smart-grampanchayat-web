@@ -59,7 +59,13 @@
               "extractLicenses": false,
               "sourceMap": true,
               "outputHashing": "all",
-              "deleteOutputPath": true
+              "deleteOutputPath": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.development.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -67,6 +73,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
+            "proxyConfig": "proxy.conf.json",
             "disableHostCheck": true,
             "headers": {
               "Cache-Control": "no-cache, no-store, must-revalidate",
