@@ -1,0 +1,29 @@
+.home-trust {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--sub);
+  font-weight: 600;
+  margin: 0 0 10px;
+  padding: 10px 12px;
+  background: rgba(46, 125, 50, 0.06);
+  border-radius: var(--r);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.home-trust__name {
+  color: var(--navy);
+  font-weight: 800;
+}
+
+.home-trust__loc {
+  display: block;
+  margin-top: 2px;
+  font-weight: 600;
+}
+
+@media (min-width: 400px) {
+  .home-trust__loc {
+    display: inline;
+    margin-top: 0;
+  }
+}

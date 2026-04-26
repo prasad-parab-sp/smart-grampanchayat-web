@@ -1,0 +1,18 @@
+@import '../shared/home-quick-links.shared';
+
+.home-cat {
+  border-left: 3px solid var(--glt);
+  padding-left: 12px;
+  margin: 20px 0 0;
+}
+
+.home-cat--first {
+  margin-top: 16px;
+}
+
+.home-cat-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--navy);
+  margin: 0 0 8px;
+}

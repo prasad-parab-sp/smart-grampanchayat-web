@@ -67,6 +67,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
+            "liveReload": false,
             "disableHostCheck": true,
             "headers": {
               "Cache-Control": "no-cache, no-store, must-revalidate",

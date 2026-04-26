@@ -1,44 +1,23 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-
-interface HomeStat {
-  value: string;
-  labelKey: string;
-  valueModifier?: 'default' | 'danger';
-}
-
-type HomeLinkSlug =
-  | 'certificate'
-  | 'kar'
-  | 'bhade'
-  | 'nidhi'
-  | 'bank'
-  | 'notice'
-  | 'sabha'
-  | 'yojana'
-  | 'gramjan'
-  | 'labha'
-  | 'suchana'
-  | 'complaint';
-
-interface HomeQuickLink {
-  icon: string;
-  titleKey: string;
-  subKey: string;
-  slug: HomeLinkSlug;
-}
-
-interface HomeLinkCategory {
-  labelKey: string;
-  links: HomeQuickLink[];
-}
+import { GpTrustBannerComponent } from './gp-trust-banner/gp-trust-banner.component';
+import { HomeCategorySectionComponent } from './home-category-section/home-category-section.component';
+import { HomeFeaturedLinksComponent } from './home-featured-links/home-featured-links.component';
+import { HomeIntroComponent } from './home-intro/home-intro.component';
+import { HomeSummaryStatsComponent } from './home-summary-stats/home-summary-stats.component';
+import type { HomeLinkCategory, HomeQuickLink, HomeStat } from './models/home.models';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, TranslateModule, RouterModule],
+  imports: [
+    CommonModule,
+    GpTrustBannerComponent,
+    HomeIntroComponent,
+    HomeSummaryStatsComponent,
+    HomeFeaturedLinksComponent,
+    HomeCategorySectionComponent
+  ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
@@ -50,7 +29,6 @@ export class HomeComponent {
     { value: '—', labelKey: 'HOME.STAT_TOTAL_ARREARS', valueModifier: 'danger' }
   ];
 
-  /** Primary tasks — most-used citizen flows */
   readonly featured: HomeQuickLink[] = [
     { icon: '📋', titleKey: 'HOME.QL_CERTIFICATE_TITLE', subKey: 'HOME.QL_CERTIFICATE_SUB', slug: 'certificate' },
     { icon: '💰', titleKey: 'HOME.QL_KAR_TITLE', subKey: 'HOME.QL_KAR_SUB', slug: 'kar' },
@@ -81,28 +59,4 @@ export class HomeComponent {
       links: [{ icon: '💡', titleKey: 'HOME.QL_SUCHANA_TITLE', subKey: 'HOME.QL_SUCHANA_SUB', slug: 'suchana' }]
     }
   ];
-
-  constructor(private readonly translate: TranslateService) {}
-
-  get displayDate(): string {
-    const lang = this.translate.currentLang || 'mr';
-    const loc = lang === 'en' ? 'en-IN' : 'mr-IN';
-    return new Intl.DateTimeFormat(loc, {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    }).format(new Date());
-  }
-
-  linkRoute(q: HomeQuickLink): string[] {
-    return q.slug === 'certificate' ? ['/certificate'] : ['/stub', q.slug];
-  }
-
-  statValueClass(mod?: 'default' | 'danger'): Record<string, boolean> {
-    return {
-      'stat-n': true,
-      'stat-n-danger': mod === 'danger'
-    };
-  }
 }

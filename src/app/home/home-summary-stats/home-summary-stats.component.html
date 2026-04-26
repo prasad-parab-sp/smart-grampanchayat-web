@@ -1,0 +1,13 @@
+<section class="home-summary" aria-labelledby="home-summary-heading">
+  <h2 id="home-summary-heading" class="sec-title home-summary__title">
+    {{ 'HOME.INFO_TITLE' | translate }}
+  </h2>
+  <p class="home-stat-hint">{{ 'HOME.STAT_DATA_HINT' | translate }}</p>
+  <p class="home-stat-legend">{{ 'HOME.STAT_LEGEND' | translate }}</p>
+  <div class="grid2 home-stats">
+    <div class="stat-card" *ngFor="let s of stats">
+      <div [ngClass]="statValueClasses(s)">{{ s.value }}</div>
+      <div class="stat-l">{{ s.labelKey | translate }}</div>
+    </div>
+  </div>
+</section>
