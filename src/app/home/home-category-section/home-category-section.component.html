@@ -1,0 +1,21 @@
+<section
+  class="home-cat"
+  [class.home-cat--first]="isFirst"
+  [attr.aria-labelledby]="'home-cat-' + sectionIndex">
+  <h3 class="home-cat-title" [id]="'home-cat-' + sectionIndex">{{ category.labelKey | translate }}</h3>
+  <div
+    class="home-quick-links"
+    role="navigation"
+    [attr.aria-label]="category.labelKey | translate">
+    <a
+      class="home-quick-link home-quick-link--tile"
+      *ngFor="let q of category.links"
+      [routerLink]="linkRoute(q)">
+      <span *ngIf="isStubLink(q)" class="home-link-badge">{{ 'HOME.LINK_SSOON' | translate }}</span>
+      <span class="home-quick-link-icon" aria-hidden="true">{{ q.icon }}</span>
+      <span class="home-quick-link-title">{{ q.titleKey | translate }}</span>
+      <span class="home-quick-link-subtitle">{{ q.subKey | translate }}</span>
+      <span class="home-quick-chevron home-quick-chevron--tile" aria-hidden="true">→</span>
+    </a>
+  </div>
+</section>

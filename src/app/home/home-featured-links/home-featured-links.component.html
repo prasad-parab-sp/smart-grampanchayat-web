@@ -1,0 +1,22 @@
+<section class="home-services" aria-labelledby="home-services-heading">
+  <h2 id="home-services-heading" class="sec-title home-quick-title">
+    {{ 'HOME.QUICK_LINKS_TITLE' | translate }}
+  </h2>
+  <p class="home-featured-label">{{ 'HOME.FEATURED_LABEL' | translate }}</p>
+  <div class="home-featured" role="navigation" [attr.aria-label]="'HOME.FEATURED_LABEL' | translate">
+    <a
+      class="home-quick-link home-quick-link--featured"
+      *ngFor="let q of links"
+      [routerLink]="linkRoute(q)">
+      <span class="home-quick-link-icon" aria-hidden="true">{{ q.icon }}</span>
+      <span class="home-quick-link-text">
+        <span class="home-quick-link-title">{{ q.titleKey | translate }}</span>
+        <span class="home-quick-link-subtitle">{{ q.subKey | translate }}</span>
+      </span>
+      <span class="home-featured-end">
+        <span *ngIf="isStubLink(q)" class="home-link-pill">{{ 'HOME.LINK_SSOON' | translate }}</span>
+        <span class="home-quick-chevron" aria-hidden="true">→</span>
+      </span>
+    </a>
+  </div>
+</section>

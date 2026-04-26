@@ -34,6 +34,9 @@
     "COPYRIGHT": "All Rights Reserved © {{year}}"
   },
   "HOME": {
+    "PAGE_TITLE": "Services & information",
+    "STAT_LEGEND": "When data is live, red numbers highlight items that need attention.",
+    "LINK_SSOON": "Soon",
     "LOGOUT": "🚪 Logout",
     "USER_BADGE": "User",
     "NAMASTE": "Hello",
