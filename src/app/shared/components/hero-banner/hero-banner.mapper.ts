@@ -1,5 +1,5 @@
 import { TenantSessionStore } from '../../../core/tenant-session.store';
-import { DistrictDto, TenantDto } from '../../../core/tenant.models';
+import { Tenant } from '../../../core/tenant.models';
 import { HeroBannerConfig } from './hero-banner-config.model';
 
 export const DEFAULT_HERO_BANNER_CONFIG: HeroBannerConfig = {
@@ -18,24 +18,18 @@ export function gpTitleNameForLang(cfg: HeroBannerConfig, uiLang: 'mr' | 'en'): 
   return v.trim();
 }
 
-const districtLabel = (d: DistrictDto, lang: 'mr' | 'en'): string => {
-  if (lang === 'en') {
-    return (d.displayNameEn?.trim() || d.name).trim();
-  }
-  return (d.displayNameMr?.trim() || d.name).trim();
-};
-
-export function heroBannerConfigFromTenant(t: TenantDto): HeroBannerConfig {
-  const d = t.district;
+export function heroBannerConfigFromTenant(t: Tenant): HeroBannerConfig {
+  const nameMr = (t.displayNameMr?.trim() || t.name).trim();
+  const nameEn = (t.displayNameEn?.trim() || t.name).trim();
   return {
-    displayNameMr: (t.displayNameMr?.trim() || t.name).trim(),
-    displayNameEn: (t.displayNameEn?.trim() || t.name).trim(),
-    talukaMr: (t.talukaMr ?? t.talukaEn ?? '').trim(),
-    talukaEn: (t.talukaEn ?? t.talukaMr ?? '').trim(),
-    districtDisplayMr: d ? districtLabel(d, 'mr') : '',
-    districtDisplayEn: d ? districtLabel(d, 'en') : '',
-    logoUrl: t.logoUrl?.trim() ? t.logoUrl.trim() : null,
-    imageUrl: t.imageUrl?.trim() ? t.imageUrl.trim() : null
+    displayNameMr: nameMr,
+    displayNameEn: nameEn,
+    talukaMr: (t.talukaMr ?? '').trim(),
+    talukaEn: (t.talukaEn ?? '').trim(),
+    districtDisplayMr: (t.districtNameMr ?? '').trim(),
+    districtDisplayEn: (t.districtNameEn ?? '').trim(),
+    logoUrl: t.logoUrl ?? null,
+    imageUrl: t.imageUrl ?? null
   };
 }
 

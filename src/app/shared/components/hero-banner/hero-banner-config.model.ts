@@ -1,14 +1,14 @@
 /**
- * Minimal slice of {@link TenantDto} for the hero — only fields needed for title, location line, logo, banner.
+ * Minimal config for the hero (title, taluka·district line, logo, banner). Filled from {@link Tenant} + i18n.
  */
 export interface HeroBannerConfig {
   displayNameMr: string;
   displayNameEn: string;
   talukaMr: string;
   talukaEn: string;
-  /** From `district.displayNameMr` / fallback `district.name` */
+  /** From shard `districtNameMr` */
   districtDisplayMr: string;
-  /** From `district.displayNameEn` / fallback `district.name` */
+  /** From shard `districtNameEn` */
   districtDisplayEn: string;
   logoUrl: string | null;
   imageUrl: string | null;

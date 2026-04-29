@@ -4,7 +4,7 @@ import { firstValueFrom, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
-import { TenantDto } from './tenant.models';
+import { Tenant } from './tenant.models';
 import { TenantSessionStore } from './tenant-session.store';
 
 export type TenantLoadState = 'idle' | 'loading' | 'ok' | 'error';
@@ -18,7 +18,7 @@ export class TenantService {
    * Set once in `loadOnStartup` (runs before app bootstrap). Stays constant until a full
    * page load / new host; no in-session reactivity is required.
    */
-  tenant: TenantDto | null = null;
+  tenant: Tenant | null = null;
   loadState: TenantLoadState = 'idle';
   activeTenantCode: string | null = null;
 
@@ -35,9 +35,9 @@ export class TenantService {
     const params = new HttpParams().set('tenantCode', tenantCode);
     return firstValueFrom(
       this.http
-        .get<TenantDto>(`${environment.apiBaseUrl}/api/tenants`, { params })
+        .get<Tenant>(`${environment.apiBaseUrl}/api/tenants`, { params })
         .pipe(
-          catchError(() => of(null as TenantDto | null))
+          catchError(() => of(null as Tenant | null))
         )
     ).then((t) => {
       if (t) {
