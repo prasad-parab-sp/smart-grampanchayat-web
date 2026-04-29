@@ -70,12 +70,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (!t) {
       return;
     }
-    const mobile = t.contactMobile?.trim();
-    if (mobile) {
-      this.contactBannerConfig = {
-        ...this.contactBannerConfig,
-        contactNumber: mobile
-      };
+    const phone = t.contactPhone?.trim();
+    if (phone) {
+      this.contactBannerConfig = { ...this.contactBannerConfig, contactNumber: phone };
     }
   }
 
