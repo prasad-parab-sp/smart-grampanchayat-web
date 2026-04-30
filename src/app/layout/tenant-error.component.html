@@ -1,0 +1,21 @@
+<div class="tenant-error-screen">
+  <div class="tenant-error-top-actions">
+    <app-language-switcher />
+  </div>
+
+  <div class="tenant-error-panel">
+    <h1>{{ 'TENANT_ERROR.TITLE' | translate }}</h1>
+    <p class="tenant-error-lead">{{ 'TENANT_ERROR.LEAD' | translate }}</p>
+    <p class="tenant-error-detail">{{ 'TENANT_ERROR.DETAIL' | translate }}</p>
+
+    @if (attemptedTenantCode) {
+      <p class="tenant-error-code">
+        <strong>{{ 'TENANT_ERROR.CODE_LABEL' | translate }}</strong> {{ attemptedTenantCode }}
+      </p>
+    }
+
+    <button type="button" class="tenant-error-retry" (click)="retry()" [disabled]="retryPending">
+      {{ 'TENANT_ERROR.RETRY' | translate }}
+    </button>
+  </div>
+</div>
