@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
-import { LoginComponent } from './login/login.component';
-import { MainShellComponent } from './shell/main-shell.component';
-import { ShellPlaceholderComponent } from './shell/shell-placeholder.component';
+import { HomeComponent } from './features/home/home.component';
+import { LoginComponent } from './features/login/login.component';
+import { MainShellComponent } from './layout/main-shell.component';
+import { ShellPlaceholderComponent } from './layout/shell-placeholder.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -15,7 +15,8 @@ export const routes: Routes = [
       { path: 'home', component: HomeComponent },
       {
         path: 'certificate',
-        loadChildren: () => import('./certificate/certificate.module').then((m) => m.CertificateModule)
+        loadChildren: () =>
+          import('./features/certificate/certificate.module').then((m) => m.CertificateModule)
       },
       { path: 'stub/:slug', component: ShellPlaceholderComponent },
       { path: 'kar', component: ShellPlaceholderComponent },

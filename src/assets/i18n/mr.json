@@ -31,7 +31,11 @@
     "ERROR_EMPTY": "कृपया पासवर्ड किंवा मोबाईल नंबर टाका",
     "SUCCESS_ADMIN": "Admin म्हणून लॉगिन झाले!",
     "SUCCESS_CITIZEN": "नागरिक म्हणून लॉगिन झाले!",
-    "ERROR_INVALID": "चुकीचा पासवर्ड किंवा मोबाईल नंबर"
+    "ERROR_INVALID": "चुकीचा पासवर्ड किंवा मोबाईल नंबर",
+    "ERROR_MOBILE_NOT_FOUND": "हा मोबाईल आमच्या ग्रामपंचायत नोंदींमध्ये दिसला नाही",
+    "ERROR_CITIZEN_LOOKUP": "सर्व्हर किंवा नेटवर्क त्रुटी. नंतर पुन्हा प्रयत्न करा.",
+    "TOAST_WELCOME": "{{name}}",
+    "WELCOME_SUFFIX": "स्वागत!"
   },
   "FOOTER": {
     "DEVELOPED_BY": "विकसित करणारे",
@@ -43,6 +47,7 @@
     "LINK_SSOON": "लवकरच",
     "LOGOUT": "🚪 लॉगआउट",
     "USER_BADGE": "वापरकर्ता",
+    "WELCOME_BADGE": "{{name}}",
     "NAMASTE": "नमस्कार",
     "STAT_DATA_HINT": "सारांशातील आकडे सर्व्हर कनेक्ट केल्यानंतर थेट अद्यतनित दिसतील.",
     "FEATURED_LABEL": "मुख्य सेवा",

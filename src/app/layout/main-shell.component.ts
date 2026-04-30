@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { CitizenSessionStore } from '../core/citizen-session.store';
 import { GramAppHeaderComponent } from '../shared/components/gram-app-header/gram-app-header.component';
 import { MAIN_SHELL_NAV } from './main-shell.nav';
 
@@ -22,9 +23,13 @@ import { MAIN_SHELL_NAV } from './main-shell.nav';
 export class MainShellComponent {
   readonly navItems = MAIN_SHELL_NAV;
 
-  constructor(private readonly router: Router) {}
+  constructor(
+    private readonly router: Router,
+    private readonly citizenSession: CitizenSessionStore
+  ) {}
 
   logout() {
+    this.citizenSession.clearWelcome();
     void this.router.navigate(['/login']);
   }
 }
