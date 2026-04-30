@@ -26,5 +26,11 @@
       {{ 'HOME.LOGOUT' | translate }}
     </button>
   </div>
-  <div class="gram-header-user-badge">{{ 'HOME.USER_BADGE' | translate }}</div>
+  <div class="gram-header-user-badge">
+    @if (welcomeNameForBadge) {
+      {{ 'HOME.WELCOME_BADGE' | translate: { name: welcomeNameForBadge } }}
+    } @else {
+      {{ 'HOME.USER_BADGE' | translate }}
+    }
+  </div>
 </header>

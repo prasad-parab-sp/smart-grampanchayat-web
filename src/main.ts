@@ -4,11 +4,12 @@ import { AppComponent } from './app/app.component';
 import { provideRouter } from '@angular/router';
 import { routes } from './app/app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { TenantService } from './app/core/tenant.service';
+import { tenantCodeInterceptor } from './app/core/tenant-code.interceptor';
 
 function tenantInitializerFactory(tenant: TenantService) {
   return () => tenant.loadOnStartup();
@@ -18,7 +19,7 @@ bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
     provideAnimationsAsync(),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([tenantCodeInterceptor])),
     provideTranslateService({
       fallbackLang: 'mr',
       loader: provideTranslateHttpLoader({
@@ -33,4 +34,4 @@ bootstrapApplication(AppComponent, {
       multi: true
     }
   ]
-}).catch(err => console.error(err));
+}).catch((err) => console.error(err));

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Tenant } from './tenant.models';
 
 /** One entry per tab; overwritten on each successful tenant load. */
-const TENANT_SESSION_KEY = 'smart-gp.tenant';
+export const TENANT_SESSION_STORAGE_KEY = 'smart-gp.tenant';
 
 @Injectable({ providedIn: 'root' })
 export class TenantSessionStore {
@@ -15,14 +15,14 @@ export class TenantSessionStore {
    * Last saved tenant JSON for this tab, or `null` if missing or invalid.
    */
   getTenant(): Tenant | null {
-    const raw = this.storage?.getItem(TENANT_SESSION_KEY);
+    const raw = this.storage?.getItem(TENANT_SESSION_STORAGE_KEY);
     if (raw == null) {
       return null;
     }
     try {
       return JSON.parse(raw) as Tenant;
     } catch {
-      this.storage?.removeItem(TENANT_SESSION_KEY);
+      this.storage?.removeItem(TENANT_SESSION_STORAGE_KEY);
       return null;
     }
   }
@@ -31,11 +31,11 @@ export class TenantSessionStore {
    * Persists the tenant under a fixed session key (no per-`tenantCode` key; session is tab-scoped anyway).
    */
   save(data: Tenant): void {
-    this.storage?.setItem(TENANT_SESSION_KEY, JSON.stringify(data));
+    this.storage?.setItem(TENANT_SESSION_STORAGE_KEY, JSON.stringify(data));
   }
 
   /** Removes cached tenant (e.g. after a failed load so the UI does not show stale data). */
   clear(): void {
-    this.storage?.removeItem(TENANT_SESSION_KEY);
+    this.storage?.removeItem(TENANT_SESSION_STORAGE_KEY);
   }
 }

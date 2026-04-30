@@ -37,7 +37,11 @@
             </button>
           </div>
         </div>
-        <button type="button" class="btn btn-g login-submit-btn" (click)="doLogin()">
+        <button
+          type="button"
+          class="btn btn-g login-submit-btn"
+          [disabled]="loginPending"
+          (click)="doLogin()">
           {{ icons.SUCCESS }} {{ 'LOGIN.BUTTON' | translate }}
         </button>
       </div>

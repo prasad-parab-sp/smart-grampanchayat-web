@@ -368,3 +368,73 @@ input, select, textarea {
 .app-toast--error {
   background: #f44336;
 }
+
+/*
+ * Login welcome — parity with master_fixed-3-2.html §4 TOAST NOTIFICATION (`.toast`, `.toast.show`, `.toast.s`),
+ * positioned above the bottom shell nav (Angular uses nav z-index 1000 vs master’s toast z-index 999).
+ */
+.app-toast.app-toast--login-welcome {
+  top: auto;
+  padding: 0;
+  margin: 0;
+
+  bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1100;
+
+  max-width: min(calc(100vw - 32px), 360px);
+}
+
+.app-toast.app-toast--login-welcome-visible {
+  opacity: 1;
+}
+
+/* Matches master `.toast.s` (+ inner layout for stacked name / welcome copy) */
+.app-toast__login-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+
+  background: var(--green);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 20px;
+
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+  white-space: normal;
+
+  box-shadow: var(--shadow);
+}
+
+.app-toast__login-card--single {
+  white-space: normal;
+}
+
+.app-toast__login-name,
+.app-toast__login-welcome-txt {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.app-toast__login-welcome-txt {
+  font-weight: 700;
+  opacity: 0.95;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-toast.app-toast--login-welcome {
+    transition-duration: 0.01ms;
+  }
+}

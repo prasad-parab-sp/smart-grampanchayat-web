@@ -31,7 +31,11 @@
     "ERROR_EMPTY": "Please enter password or mobile number",
     "SUCCESS_ADMIN": "Logged in as Admin!",
     "SUCCESS_CITIZEN": "Logged in as Citizen!",
-    "ERROR_INVALID": "Incorrect password or mobile number"
+    "ERROR_INVALID": "Incorrect password or mobile number",
+    "ERROR_MOBILE_NOT_FOUND": "This mobile number is not registered with this gram panchayat",
+    "ERROR_CITIZEN_LOOKUP": "Server or network error. Please try again.",
+    "TOAST_WELCOME": "{{name}}",
+    "WELCOME_SUFFIX": "Welcome!"
   },
   "FOOTER": {
     "DEVELOPED_BY": "Developed by",
@@ -43,6 +47,7 @@
     "LINK_SSOON": "Soon",
     "LOGOUT": "🚪 Logout",
     "USER_BADGE": "User",
+    "WELCOME_BADGE": "{{name}}",
     "NAMASTE": "Hello",
     "STAT_DATA_HINT": "Summary figures will show live data once the server is connected.",
     "FEATURED_LABEL": "Key services",
