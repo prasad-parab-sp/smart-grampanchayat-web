@@ -56,7 +56,7 @@ export class HomeComponent {
     },
     {
       labelKey: 'HOME.CAT_PARTICIPATE',
-      links: [{ icon: '💡', titleKey: 'HOME.QL_SUCHANA_TITLE', subKey: 'HOME.QL_SUCHANA_SUB', slug: 'suchana' }]
+      links: [{ icon: '💡', titleKey: 'HOME.QL_SUGGESTIONS_TITLE', subKey: 'HOME.QL_SUGGESTIONS_SUB', slug: 'suggestions' }]
     }
   ];
 }

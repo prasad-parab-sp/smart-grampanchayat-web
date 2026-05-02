@@ -51,27 +51,6 @@
   width: 100%;
 }
 
-.login-admin-notice {
-  background: linear-gradient(135deg, #0d1b5e, #1565c0);
-  color: #fff;
-  padding: 12px 16px;
-  font-size: 12px;
-  line-height: 1.6;
-  margin: 0 0 12px;
-  border-radius: 12px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
-}
-
-.login-admin-notice-title {
-  font-weight: 800;
-  font-size: 13px;
-  margin-bottom: 4px;
-}
-
-.login-admin-notice-body {
-  font-size: 12px;
-}
-
 .login-panel {
   background: $color-white;
   padding: 24px 20px;
@@ -127,14 +106,9 @@
   }
 }
 
-.login-input-wrap {
-  position: relative;
-  width: 100%;
-}
-
 .login-input-field {
   width: 100%;
-  padding: 12px 44px 12px 14px;
+  padding: 12px 14px;
   border: 1.5px solid #e0e0e0;
   border-radius: 12px;
   font-size: 14px;
@@ -148,26 +122,6 @@
 
   &::placeholder {
     color: #bdbdbd;
-  }
-}
-
-.login-password-toggle {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  color: #757575;
-  padding: 4px;
-  transition: color 0.2s ease;
-  outline: none;
-
-  &:hover,
-  &:focus {
-    color: #2e7d32;
   }
 }
 
@@ -222,7 +176,7 @@
 
   .login-input-field {
     font-size: 13px;
-    padding: 11px 40px 11px 12px;
+    padding: 11px 12px;
   }
 
   .btn {
@@ -243,7 +197,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .login-input-field,
-  .login-password-toggle,
   .btn {
     transition: none;
   }

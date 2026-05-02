@@ -1,36 +1,63 @@
 import {
   CertificateCatalogRow,
-  CertificateListItem,
-  isCertificateSectionHeader
+  CertificateCatalogTypeRow,
+  isCertificateSectionRow
 } from '../data/certificate-catalog.data';
 import { CertificateFilterPreset } from '../data/certificate-filters.data';
+import type { SupportedLang } from '../../../i18n/i18n.service';
+import {
+  certificateCatalogDisplayDescription,
+  certificateCatalogDisplayName
+} from './certificate-api-mapper';
 
-export function nameKeySetForFilter(
+/** Codes or legacy static name keys allowed by the active preset (API rows match `code`). */
+function identifierSetForFilter(
   presets: CertificateFilterPreset[],
   activeFilterId: string
 ): Set<string> | null {
   const preset = presets.find((p) => p.id === activeFilterId);
-  if (!preset || preset.id === 'all' || !preset.nameKeys.length) {
+  if (!preset || preset.id === 'all') {
     return null;
   }
-  return new Set(preset.nameKeys);
+  const ids = [...(preset.codes ?? []), ...(preset.nameKeys ?? [])].filter(Boolean);
+  if (ids.length === 0) {
+    return null;
+  }
+  return new Set(ids);
 }
 
-export function certificateItemMatchesFilterAndSearch(
-  row: CertificateListItem,
-  allowedNameKeys: Set<string> | null,
+function categorySetForFilter(
+  presets: CertificateFilterPreset[],
+  activeFilterId: string
+): Set<string> | null {
+  const preset = presets.find((p) => p.id === activeFilterId);
+  if (!preset || preset.id === 'all' || !preset.categories?.length) {
+    return null;
+  }
+  return new Set(preset.categories);
+}
+
+function certificateItemMatchesFilterAndSearch(
+  row: CertificateCatalogTypeRow,
+  allowedIdentifiers: Set<string> | null,
+  allowedCategories: Set<string> | null,
   searchQuery: string,
-  translate: (key: string) => string
+  lang: SupportedLang
 ): boolean {
-  if (allowedNameKeys && !allowedNameKeys.has(row.nameKey)) {
+  if (allowedIdentifiers && !allowedIdentifiers.has(row.code)) {
     return false;
+  }
+  if (allowedCategories) {
+    if (!row.category || !allowedCategories.has(row.category)) {
+      return false;
+    }
   }
   const q = searchQuery.trim().toLowerCase();
   if (!q) {
     return true;
   }
-  const n = translate(row.nameKey).toLowerCase();
-  const d = translate(row.descKey).toLowerCase();
+  const n = certificateCatalogDisplayName(row, lang).toLowerCase();
+  const d = certificateCatalogDisplayDescription(row, lang).toLowerCase();
   return n.includes(q) || d.includes(q);
 }
 
@@ -39,9 +66,10 @@ export function buildCertificateDisplayRows(
   presets: CertificateFilterPreset[],
   activeFilterId: string,
   searchQuery: string,
-  translate: (key: string) => string
+  lang: SupportedLang
 ): CertificateCatalogRow[] {
-  const allowed = nameKeySetForFilter(presets, activeFilterId);
+  const allowedIdentifiers = identifierSetForFilter(presets, activeFilterId);
+  const allowedCategories = categorySetForFilter(presets, activeFilterId);
   const res: CertificateCatalogRow[] = [];
   let group: CertificateCatalogRow[] = [];
 
@@ -50,15 +78,21 @@ export function buildCertificateDisplayRows(
       return;
     }
     const h = group[0];
-    if (!isCertificateSectionHeader(h)) {
+    if (!isCertificateSectionRow(h)) {
       group = [];
       return;
     }
     const items = group
       .slice(1)
       .filter((r) =>
-        certificateItemMatchesFilterAndSearch(r as CertificateListItem, allowed, searchQuery, translate)
-      ) as CertificateListItem[];
+        certificateItemMatchesFilterAndSearch(
+          r as CertificateCatalogTypeRow,
+          allowedIdentifiers,
+          allowedCategories,
+          searchQuery,
+          lang
+        )
+      ) as CertificateCatalogTypeRow[];
     if (items.length > 0) {
       res.push(h, ...items);
     }
@@ -66,7 +100,7 @@ export function buildCertificateDisplayRows(
   };
 
   for (const r of rows) {
-    if (isCertificateSectionHeader(r)) {
+    if (isCertificateSectionRow(r)) {
       flush();
       group = [r];
     } else {

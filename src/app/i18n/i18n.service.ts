@@ -50,7 +50,7 @@ export class I18nService {
   /**
    * Synchronous translation for the **current** language (ngx-translate `instant`).
    *
-   * @param key - JSON key, e.g. `'LOGIN.SUCCESS_ADMIN'`.
+   * @param key - JSON key, e.g. `'LOGIN.WELCOME_SUFFIX'`.
    * @param interpolate - Optional map for `{{...}}` placeholders in the message.
    * @returns Resolved string, or the key if missing (ngx-translate default).
    */

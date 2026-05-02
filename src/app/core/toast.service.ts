@@ -27,7 +27,7 @@ export class ToastService {
   /**
    * Login success toast — visual behaviour aligned with **master_fixed-3-2.html** §4 TOAST NOTIFICATION
    * (`.toast`, `.toast.s`, bottom offset, pill radius, opacity fade).
-   * Citizen: two stacked lines (name + welcome); admin: single line.
+   * Two stacked lines (name + welcome suffix) when a suffix is passed; single line otherwise.
    */
   showLoginWelcome(
     primary: string,

@@ -190,49 +190,6 @@ input, select, textarea {
   line-height: 1.6;
 }
 
-/* Form Elements */
-.fg { 
-  margin-bottom: 14px; 
-}
-
-.fg label {
-  font-size: 13px;
-  font-weight: 700;
-  display: block;
-  margin-bottom: 5px;
-}
-
-.fg label .req { 
-  color: #FF6B00; 
-}
-
-.fg input,
-.fg select,
-.fg textarea {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--r);
-  font-size: 14px;
-  background: #fff;
-  transition: border .2s;
-}
-
-.fg input:focus,
-.fg select:focus,
-.fg textarea:focus { 
-  border-color: var(--green); 
-}
-
-.fr { 
-  display: flex; 
-  gap: 10px; 
-}
-
-.fr .fg { 
-  flex: 1; 
-}
-
 /* Buttons */
 .btn {
   width: 100%;
@@ -326,13 +283,6 @@ input, select, textarea {
   .btn {
     font-size: 13px;
     padding: 12px;
-  }
-  
-  .fg input,
-  .fg select,
-  .fg textarea {
-    font-size: 13px;
-    padding: 11px 12px;
   }
 }
 

@@ -15,7 +15,7 @@ export type HomeLinkSlug =
   | 'yojana'
   | 'gramjan'
   | 'labha'
-  | 'suchana'
+  | 'suggestions'
   | 'complaint';
 
 export interface HomeQuickLink {

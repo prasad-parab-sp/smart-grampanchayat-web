@@ -125,79 +125,11 @@ h3.certificate-section-head {
   font-size: 18px;
 }
 
-.certificate-suchana {
-  margin-top: 18px;
-}
-
-.certificate-suchana-title {
-  font-size: 15px;
-  font-weight: 800;
-  color: var(--gdk);
-  margin-bottom: 10px;
-}
-
-.certificate-suchana-inner {
-  background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
-  border: 1.5px solid #a5d6a7;
-  border-radius: 12px;
-  padding: 14px;
-  margin-bottom: 14px;
-}
-
-.certificate-suchana-head {
-  font-size: 13px;
-  font-weight: 800;
-  color: #2e7d32;
-  margin-bottom: 2px;
-}
-
-.certificate-suchana-body {
-  font-size: 12px;
-  color: #388e3c;
-  line-height: 1.5;
-}
-
 .certificate-page-subtitle {
   font-size: 13px;
   color: var(--sub);
   line-height: 1.45;
   margin: -6px 0 12px;
-}
-
-.certificate-suchana-peek {
-  margin-bottom: 14px;
-  padding: 12px 14px;
-}
-
-.certificate-suchana-peek-text {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-.certificate-suchana-peek-icon {
-  font-size: 22px;
-  line-height: 1;
-}
-
-.certificate-suchana-peek-line {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--gdk);
-  line-height: 1.4;
-}
-
-.certificate-suchana-peek-link {
-  margin-top: 6px;
-  padding: 0;
-  border: none;
-  background: none;
-  font: inherit;
-  font-size: 12px;
-  font-weight: 800;
-  color: var(--green);
-  text-decoration: underline;
-  cursor: pointer;
 }
 
 .certificate-toolbar {
@@ -244,6 +176,21 @@ h3.certificate-section-head {
   background: var(--glt);
   border-color: var(--green);
   color: var(--gdk);
+}
+
+.certificate-loading {
+  font-size: 13px;
+  color: var(--sub);
+  padding: 16px 12px;
+  margin-bottom: 8px;
+}
+
+.certificate-page-error {
+  font-size: 13px;
+  font-weight: 700;
+  color: #c62828;
+  padding: 16px 12px;
+  margin-bottom: 8px;
 }
 
 .certificate-empty {

@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { firstValueFrom } from 'rxjs';
 
-import { CitizenSessionStore } from '../../../core/citizen-session.store';
+import { CitizenService } from '../../../core/citizen.service';
+import { LoggedInCitizenService } from '../../../core/logged-in-citizen.service';
 import { TenantSessionStore } from '../../../core/tenant-session.store';
 import { I18nService } from '../../../i18n/i18n.service';
 import { HeroBannerConfig } from '../hero-banner/hero-banner-config.model';
@@ -20,16 +22,30 @@ import { LanguageSwitcherComponent } from '../language-switcher/language-switche
   templateUrl: './gram-app-header.component.html',
   styleUrls: ['./gram-app-header.component.scss']
 })
-export class GramAppHeaderComponent {
+export class GramAppHeaderComponent implements OnInit {
   readonly i18n = inject(I18nService);
   private readonly session = inject(TenantSessionStore);
-  private readonly citizenSession = inject(CitizenSessionStore);
+  private readonly loggedInCitizen = inject(LoggedInCitizenService);
+  private readonly citizenService = inject(CitizenService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   tenantConfig: HeroBannerConfig = heroBannerConfigFromSession(this.session);
 
-  /** Badge text: session stores first + last (`citizenBadgeFirstLastName`); max 20 chars + ellipsis in template. */
-  get welcomeNameForBadge(): string | null {
-    const raw = this.citizenSession.getWelcomeDisplayName()?.trim();
+  ngOnInit(): void {
+    const id = this.loggedInCitizen.getCurrentLoggedInCitizenId()?.trim();
+    if (id && !this.loggedInCitizen.getBadgeDisplayName()?.trim()) {
+      void firstValueFrom(this.citizenService.getById(id)).then((c) => {
+        if (c) {
+          this.loggedInCitizen.setBadgeDisplayName(c);
+          this.cdr.markForCheck();
+        }
+      });
+    }
+  }
+
+  /** Badge: first + last in memory (set at login or after refresh hydration); max 20 chars + ellipsis in template. */
+  get badgeNameForHeader(): string | null {
+    const raw = this.loggedInCitizen.getBadgeDisplayName()?.trim();
     if (!raw) {
       return null;
     }
