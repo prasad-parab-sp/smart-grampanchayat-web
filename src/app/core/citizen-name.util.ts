@@ -8,12 +8,14 @@ function trimField(s: string | null | undefined): string {
   return s.trim();
 }
 
-/** Welcome badge + toast (name line): **firstName** + **lastName** only — no middle name. */
-export function citizenBadgeFirstLastName(c: Citizen): string {
-  const first = trimField(c.firstName);
-  const last = trimField(c.lastName);
-  if (first && last) {
-    return `${first} ${last}`;
-  }
-  return first || last;
+/** Full legal-style line: **firstName**, **middleName** (if any), **lastName** — e.g. login toast & certificate prefill. */
+export function citizenFullDisplayName(c: Citizen): string {
+  return [trimField(c.firstName), trimField(c.middleName), trimField(c.lastName)]
+    .filter((part) => part.length > 0)
+    .join(' ');
+}
+
+/** **firstName** + **lastName** only — header badge session (no middle name). */
+export function citizenBadgeDisplayName(c: Citizen): string {
+  return [trimField(c.firstName), trimField(c.lastName)].filter((part) => part.length > 0).join(' ');
 }

@@ -55,6 +55,17 @@
   font-size: 15px;
 }
 
+.certificate-fee-summary-catalog-note {
+  font-size: 11px;
+  color: var(--sub);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.certificate-fee-summary-catalog-note span {
+  flex: 1;
+}
+
 .certificate-uploads {
   margin-bottom: 12px;
 }
@@ -80,7 +91,7 @@
   font-weight: 600;
 }
 
-.certificate-suchana-banner {
+.certificate-suggestions-banner {
   background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
   border: 1.5px solid #a5d6a7;
   border-radius: 10px;
@@ -88,13 +99,13 @@
   margin-bottom: 12px;
 }
 
-.certificate-suchana-banner-title {
+.certificate-suggestions-banner-title {
   font-size: 12px;
   font-weight: 800;
   color: #2e7d32;
 }
 
-.certificate-suchana-banner-text {
+.certificate-suggestions-banner-text {
   font-size: 12px;
   color: #388e3c;
   margin-top: 2px;
@@ -132,10 +143,34 @@
   padding-right: 36px;
 }
 
-.certificate-modal-panel .sub {
+.certificate-modal-title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.certificate-modal-title-icon {
+  flex-shrink: 0;
+  font-size: 26px;
+  line-height: 1.1;
+}
+
+.certificate-modal-title-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.certificate-modal-panel .certificate-modal-intro {
   font-size: 12px;
   color: var(--sub);
   margin-bottom: 16px;
+}
+
+.certificate-modal-subhead {
+  font-size: 13px;
+  font-weight: 800;
+  margin: -8px 0 14px;
+  color: var(--navy);
 }
 
 .certificate-modal-close {
@@ -153,4 +188,159 @@
   border: none;
   cursor: pointer;
   color: var(--text);
+}
+
+/* Master dUploadSection parity — dashed tile + blue panel */
+.certificate-upload-panel {
+  background: var(--blt);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 14px;
+  border: 1.5px solid #90caf9;
+}
+
+.certificate-upload-panel-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #1565c0;
+  margin-bottom: 10px;
+}
+
+.certificate-upload-panel-lead {
+  font-size: 12px;
+  color: var(--sub);
+  line-height: 1.5;
+  margin: 0 0 6px;
+}
+
+.certificate-upload-slot {
+  margin-bottom: 14px;
+
+  &:last-of-type {
+    margin-bottom: 10px;
+  }
+}
+
+.certificate-upload-slot-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+
+.certificate-upload-dashed {
+  display: block;
+  position: relative;
+  border: 2px dashed #90caf9;
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  background: #fff;
+  transition: border-color 0.15s ease, background 0.15s ease;
+
+  &:hover {
+    border-color: var(--blue);
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  &:focus-within {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+  }
+}
+
+.certificate-upload-dashed-icon {
+  display: block;
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+
+.certificate-upload-dashed-pick {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--blue);
+}
+
+.certificate-upload-dashed-meta {
+  display: block;
+  font-size: 10px;
+  color: var(--sub);
+  margin-top: 2px;
+}
+
+.certificate-upload-hidden-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  font-size: 0;
+}
+
+.certificate-upload-picked {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gdk);
+  margin: 8px 0 0;
+}
+
+.certificate-upload-rules {
+  font-size: 11px;
+  color: var(--sub);
+  line-height: 1.65;
+  margin: 10px 0 0;
+}
+
+/* Single field block (label + control) inside certificate modals */
+.certificate-modal-field-group {
+  margin-bottom: 14px;
+}
+
+.certificate-modal-field-group label {
+  font-size: 13px;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.certificate-modal-field-group label .req {
+  color: #ff6b00;
+}
+
+.certificate-modal-field-group input,
+.certificate-modal-field-group select,
+.certificate-modal-field-group textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  font-size: 14px;
+  background: #fff;
+  transition: border 0.2s;
+}
+
+.certificate-modal-field-group input:focus,
+.certificate-modal-field-group select:focus,
+.certificate-modal-field-group textarea:focus {
+  border-color: var(--green);
+}
+
+/* Horizontal row of field groups (e.g. phone + dropdown) */
+.certificate-modal-fields-row {
+  display: flex;
+  gap: 10px;
+}
+
+.certificate-modal-fields-row .certificate-modal-field-group {
+  flex: 1;
+}
+
+@media (max-width: 480px) {
+  .certificate-modal-field-group input,
+  .certificate-modal-field-group select,
+  .certificate-modal-field-group textarea {
+    font-size: 13px;
+    padding: 11px 12px;
+  }
 }

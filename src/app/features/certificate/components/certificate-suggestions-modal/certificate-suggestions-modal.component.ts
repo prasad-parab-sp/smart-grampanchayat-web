@@ -6,7 +6,6 @@ import {
   ElementRef,
   EventEmitter,
   inject,
-  Input,
   OnInit,
   Output,
   ViewChild
@@ -16,20 +15,17 @@ import { CitizenService } from '../../../../core/citizen.service';
 import { LoggedInCitizenService } from '../../../../core/logged-in-citizen.service';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { CertificateListItem } from '../../data/certificate-catalog.data';
-import { CERTIFICATE_COMPLAINT_SUBJECT_KEYS } from '../../data/certificate-form-options.data';
-import { validateCertificateComplaint } from '../../lib/certificate-form-validation';
+import { CERTIFICATE_SUGGESTIONS_CATEGORY_KEYS } from '../../data/certificate-form-options.data';
+import { validateCertificateSuggestions } from '../../lib/certificate-form-validation';
 
 @Component({
-  selector: 'app-certificate-complaint-modal',
+  selector: 'app-certificate-suggestions-modal',
   standalone: true,
   imports: [CommonModule, FormsModule, TranslateModule],
-  templateUrl: './certificate-complaint-modal.component.html',
+  templateUrl: './certificate-suggestions-modal.component.html',
   styleUrls: ['../../styles/certificate-modal.shared.scss']
 })
-export class CertificateComplaintModalComponent implements OnInit, AfterViewInit {
-  @Input({ required: true }) sourceRow!: CertificateListItem;
-
+export class CertificateSuggestionsModalComponent implements OnInit, AfterViewInit {
   @Output() cancelled = new EventEmitter<void>();
   @Output() submitted = new EventEmitter<void>();
 
@@ -37,21 +33,19 @@ export class CertificateComplaintModalComponent implements OnInit, AfterViewInit
   private readonly citizenService = inject(CitizenService);
   private readonly cdr = inject(ChangeDetectorRef);
 
-  readonly complaintSubjectKeys = CERTIFICATE_COMPLAINT_SUBJECT_KEYS;
+  readonly suggestionsCategoryKeys = CERTIFICATE_SUGGESTIONS_CATEGORY_KEYS;
 
-  complaintForm = {
+  suggestionsForm = {
     name: '',
     phone: '',
-    subject: '',
-    location: '',
-    details: ''
+    category: '',
+    details: '',
+    benefit: ''
   };
 
-  complaintFieldErrors: Partial<
-    Record<'name' | 'phone' | 'subject' | 'details', string | undefined>
+  suggestionsFieldErrors: Partial<
+    Record<'name' | 'phone' | 'category' | 'details', string | undefined>
   > = {};
-
-  complaintEvidenceFile: File | null = null;
 
   @ViewChild('panel', { read: ElementRef })
   panelRef?: ElementRef<HTMLElement>;
@@ -59,13 +53,13 @@ export class CertificateComplaintModalComponent implements OnInit, AfterViewInit
   closeBtnRef?: ElementRef<HTMLButtonElement>;
 
   ngOnInit(): void {
-    prefillApplicantNameField(this.loggedInCitizen, this.citizenService, this.complaintForm, this.cdr);
+    prefillApplicantNameField(this.loggedInCitizen, this.citizenService, this.suggestionsForm, this.cdr);
   }
 
   ngAfterViewInit(): void {
     queueMicrotask(() => {
-      if (!this.complaintForm.name?.trim()) {
-        prefillApplicantNameField(this.loggedInCitizen, this.citizenService, this.complaintForm, this.cdr);
+      if (!this.suggestionsForm.name?.trim()) {
+        prefillApplicantNameField(this.loggedInCitizen, this.citizenService, this.suggestionsForm, this.cdr);
       }
     });
   }
@@ -78,18 +72,13 @@ export class CertificateComplaintModalComponent implements OnInit, AfterViewInit
     ev.stopPropagation();
   }
 
-  onComplaintFile(ev: Event): void {
-    const input = ev.target as HTMLInputElement;
-    this.complaintEvidenceFile = input.files?.[0] ?? null;
-  }
-
   close(): void {
     this.cancelled.emit();
   }
 
   submit(): void {
-    const { ok, errors } = validateCertificateComplaint(this.complaintForm);
-    this.complaintFieldErrors = ok ? {} : errors;
+    const { ok, errors } = validateCertificateSuggestions(this.suggestionsForm);
+    this.suggestionsFieldErrors = ok ? {} : errors;
     if (!ok) {
       return;
     }

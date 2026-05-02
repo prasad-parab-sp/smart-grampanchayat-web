@@ -14,10 +14,21 @@
       [attr.aria-label]="'COMMON.CLOSE' | translate">
       ✕
     </button>
-    <h3 id="certificate-dialog-apply-title">
-      {{ selected.nameKey | translate }} — {{ 'CERTIFICATE.APPLY_TITLE' | translate }}
+    <h3 id="certificate-dialog-apply-title" class="certificate-modal-title-row">
+      <span *ngIf="selected.icon" class="certificate-modal-title-icon" aria-hidden="true">{{
+        selected.icon
+      }}</span>
+      <span class="certificate-modal-title-text">
+        {{ selectedDisplayTitle }} —
+        {{ 'CERTIFICATE.APPLY_TITLE' | translate }}
+      </span>
     </h3>
-    <p class="sub">{{ 'CERTIFICATE.APPLY_SUB' | translate }}</p>
+    <p class="certificate-modal-intro">
+      <ng-container *ngIf="selectedDisplayDescription; else defaultApplyIntro">{{ selectedDisplayDescription }}</ng-container>
+      <ng-template #defaultApplyIntro>{{ 'CERTIFICATE.APPLY_SUB' | translate }}</ng-template>
+    </p>
+
+    <h4 *ngIf="selectedExtraSectionTitle as extraHead" class="certificate-modal-subhead">{{ extraHead }}</h4>
 
     <div *ngIf="selected.docKeys?.length" class="certificate-req-docs">
       <div class="certificate-req-docs-label">{{ 'CERTIFICATE.REQ_DOCS' | translate }}</div>
@@ -26,11 +37,7 @@
       </ul>
     </div>
 
-    <ng-container *ngIf="selected.uploadKeys?.length">
-      <p class="certificate-upload-hint-top">{{ 'CERTIFICATE.UPLOADS_INTRO' | translate }}</p>
-    </ng-container>
-
-    <div class="fg">
+    <div class="certificate-modal-field-group">
       <label for="certificate-apply-name">{{ 'CERTIFICATE.LABEL_NAME' | translate }} <span class="req">*</span></label>
       <input
         id="certificate-apply-name"
@@ -45,8 +52,8 @@
         {{ applyFieldErrors['name'] | translate }}
       </p>
     </div>
-    <div class="fr">
-      <div class="fg">
+    <div class="certificate-modal-fields-row">
+      <div class="certificate-modal-field-group">
         <label for="certificate-apply-phone">{{ 'CERTIFICATE.LABEL_PHONE' | translate }} <span class="req">*</span></label>
         <input
           id="certificate-apply-phone"
@@ -63,7 +70,7 @@
           {{ applyFieldErrors['phone'] | translate }}
         </p>
       </div>
-      <div class="fg">
+      <div class="certificate-modal-field-group">
         <label for="certificate-apply-purpose">{{ 'CERTIFICATE.LABEL_PURPOSE' | translate }} <span class="req">*</span></label>
         <select
           id="certificate-apply-purpose"
@@ -80,7 +87,16 @@
         </p>
       </div>
     </div>
-    <div class="fg">
+    <div class="certificate-modal-field-group">
+      <label for="certificate-apply-purpose-details">{{ 'CERTIFICATE.LABEL_PURPOSE_DETAILS' | translate }}</label>
+      <textarea
+        id="certificate-apply-purpose-details"
+        [(ngModel)]="certificateApplicationForm.purposeDetails"
+        name="aPurposeDetails"
+        rows="3"
+        [placeholder]="'CERTIFICATE.PH_PURPOSE_DETAILS' | translate"></textarea>
+    </div>
+    <div class="certificate-modal-field-group">
       <label for="certificate-apply-address">{{ 'CERTIFICATE.LABEL_ADDRESS' | translate }}</label>
       <textarea
         id="certificate-apply-address"
@@ -90,29 +106,52 @@
         [placeholder]="'CERTIFICATE.PH_ADDRESS' | translate"></textarea>
     </div>
 
-    <div *ngIf="selected.uploadKeys?.length" class="certificate-uploads">
-      <div class="certificate-req-docs-label">{{ 'CERTIFICATE.UPLOADS_SECTION' | translate }}</div>
+    <div *ngIf="selected.uploadKeys?.length" class="certificate-upload-panel">
+      <div class="certificate-upload-panel-title">{{ 'CERTIFICATE.UPLOAD_PANEL_TITLE' | translate }}</div>
+      <p class="certificate-upload-panel-lead">{{ 'CERTIFICATE.UPLOADS_INTRO' | translate }}</p>
       <p class="certificate-upload-hint">{{ 'CERTIFICATE.UPLOADS_OPTIONAL' | translate }}</p>
-      <div class="fg" *ngFor="let uk of selected.uploadKeys; let uidx = index">
-        <label [attr.for]="'certificate-apply-up-' + uidx">{{ uk | translate }}</label>
-        <input
-          [id]="'certificate-apply-up-' + uidx"
-          type="file"
-          [attr.accept]="'image/*,application/pdf'"
-          (change)="onApplyFile(uk, $event)" />
+      <div *ngFor="let uk of selected.uploadKeys; let uidx = index" class="certificate-upload-slot">
+        <div class="certificate-upload-slot-label">📄 {{ uk | translate }}</div>
+        <label [attr.for]="'certificate-apply-up-' + uidx" class="certificate-upload-dashed">
+          <span class="certificate-upload-dashed-icon">📎</span>
+          <span class="certificate-upload-dashed-pick">{{ 'CERTIFICATE.UPLOAD_PICK_FILE' | translate }}</span>
+          <span class="certificate-upload-dashed-meta">{{ 'CERTIFICATE.UPLOAD_META' | translate }}</span>
+          <input
+            [id]="'certificate-apply-up-' + uidx"
+            type="file"
+            class="certificate-upload-hidden-input"
+            accept="image/*,.pdf"
+            capture="environment"
+            (change)="onApplyFile(uk, $event)" />
+        </label>
+        <p *ngIf="applyFiles[uk] as f" class="certificate-upload-picked">✓ {{ f.name }}</p>
       </div>
+      <p class="certificate-upload-rules">
+        {{ 'CERTIFICATE.UPLOAD_HINT_1' | translate }}<br />
+        {{ 'CERTIFICATE.UPLOAD_HINT_2' | translate }}<br />
+        {{ 'CERTIFICATE.UPLOAD_HINT_3' | translate }}
+      </p>
+      <p *ngIf="uploadErrorKey" class="certificate-field-err" role="alert">{{ uploadErrorKey | translate }}</p>
     </div>
 
     <div class="certificate-fee-summary">
+      <div class="row" *ngIf="selected.estimatedDaysTxt">
+        <span>{{ 'CERTIFICATE.ESTIMATED_TIME_LABEL' | translate }}</span>
+        <strong>{{ selected.estimatedDaysTxt }}</strong>
+      </div>
+      <div class="sep" *ngIf="selected.estimatedDaysTxt"></div>
       <div class="row">
         <span>{{ 'CERTIFICATE.FEE_LABEL' | translate }}</span>
-        <strong>{{ selected.fee > 0 ? ('₹' + selected.fee) : ('CERTIFICATE.FREE' | translate) }}</strong>
+        <strong>{{ selected.feeAmount > 0 ? ('₹' + selected.feeAmount) : ('CERTIFICATE.FREE' | translate) }}</strong>
+      </div>
+      <div class="row certificate-fee-summary-catalog-note" *ngIf="showsCatalogDefaultVersusTenantFee">
+        <span>{{ 'CERTIFICATE.FEE_CATALOG_DEFAULT' | translate: { amount: selected.defaultFeeAmount } }}</span>
       </div>
       <div class="sep"></div>
       <div class="row certificate-fee-summary-row-total">
         <span class="certificate-fee-summary-total-label">{{ 'CERTIFICATE.TOTAL_LABEL' | translate }}</span>
         <strong class="certificate-fee-summary-total-value">{{
-          selected.fee > 0 ? ('₹' + selected.fee) : ('CERTIFICATE.FREE' | translate)
+          selected.feeAmount > 0 ? ('₹' + selected.feeAmount) : ('CERTIFICATE.FREE' | translate)
         }}</strong>
       </div>
     </div>

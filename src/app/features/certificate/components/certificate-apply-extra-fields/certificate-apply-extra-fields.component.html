@@ -1,0 +1,9 @@
+<!--
+  Reserved for certificate-specific fields.
+  Option A: Render from API `certificate_type_field` (recommended).
+  Option B: Restore legacy ngSwitch blocks keyed by `normalized` when needed.
+  Modal does not include this component yet — see CertificateApplyModalComponent.
+-->
+<ng-container *ngIf="normalized">
+  <!-- Intentionally empty until API integration. -->
+</ng-container>

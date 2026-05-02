@@ -15,9 +15,9 @@
       ✕
     </button>
     <h3 id="certificate-dialog-complaint-title">{{ 'CERTIFICATE.COMPLAINT_TITLE' | translate }}</h3>
-    <p class="sub">{{ 'CERTIFICATE.COMPLAINT_SUB' | translate }}</p>
+    <p class="certificate-modal-intro">{{ 'CERTIFICATE.COMPLAINT_SUB' | translate }}</p>
 
-    <div class="fg">
+    <div class="certificate-modal-field-group">
       <label for="certificate-complaint-name">{{ 'CERTIFICATE.LABEL_NAME' | translate }} <span class="req">*</span></label>
       <input
         id="certificate-complaint-name"
@@ -31,7 +31,7 @@
         {{ complaintFieldErrors['name'] | translate }}
       </p>
     </div>
-    <div class="fg">
+    <div class="certificate-modal-field-group">
       <label for="certificate-complaint-phone">{{ 'CERTIFICATE.LABEL_PHONE' | translate }} <span class="req">*</span></label>
       <input
         id="certificate-complaint-phone"
@@ -47,7 +47,7 @@
         {{ complaintFieldErrors['phone'] | translate }}
       </p>
     </div>
-    <div class="fg">
+    <div class="certificate-modal-field-group">
       <label for="certificate-complaint-subject">{{ 'CERTIFICATE.LABEL_SUBJECT' | translate }} <span class="req">*</span></label>
       <select
         id="certificate-complaint-subject"
@@ -63,11 +63,11 @@
         {{ complaintFieldErrors['subject'] | translate }}
       </p>
     </div>
-    <div class="fg">
+    <div class="certificate-modal-field-group">
       <label for="certificate-complaint-location">{{ 'CERTIFICATE.LABEL_LOCATION' | translate }}</label>
       <input id="certificate-complaint-location" type="text" [(ngModel)]="complaintForm.location" name="cLoc" />
     </div>
-    <div class="fg">
+    <div class="certificate-modal-field-group">
       <label for="certificate-complaint-details">{{ 'CERTIFICATE.LABEL_DETAILS' | translate }} <span class="req">*</span></label>
       <textarea
         id="certificate-complaint-details"
@@ -84,7 +84,7 @@
 
     <div *ngIf="sourceRow.uploadKeys?.length" class="certificate-uploads">
       <p class="certificate-upload-hint">{{ 'CERTIFICATE.COMPLAINT_UPLOAD_HINT' | translate }}</p>
-      <div class="fg">
+      <div class="certificate-modal-field-group">
         <label for="certificate-complaint-file">{{ 'CERTIFICATE.UPLOADS.COMPLAINT_EVIDENCE' | translate }}</label>
         <input
           id="certificate-complaint-file"

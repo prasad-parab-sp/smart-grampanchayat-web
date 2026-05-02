@@ -2,16 +2,16 @@
   <div class="certificate-row-icon" aria-hidden="true">{{ row.icon }}</div>
   <div class="certificate-row-text">
     <div class="certificate-row-titleline">
-      <h4>{{ row.nameKey | translate }}</h4>
+      <h4>{{ displayTitle() }}</h4>
       <span *ngIf="row.isComplaint" class="certificate-row-badge">
         {{ 'CERTIFICATE.BADGE_COMPLAINT' | translate }}
       </span>
     </div>
-    <p>{{ row.descKey | translate }}</p>
+    <p>{{ displayDescription() }}</p>
     <div class="certificate-row-fee">
-      <ng-container *ngIf="row.fee > 0; else feeFree">
+      <ng-container *ngIf="row.feeAmount > 0; else feeFree">
         <span class="certificate-fee-amount">
-          {{ 'CERTIFICATE.FEE_AMOUNT' | translate: { amount: row.fee } }}
+          {{ 'CERTIFICATE.FEE_AMOUNT' | translate: { amount: row.feeAmount } }}
         </span>
       </ng-container>
       <ng-template #feeFree>
@@ -19,12 +19,20 @@
           'CERTIFICATE.FREE' | translate
         }}</span>
       </ng-template>
+      <ng-container *ngIf="showsCatalogDefaultVersusTenantFee()">
+        <span class="certificate-fee-sep" aria-hidden="true">·</span>
+        <span class="certificate-fee-catalog-default">{{
+          'CERTIFICATE.FEE_CATALOG_DEFAULT' | translate: { amount: row.defaultFeeAmount }
+        }}</span>
+      </ng-container>
       <span class="certificate-fee-sep" aria-hidden="true">·</span>
       <ng-container *ngIf="row.isComplaint">
         <span class="certificate-fee-meta">{{ 'CERTIFICATE.FEE_TAIL_WHATSAPP' | translate }}</span>
       </ng-container>
       <ng-container *ngIf="!row.isComplaint">
-        <span class="certificate-fee-meta">{{ row.daysKey | translate }}</span>
+        <span class="certificate-fee-meta">{{
+          row.estimatedDaysTxt || ('CERTIFICATE.DAYS.DASH' | translate)
+        }}</span>
       </ng-container>
     </div>
   </div>

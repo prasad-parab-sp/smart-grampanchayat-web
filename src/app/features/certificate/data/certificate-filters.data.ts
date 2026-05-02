@@ -1,26 +1,38 @@
-/** Quick filter chip for the certificate list (nameKey allow-list; `all` = no filter). */
+import { CertificateTypeCategory } from '../../../core/certificate-type.models';
+import type { CertificateCatalogCategory } from './certificate-catalog.data';
+
+/** Quick filter chip: optional {@link codes} / {@link nameKeys}, optional categories; `all` = none. */
 export interface CertificateFilterPreset {
   id: string;
   labelKey: string;
-  nameKeys: string[];
+  /** API {@link CertificateCatalogTypeRow#code} values. */
+  codes?: string[];
+  /** Legacy allow-list keys (rare). */
+  nameKeys?: string[];
+  categories?: CertificateCatalogCategory[];
 }
 
-export const CERTIFICATE_FILTER_PRESETS: CertificateFilterPreset[] = [
-  { id: 'all', labelKey: 'CERTIFICATE.FILTER_ALL', nameKeys: [] },
+/** Presets aligned with {@code CertificateTypeCategory} from the API. */
+export const CERTIFICATE_API_FILTER_PRESETS: CertificateFilterPreset[] = [
+  { id: 'all', labelKey: 'CERTIFICATE.FILTER_ALL' },
   {
-    id: 'birth',
-    labelKey: 'CERTIFICATE.FILTER_BIRTH',
-    nameKeys: ['CERTIFICATE.TYPES.BIRTH_CERT.NAME', 'CERTIFICATE.TYPES.REG_BIRTH.NAME']
+    id: 'cat_CERTIFICATE',
+    labelKey: 'CERTIFICATE.SECTION.CERTIFICATES',
+    categories: [CertificateTypeCategory.CERTIFICATE]
   },
   {
-    id: 'death',
-    labelKey: 'CERTIFICATE.FILTER_DEATH',
-    nameKeys: ['CERTIFICATE.TYPES.DEATH_CERT.NAME', 'CERTIFICATE.TYPES.REG_DEATH.NAME']
+    id: 'cat_REGISTRATION',
+    labelKey: 'CERTIFICATE.SECTION.REGISTRATION',
+    categories: [CertificateTypeCategory.REGISTRATION]
   },
-  { id: 'income', labelKey: 'CERTIFICATE.FILTER_INCOME', nameKeys: ['CERTIFICATE.TYPES.INCOME_CERT.NAME'] },
   {
-    id: 'complaint',
-    labelKey: 'CERTIFICATE.FILTER_COMPLAINT',
-    nameKeys: ['CERTIFICATE.TYPES.COMPLAINT.NAME']
+    id: 'cat_PERMISSIONS',
+    labelKey: 'CERTIFICATE.SECTION.LICENSE',
+    categories: [CertificateTypeCategory.PERMISSIONS]
+  },
+  {
+    id: 'cat_OTHERS',
+    labelKey: 'CERTIFICATE.SECTION.OTHER',
+    categories: [CertificateTypeCategory.OTHERS]
   }
 ];

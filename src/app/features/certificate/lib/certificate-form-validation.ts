@@ -6,6 +6,8 @@ export interface CertificateApplyFormModel {
   name: string;
   phone: string;
   purpose: string;
+  /** Free-text explanation to supplement the purpose category (optional). */
+  purposeDetails: string;
   address: string;
 }
 
@@ -77,7 +79,7 @@ export function validateCertificateComplaint(form: CertificateComplaintFormModel
   return { ok, errors };
 }
 
-export interface CertificateSuchanaFormModel {
+export interface CertificateSuggestionsFormModel {
   name: string;
   phone: string;
   category: string;
@@ -85,15 +87,15 @@ export interface CertificateSuchanaFormModel {
   benefit: string;
 }
 
-export type CertificateSuchanaFieldErrors = Partial<
+export type CertificateSuggestionsFieldErrors = Partial<
   Record<'name' | 'phone' | 'category' | 'details', string | undefined>
 >;
 
-export function validateCertificateSuchana(form: CertificateSuchanaFormModel): {
+export function validateCertificateSuggestions(form: CertificateSuggestionsFormModel): {
   ok: boolean;
-  errors: CertificateSuchanaFieldErrors;
+  errors: CertificateSuggestionsFieldErrors;
 } {
-  const errors: CertificateSuchanaFieldErrors = {};
+  const errors: CertificateSuggestionsFieldErrors = {};
   let ok = true;
   if (!form.name.trim()) {
     errors.name = 'CERTIFICATE.ERR_NAME_REQUIRED';

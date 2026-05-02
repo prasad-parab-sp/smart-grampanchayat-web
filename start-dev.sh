@@ -13,9 +13,7 @@ fi
 
 echo "🚀 Starting development server..."
 echo "📱 Open http://localhost:4200 in your browser"
-echo "🔑 Login credentials:"
-echo "   Admin: 'admin' or 'SMART@123'"
-echo "   Citizen: Any 10-digit mobile number (e.g., 9876543210)"
+echo "🔑 Login: registered 10-digit mobile (e.g., 9876543210)"
 echo ""
 
 # Start the Angular development server

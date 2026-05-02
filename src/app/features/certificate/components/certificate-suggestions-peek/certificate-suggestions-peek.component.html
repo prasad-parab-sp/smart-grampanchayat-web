@@ -1,0 +1,15 @@
+<section class="certificate-suggestions-peek card" [attr.aria-label]="'CERTIFICATE.SUGGESTIONS_PEEK_ARIA' | translate">
+  <div class="certificate-suggestions-peek-text">
+    <span class="certificate-suggestions-peek-icon" aria-hidden="true">💡</span>
+    <div>
+      <div class="certificate-suggestions-peek-line">{{ 'CERTIFICATE.SUGGESTIONS_PEEK' | translate }}</div>
+      <button
+        *ngIf="showCta"
+        type="button"
+        class="certificate-suggestions-peek-link"
+        (click)="scrollToCard.emit()">
+        {{ 'CERTIFICATE.SUGGESTIONS_PEEK_CTA' | translate }}
+      </button>
+    </div>
+  </div>
+</section>

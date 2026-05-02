@@ -1,0 +1,99 @@
+<div class="certificate-modal-backdrop" (click)="onBackdropClick()">
+  <div
+    #panel
+    class="certificate-modal-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="certificate-dialog-suggestions-title"
+    (click)="onPanelClick($event)">
+    <button
+      #closeBtn
+      type="button"
+      class="certificate-modal-close"
+      (click)="close()"
+      [attr.aria-label]="'COMMON.CLOSE' | translate">
+      ✕
+    </button>
+    <h3 id="certificate-dialog-suggestions-title">{{ 'CERTIFICATE.SUGGESTIONS_MODAL_TITLE' | translate }}</h3>
+    <p class="certificate-modal-intro">{{ 'CERTIFICATE.SUGGESTIONS_MODAL_SUB' | translate }}</p>
+
+    <div class="certificate-suggestions-banner">
+      <div class="certificate-suggestions-banner-title">{{ 'CERTIFICATE.SUGGESTIONS_HEAD' | translate }}</div>
+      <p class="certificate-suggestions-banner-text">{{ 'CERTIFICATE.SUGGESTIONS_MODAL_HINT' | translate }}</p>
+    </div>
+
+    <div class="certificate-modal-field-group">
+      <label for="certificate-suggestions-name">{{ 'CERTIFICATE.LABEL_NAME' | translate }} <span class="req">*</span></label>
+      <input
+        id="certificate-suggestions-name"
+        type="text"
+        [(ngModel)]="suggestionsForm.name"
+        name="sName"
+        required
+        aria-required="true"
+        [attr.aria-invalid]="suggestionsFieldErrors['name'] ? 'true' : null" />
+      <p *ngIf="suggestionsFieldErrors['name']" class="certificate-field-err" role="alert">
+        {{ suggestionsFieldErrors['name'] | translate }}
+      </p>
+    </div>
+    <div class="certificate-modal-field-group">
+      <label for="certificate-suggestions-phone">{{ 'CERTIFICATE.LABEL_PHONE' | translate }} <span class="req">*</span></label>
+      <input
+        id="certificate-suggestions-phone"
+        type="tel"
+        [(ngModel)]="suggestionsForm.phone"
+        name="sPhone"
+        maxlength="10"
+        inputmode="numeric"
+        required
+        aria-required="true"
+        [attr.aria-invalid]="suggestionsFieldErrors['phone'] ? 'true' : null" />
+      <p *ngIf="suggestionsFieldErrors['phone']" class="certificate-field-err" role="alert">
+        {{ suggestionsFieldErrors['phone'] | translate }}
+      </p>
+    </div>
+    <div class="certificate-modal-field-group">
+      <label for="certificate-suggestions-category">{{ 'CERTIFICATE.LABEL_SUGGESTIONS_TYPE' | translate }} <span class="req">*</span></label>
+      <select
+        id="certificate-suggestions-category"
+        [(ngModel)]="suggestionsForm.category"
+        name="sCat"
+        required
+        aria-required="true"
+        [attr.aria-invalid]="suggestionsFieldErrors['category'] ? 'true' : null">
+        <option value="">{{ 'CERTIFICATE.PURPOSE_PICK' | translate }}</option>
+        <option *ngFor="let c of suggestionsCategoryKeys" [value]="c">{{ c | translate }}</option>
+      </select>
+      <p *ngIf="suggestionsFieldErrors['category']" class="certificate-field-err" role="alert">
+        {{ suggestionsFieldErrors['category'] | translate }}
+      </p>
+    </div>
+    <div class="certificate-modal-field-group">
+      <label for="certificate-suggestions-details">{{ 'CERTIFICATE.LABEL_SUGGESTIONS_DETAIL' | translate }} <span class="req">*</span></label>
+      <textarea
+        id="certificate-suggestions-details"
+        [(ngModel)]="suggestionsForm.details"
+        name="sDet"
+        rows="5"
+        required
+        aria-required="true"
+        [attr.aria-invalid]="suggestionsFieldErrors['details'] ? 'true' : null"></textarea>
+      <p *ngIf="suggestionsFieldErrors['details']" class="certificate-field-err" role="alert">
+        {{ suggestionsFieldErrors['details'] | translate }}
+      </p>
+    </div>
+    <div class="certificate-modal-field-group">
+      <label for="certificate-suggestions-benefit">{{ 'CERTIFICATE.LABEL_SUGGESTIONS_BENEFIT' | translate }}</label>
+      <input id="certificate-suggestions-benefit" type="text" [(ngModel)]="suggestionsForm.benefit" name="sBen" />
+    </div>
+
+    <div class="certificate-modal-actions">
+      <button type="button" class="btn btn-o" (click)="close()">
+        {{ 'CERTIFICATE.CANCEL' | translate }}
+      </button>
+      <button type="button" class="btn btn-g" (click)="submit()">
+        {{ 'CERTIFICATE.SUBMIT_SUGGESTIONS' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

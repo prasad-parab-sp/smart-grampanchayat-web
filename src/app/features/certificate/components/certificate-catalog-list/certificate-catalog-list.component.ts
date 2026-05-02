@@ -7,7 +7,7 @@ import {
   Output,
   TrackByFunction
 } from '@angular/core';
-import { CertificateCatalogRow, CertificateListItem, isCertificateSectionHeader } from '../../data/certificate-catalog.data';
+import { CertificateCatalogRow, CertificateListItem, isCertificateSectionRow } from '../../data/certificate-catalog.data';
 import { CertificateRowComponent } from '../certificate-row/certificate-row.component';
 import { CertificateSectionHeadComponent } from '../certificate-section-head/certificate-section-head.component';
 
@@ -24,5 +24,5 @@ export class CertificateCatalogListComponent {
   @Input({ required: true }) trackByRow!: TrackByFunction<CertificateCatalogRow>;
   @Output() readonly openItem = new EventEmitter<CertificateListItem>();
 
-  readonly isCertificateSectionHeader = isCertificateSectionHeader;
+  readonly isCertificateSectionRow = isCertificateSectionRow;
 }

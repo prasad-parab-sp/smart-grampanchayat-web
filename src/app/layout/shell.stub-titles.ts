@@ -9,6 +9,6 @@ export const STUB_SLUG_TO_TITLE: Record<string, string> = {
   yojana: 'HOME.QL_YOJANA_TITLE',
   gramjan: 'HOME.QL_GRAMJAN_TITLE',
   labha: 'HOME.QL_LABHA_TITLE',
-  suchana: 'HOME.QL_SUCHANA_TITLE',
+  suggestions: 'HOME.QL_SUGGESTIONS_TITLE',
   complaint: 'HOME.QL_COMPLAINT_TITLE'
 };

@@ -27,8 +27,8 @@
     </button>
   </div>
   <div class="gram-header-user-badge">
-    @if (welcomeNameForBadge) {
-      {{ 'HOME.WELCOME_BADGE' | translate: { name: welcomeNameForBadge } }}
+    @if (badgeNameForHeader) {
+      {{ 'HOME.WELCOME_BADGE' | translate: { name: badgeNameForHeader } }}
     } @else {
       {{ 'HOME.USER_BADGE' | translate }}
     }
