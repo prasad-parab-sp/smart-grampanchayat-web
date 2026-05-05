@@ -8,14 +8,9 @@ import {
 } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import {
-  CertificateCatalogRow,
-  CertificateListItem,
-  isCertificateSectionRow
-} from '../../data/certificate-catalog.data';
-import { buildCertificateDisplayRows } from '../../lib/certificate-catalog-filter';
 import { CERTIFICATE_API_FILTER_PRESETS } from '../../data/certificate-filters.data';
-import { mapCertificateTypesToCatalogRows } from '../../lib/certificate-api-mapper';
+import { buildCertificateDisplayRows } from '../../lib/certificate-catalog-filter';
+import { sortAndFilterCertificateTypesForCatalog } from '../../lib/certificate-api-mapper';
 import { CertificateTypeService } from '../../../../core/certificate-type.service';
 import { CertificateTypeDto } from '../../../../core/certificate-type.models';
 import { I18nService } from '../../../../i18n/i18n.service';
@@ -47,7 +42,7 @@ import { collectFocusableElements } from '../../lib/modal-focusables';
   styleUrls: ['./certificate.component.scss']
 })
 export class CertificateComponent implements OnInit, OnDestroy {
-  rows: CertificateCatalogRow[] = [];
+  rows: CertificateTypeDto[] = [];
   readonly filterPresets = CERTIFICATE_API_FILTER_PRESETS;
 
   catalogLoading = false;
@@ -60,7 +55,7 @@ export class CertificateComponent implements OnInit, OnDestroy {
 
   certificateApplyModalOpen = false;
 
-  selected: CertificateListItem | null = null;
+  selected: CertificateTypeDto | null = null;
 
   submitMessage: string | null = null;
 
@@ -77,7 +72,7 @@ export class CertificateComponent implements OnInit, OnDestroy {
     private readonly i18n: I18nService
   ) {}
 
-  get displayRows(): CertificateCatalogRow[] {
+  get displayRows(): CertificateTypeDto[] {
     return buildCertificateDisplayRows(
       this.rows,
       this.filterPresets,
@@ -91,11 +86,8 @@ export class CertificateComponent implements OnInit, OnDestroy {
     this.activeFilter = id;
   }
 
-  trackRow(_index: number, row: CertificateCatalogRow): string {
-    if (isCertificateSectionRow(row)) {
-      return 'h:' + row.titleKey;
-    }
-    return 't:' + (row as CertificateListItem).id;
+  trackRow(_index: number, row: CertificateTypeDto): string {
+    return 't:' + row.id;
   }
 
   ngOnInit(): void {
@@ -124,7 +116,8 @@ export class CertificateComponent implements OnInit, OnDestroy {
   }
 
   private rebuildRowsFromApiTypes(): void {
-    this.rows = mapCertificateTypesToCatalogRows(this.apiTypes);
+    // See {@link sortAndFilterCertificateTypesForCatalog}.
+    this.rows = sortAndFilterCertificateTypesForCatalog(this.apiTypes);
   }
 
   @HostListener('document:keydown', ['$event'])
@@ -220,7 +213,7 @@ export class CertificateComponent implements OnInit, OnDestroy {
     this.submitMessage = null;
   }
 
-  openRow(row: CertificateListItem): void {
+  openRow(row: CertificateTypeDto): void {
     this.submitMessage = null;
     this.clearToastTimer();
     this.stashFocus();

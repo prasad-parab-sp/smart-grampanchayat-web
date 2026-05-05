@@ -30,109 +30,141 @@
 
     <h4 *ngIf="selectedExtraSectionTitle as extraHead" class="certificate-modal-subhead">{{ extraHead }}</h4>
 
-    <div *ngIf="selected.docKeys?.length" class="certificate-req-docs">
-      <div class="certificate-req-docs-label">{{ 'CERTIFICATE.REQ_DOCS' | translate }}</div>
-      <ul>
-        <li *ngFor="let d of selected.docKeys">{{ d | translate }}</li>
-      </ul>
-    </div>
-
-    <div class="certificate-modal-field-group">
-      <label for="certificate-apply-name">{{ 'CERTIFICATE.LABEL_NAME' | translate }} <span class="req">*</span></label>
-      <input
-        id="certificate-apply-name"
-        type="text"
-        [(ngModel)]="certificateApplicationForm.name"
-        name="aName"
-        required
-        aria-required="true"
-        [attr.aria-invalid]="applyFieldErrors['name'] ? 'true' : null"
-        [placeholder]="'CERTIFICATE.PH_NAME' | translate" />
-      <p *ngIf="applyFieldErrors['name']" class="certificate-field-err" role="alert">
-        {{ applyFieldErrors['name'] | translate }}
-      </p>
-    </div>
-    <div class="certificate-modal-fields-row">
+    <div [formGroup]="applyForm">
       <div class="certificate-modal-field-group">
-        <label for="certificate-apply-phone">{{ 'CERTIFICATE.LABEL_PHONE' | translate }} <span class="req">*</span></label>
+        <label for="certificate-apply-name">{{ 'CERTIFICATE.LABEL_NAME' | translate }} <span class="req">*</span></label>
         <input
-          id="certificate-apply-phone"
-          type="tel"
-          [(ngModel)]="certificateApplicationForm.phone"
-          name="aPhone"
-          maxlength="10"
-          inputmode="numeric"
-          required
+          id="certificate-apply-name"
+          type="text"
+          formControlName="name"
           aria-required="true"
-          [attr.aria-invalid]="applyFieldErrors['phone'] ? 'true' : null"
-          [placeholder]="'CERTIFICATE.PH_PHONE' | translate" />
-        <p *ngIf="applyFieldErrors['phone']" class="certificate-field-err" role="alert">
-          {{ applyFieldErrors['phone'] | translate }}
+          [attr.aria-invalid]="applyFieldErrors['name'] ? 'true' : null"
+          [placeholder]="'CERTIFICATE.PH_NAME' | translate" />
+        <p *ngIf="applyFieldErrors['name']" class="certificate-field-err" role="alert">
+          {{ applyFieldErrors['name'] | translate }}
         </p>
+      </div>
+      <div class="certificate-modal-fields-row">
+        <div class="certificate-modal-field-group">
+          <label for="certificate-apply-phone">{{ 'CERTIFICATE.LABEL_PHONE' | translate }} <span class="req">*</span></label>
+          <input
+            id="certificate-apply-phone"
+            type="tel"
+            formControlName="phone"
+            maxlength="10"
+            inputmode="numeric"
+            aria-required="true"
+            [attr.aria-invalid]="applyFieldErrors['phone'] ? 'true' : null"
+            [placeholder]="'CERTIFICATE.PH_PHONE' | translate" />
+          <p *ngIf="applyFieldErrors['phone']" class="certificate-field-err" role="alert">
+            {{ applyFieldErrors['phone'] | translate }}
+          </p>
+        </div>
+        <div class="certificate-modal-field-group">
+          <label for="certificate-apply-purpose">{{ 'CERTIFICATE.LABEL_PURPOSE' | translate }} <span class="req">*</span></label>
+          <select
+            id="certificate-apply-purpose"
+            formControlName="purpose"
+            aria-required="true"
+            [attr.aria-invalid]="applyFieldErrors['purpose'] ? 'true' : null">
+            <option value="">{{ 'CERTIFICATE.PURPOSE_PICK' | translate }}</option>
+            <option *ngFor="let p of applyPurposeKeys" [value]="p">{{ p | translate }}</option>
+          </select>
+          <p *ngIf="applyFieldErrors['purpose']" class="certificate-field-err" role="alert">
+            {{ applyFieldErrors['purpose'] | translate }}
+          </p>
+        </div>
       </div>
       <div class="certificate-modal-field-group">
-        <label for="certificate-apply-purpose">{{ 'CERTIFICATE.LABEL_PURPOSE' | translate }} <span class="req">*</span></label>
-        <select
-          id="certificate-apply-purpose"
-          [(ngModel)]="certificateApplicationForm.purpose"
-          name="aPurpose"
-          required
-          aria-required="true"
-          [attr.aria-invalid]="applyFieldErrors['purpose'] ? 'true' : null">
-          <option value="">{{ 'CERTIFICATE.PURPOSE_PICK' | translate }}</option>
-          <option *ngFor="let p of applyPurposeKeys" [value]="p">{{ p | translate }}</option>
-        </select>
-        <p *ngIf="applyFieldErrors['purpose']" class="certificate-field-err" role="alert">
-          {{ applyFieldErrors['purpose'] | translate }}
-        </p>
+        <label for="certificate-apply-purpose-details">{{ 'CERTIFICATE.LABEL_PURPOSE_DETAILS' | translate }}</label>
+        <textarea
+          id="certificate-apply-purpose-details"
+          formControlName="purposeDetails"
+          rows="3"
+          [placeholder]="'CERTIFICATE.PH_PURPOSE_DETAILS' | translate"></textarea>
       </div>
-    </div>
-    <div class="certificate-modal-field-group">
-      <label for="certificate-apply-purpose-details">{{ 'CERTIFICATE.LABEL_PURPOSE_DETAILS' | translate }}</label>
-      <textarea
-        id="certificate-apply-purpose-details"
-        [(ngModel)]="certificateApplicationForm.purposeDetails"
-        name="aPurposeDetails"
-        rows="3"
-        [placeholder]="'CERTIFICATE.PH_PURPOSE_DETAILS' | translate"></textarea>
-    </div>
-    <div class="certificate-modal-field-group">
-      <label for="certificate-apply-address">{{ 'CERTIFICATE.LABEL_ADDRESS' | translate }}</label>
-      <textarea
-        id="certificate-apply-address"
-        [(ngModel)]="certificateApplicationForm.address"
-        name="aAddr"
-        rows="2"
-        [placeholder]="'CERTIFICATE.PH_ADDRESS' | translate"></textarea>
+      <div class="certificate-modal-field-group">
+        <label for="certificate-apply-address">{{ 'CERTIFICATE.LABEL_ADDRESS' | translate }}</label>
+        <textarea
+          id="certificate-apply-address"
+          formControlName="address"
+          rows="2"
+          [placeholder]="'CERTIFICATE.PH_ADDRESS' | translate"></textarea>
+      </div>
+
+      <div formGroupName="extra">
+        <ng-container *ngFor="let f of extraInputFields; trackBy: trackExtraField">
+          <div class="certificate-modal-field-group">
+            <label [attr.for]="'certificate-extra-' + f.fieldKey">
+              {{ labelFor(f) }}
+              <span *ngIf="f.required" class="req">*</span>
+            </label>
+            <ng-container [ngSwitch]="f.dataType">
+              <input
+                *ngSwitchCase="'TEXT'"
+                [id]="'certificate-extra-' + f.fieldKey"
+                type="text"
+                [formControlName]="f.fieldKey"
+                [placeholder]="placeholderFor(f)"
+                [attr.aria-required]="f.required ? 'true' : null"
+                [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null" />
+              <textarea
+                *ngSwitchCase="'TEXTAREA'"
+                [id]="'certificate-extra-' + f.fieldKey"
+                [formControlName]="f.fieldKey"
+                rows="3"
+                [placeholder]="placeholderFor(f)"
+                [attr.aria-required]="f.required ? 'true' : null"
+                [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null"></textarea>
+              <input
+                *ngSwitchCase="'DATE'"
+                [id]="'certificate-extra-' + f.fieldKey"
+                type="date"
+                [formControlName]="f.fieldKey"
+                [attr.aria-required]="f.required ? 'true' : null"
+                [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null" />
+              <input
+                *ngSwitchCase="'NUMBER'"
+                [id]="'certificate-extra-' + f.fieldKey"
+                type="number"
+                step="any"
+                [formControlName]="f.fieldKey"
+                [placeholder]="placeholderFor(f)"
+                [attr.aria-required]="f.required ? 'true' : null"
+                [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null" />
+              <select
+                *ngSwitchCase="'SELECT'"
+                [id]="'certificate-extra-' + f.fieldKey"
+                [formControlName]="f.fieldKey"
+                [attr.aria-required]="f.required ? 'true' : null"
+                [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null">
+                <option value="">{{ 'CERTIFICATE.PURPOSE_PICK' | translate }}</option>
+                <option *ngFor="let opt of selectOptionsFor(f)" [value]="opt.value">{{ opt.label }}</option>
+              </select>
+              <input
+                *ngSwitchDefault
+                [id]="'certificate-extra-' + f.fieldKey"
+                type="text"
+                [formControlName]="f.fieldKey"
+                [placeholder]="placeholderFor(f)"
+                [attr.aria-required]="f.required ? 'true' : null"
+                [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null" />
+            </ng-container>
+            <p *ngIf="helpFor(f) as hint" class="certificate-modal-help">{{ hint }}</p>
+            <p *ngIf="extraFieldErrors[f.fieldKey] as errKey" class="certificate-field-err" role="alert">
+              {{ errKey | translate }}
+            </p>
+          </div>
+        </ng-container>
+      </div>
     </div>
 
-    <div *ngIf="selected.uploadKeys?.length" class="certificate-upload-panel">
-      <div class="certificate-upload-panel-title">{{ 'CERTIFICATE.UPLOAD_PANEL_TITLE' | translate }}</div>
-      <p class="certificate-upload-panel-lead">{{ 'CERTIFICATE.UPLOADS_INTRO' | translate }}</p>
-      <p class="certificate-upload-hint">{{ 'CERTIFICATE.UPLOADS_OPTIONAL' | translate }}</p>
-      <div *ngFor="let uk of selected.uploadKeys; let uidx = index" class="certificate-upload-slot">
-        <div class="certificate-upload-slot-label">📄 {{ uk | translate }}</div>
-        <label [attr.for]="'certificate-apply-up-' + uidx" class="certificate-upload-dashed">
-          <span class="certificate-upload-dashed-icon">📎</span>
-          <span class="certificate-upload-dashed-pick">{{ 'CERTIFICATE.UPLOAD_PICK_FILE' | translate }}</span>
-          <span class="certificate-upload-dashed-meta">{{ 'CERTIFICATE.UPLOAD_META' | translate }}</span>
-          <input
-            [id]="'certificate-apply-up-' + uidx"
-            type="file"
-            class="certificate-upload-hidden-input"
-            accept="image/*,.pdf"
-            capture="environment"
-            (change)="onApplyFile(uk, $event)" />
-        </label>
-        <p *ngIf="applyFiles[uk] as f" class="certificate-upload-picked">✓ {{ f.name }}</p>
-      </div>
-      <p class="certificate-upload-rules">
-        {{ 'CERTIFICATE.UPLOAD_HINT_1' | translate }}<br />
-        {{ 'CERTIFICATE.UPLOAD_HINT_2' | translate }}<br />
-        {{ 'CERTIFICATE.UPLOAD_HINT_3' | translate }}
-      </p>
-      <p *ngIf="uploadErrorKey" class="certificate-field-err" role="alert">{{ uploadErrorKey | translate }}</p>
-    </div>
+    <app-certificate-apply-upload-panel
+      [fileFields]="extraFileFields"
+      [filesByKey]="applyFilesByKey"
+      [fieldErrors]="extraFieldErrors"
+      [uploadErrorKey]="uploadErrorKey"
+      (slotChange)="onUploadSlotChange($event)" />
 
     <div class="certificate-fee-summary">
       <div class="row" *ngIf="selected.estimatedDaysTxt">

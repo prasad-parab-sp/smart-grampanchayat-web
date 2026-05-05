@@ -1,15 +1,14 @@
 import { CertificateTypeCategory } from '../../../core/certificate-type.models';
-import type { CertificateCatalogCategory } from './certificate-catalog.data';
 
 /** Quick filter chip: optional {@link codes} / {@link nameKeys}, optional categories; `all` = none. */
 export interface CertificateFilterPreset {
   id: string;
   labelKey: string;
-  /** API {@link CertificateCatalogTypeRow#code} values. */
+  /** API {@link CertificateTypeDto#code} values. */
   codes?: string[];
   /** Legacy allow-list keys (rare). */
   nameKeys?: string[];
-  categories?: CertificateCatalogCategory[];
+  categories?: CertificateTypeCategory[];
 }
 
 /** Presets aligned with {@code CertificateTypeCategory} from the API. */

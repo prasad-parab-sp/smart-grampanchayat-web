@@ -11,13 +11,12 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import { prefillApplicantNameField } from '../../../../core/citizen-applicant-prefill';
-import { CitizenService } from '../../../../core/citizen.service';
 import { LoggedInCitizenService } from '../../../../core/logged-in-citizen.service';
+import { CertificateTypeDto } from '../../../../core/certificate-type.models';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { CertificateListItem } from '../../data/certificate-catalog.data';
 import { CERTIFICATE_COMPLAINT_SUBJECT_KEYS } from '../../data/certificate-form-options.data';
+import { certificateTypeFileFieldKeys } from '../../lib/certificate-api-mapper';
 import { validateCertificateComplaint } from '../../lib/certificate-form-validation';
 
 @Component({
@@ -28,16 +27,20 @@ import { validateCertificateComplaint } from '../../lib/certificate-form-validat
   styleUrls: ['../../styles/certificate-modal.shared.scss']
 })
 export class CertificateComplaintModalComponent implements OnInit, AfterViewInit {
-  @Input({ required: true }) sourceRow!: CertificateListItem;
+  @Input({ required: true }) sourceRow!: CertificateTypeDto;
 
   @Output() cancelled = new EventEmitter<void>();
   @Output() submitted = new EventEmitter<void>();
 
   private readonly loggedInCitizen = inject(LoggedInCitizenService);
-  private readonly citizenService = inject(CitizenService);
   private readonly cdr = inject(ChangeDetectorRef);
 
   readonly complaintSubjectKeys = CERTIFICATE_COMPLAINT_SUBJECT_KEYS;
+
+  /** FILE-type dynamic fields on this certificate type — drives optional evidence upload UI. */
+  get complaintFileSlots(): string[] {
+    return certificateTypeFileFieldKeys(this.sourceRow);
+  }
 
   complaintForm = {
     name: '',
@@ -59,19 +62,27 @@ export class CertificateComplaintModalComponent implements OnInit, AfterViewInit
   closeBtnRef?: ElementRef<HTMLButtonElement>;
 
   ngOnInit(): void {
-    prefillApplicantNameField(this.loggedInCitizen, this.citizenService, this.complaintForm, this.cdr);
+    this.prefillNameFromBadge();
   }
 
   ngAfterViewInit(): void {
-    queueMicrotask(() => {
-      if (!this.complaintForm.name?.trim()) {
-        prefillApplicantNameField(this.loggedInCitizen, this.citizenService, this.complaintForm, this.cdr);
-      }
-    });
+    queueMicrotask(() => this.prefillNameFromBadge());
   }
 
   onBackdropClick(): void {
     this.cancelled.emit();
+  }
+
+  private prefillNameFromBadge(): void {
+    const f = this.complaintForm;
+    if (f.name?.trim()) {
+      return;
+    }
+    const n = this.loggedInCitizen.getBadgeDisplayName()?.trim();
+    if (n) {
+      f.name = n;
+      this.cdr.markForCheck();
+    }
   }
 
   onPanelClick(ev: MouseEvent): void {

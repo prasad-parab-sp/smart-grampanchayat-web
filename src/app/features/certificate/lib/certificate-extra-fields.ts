@@ -47,17 +47,3 @@ export function normalizeCertificateExtraType(raw?: string): CertificateExtraNor
 }
 
 export type CertificateExtraErrors = Record<string, string | undefined>;
-
-/**
- * Validates legacy extra blocks. When the API drives fields only, replace with schema-based validation.
- */
-export function validateCertificateExtraFields(
-  normalized: CertificateExtraNormalized,
-  _model: Record<string, string>
-): { ok: boolean; errors: CertificateExtraErrors } {
-  if (!normalized) {
-    return { ok: true, errors: {} };
-  }
-  // Stub: no legacy required-field checks until API returns `certificate_type_field` definitions.
-  return { ok: true, errors: {} };
-}

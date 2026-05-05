@@ -5,45 +5,58 @@ import {
   Component,
   ElementRef,
   EventEmitter,
-  inject,
   Input,
   OnInit,
   Output,
   ViewChild
 } from '@angular/core';
-import { prefillApplicantNameField } from '../../../../core/citizen-applicant-prefill';
-import { CitizenService } from '../../../../core/citizen.service';
 import { LoggedInCitizenService } from '../../../../core/logged-in-citizen.service';
-import { FormsModule } from '@angular/forms';
+import type { CertificateTypeDto, CertificateTypeFieldDto } from '../../../../core/certificate-type.models';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { I18nService } from '../../../../i18n/i18n.service';
-import { CertificateListItem } from '../../data/certificate-catalog.data';
 import { CERTIFICATE_APPLY_PURPOSE_KEYS } from '../../data/certificate-form-options.data';
 import {
   certificateCatalogDisplayDescription,
   certificateCatalogDisplayName,
   certificateCatalogExtraSectionTitle,
-  certificateShowsCatalogDefaultVersusTenantFee
+  certificateShowsCatalogDefaultVersusTenantFee,
+  certificateTypeFieldHelpText,
+  certificateTypeFieldLabel,
+  certificateTypeFieldPlaceholder,
+  certificateTypeFieldSelectOptions,
+  type CertificateTypeFieldSelectOption
 } from '../../lib/certificate-api-mapper';
-import { validateCertificateApply } from '../../lib/certificate-form-validation';
+import {
+  type CertificateApplyFormModel,
+  validateCertificateApply,
+  validateCertificateTypeExtraFields
+} from '../../lib/certificate-form-validation';
+import {
+  CertificateApplyUploadPanelComponent,
+  type CertificateApplyUploadSlotResult
+} from '../certificate-apply-upload-panel/certificate-apply-upload-panel.component';
 
 @Component({
   selector: 'app-certificate-apply-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, CertificateApplyUploadPanelComponent],
   templateUrl: './certificate-apply-modal.component.html',
   styleUrls: ['../../styles/certificate-modal.shared.scss']
 })
 export class CertificateApplyModalComponent implements OnInit, AfterViewInit {
-  @Input({ required: true }) selected!: CertificateListItem;
+  @Input({ required: true }) selected!: CertificateTypeDto;
 
   @Output() cancelled = new EventEmitter<void>();
   @Output() applied = new EventEmitter<void>();
 
-  private readonly loggedInCitizen = inject(LoggedInCitizenService);
-  private readonly citizenService = inject(CitizenService);
-  private readonly cdr = inject(ChangeDetectorRef);
-  readonly i18n = inject(I18nService);
+
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly loggedInCitizen: LoggedInCitizenService,
+    private readonly cdr: ChangeDetectorRef,
+    readonly i18n: I18nService
+  ) {}
 
   /** Modal title line uses API-aligned Mr/En names. */
   get selectedDisplayTitle(): string {
@@ -65,24 +78,36 @@ export class CertificateApplyModalComponent implements OnInit, AfterViewInit {
     return certificateShowsCatalogDefaultVersusTenantFee(this.selected);
   }
 
+  /** Non-FILE dynamic rows from {@code CertificateTypeDto.extraFields}, sorted. */
+  get extraInputFields(): CertificateTypeFieldDto[] {
+    return (this.selected.extraFields ?? [])
+      .filter((f) => f.dataType !== 'FILE')
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+  }
+
+  /** FILE dynamic rows for uploads panel. */
+  get extraFileFields(): CertificateTypeFieldDto[] {
+    return (this.selected.extraFields ?? [])
+      .filter((f) => f.dataType === 'FILE')
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+  }
+
   readonly applyPurposeKeys = CERTIFICATE_APPLY_PURPOSE_KEYS;
 
-  certificateApplicationForm = {
-    name: '',
-    phone: '',
-    purpose: '',
-    purposeDetails: '',
-    address: ''
-  };
+  /**
+   * Applicant fields + nested {@code extra} group (API-driven non-FILE keys). Built in {@link rebuildApplyForm}.
+   */
+  applyForm!: FormGroup;
+
+  /** Keys match {@link CertificateTypeFieldDto#fieldKey} for FILE rows. */
+  applyFilesByKey: Record<string, File[]> = {};
 
   applyFieldErrors: Partial<Record<'name' | 'phone' | 'purpose', string | undefined>> = {};
 
-  /** Shown when a chosen file exceeds 5 MB (master_fixed-3-2.html parity). */
+  extraFieldErrors: Record<string, string> = {};
+
+  /** Shown when a chosen file exceeds the effective limit for that slot. */
   uploadErrorKey: string | null = null;
-
-  readonly maxUploadBytes = 5 * 1024 * 1024;
-
-  applyFiles: Record<string, File | null> = {};
 
   @ViewChild('panel', { read: ElementRef })
   panelRef?: ElementRef<HTMLElement>;
@@ -90,25 +115,76 @@ export class CertificateApplyModalComponent implements OnInit, AfterViewInit {
   closeBtnRef?: ElementRef<HTMLButtonElement>;
 
   ngOnInit(): void {
-    prefillApplicantNameField(
-      this.loggedInCitizen,
-      this.citizenService,
-      this.certificateApplicationForm,
-      this.cdr
-    );
+    this.rebuildApplyForm();
+    this.prefillApplicantNameFromBadge();
   }
 
   ngAfterViewInit(): void {
-    queueMicrotask(() => {
-      if (!this.certificateApplicationForm.name?.trim()) {
-        prefillApplicantNameField(
-          this.loggedInCitizen,
-          this.citizenService,
-          this.certificateApplicationForm,
-          this.cdr
-        );
+    queueMicrotask(() => this.prefillApplicantNameFromBadge());
+  }
+
+  trackExtraField(_index: number, f: CertificateTypeFieldDto): string {
+    return f.fieldKey;
+  }
+
+  labelFor(f: CertificateTypeFieldDto): string {
+    return certificateTypeFieldLabel(f, this.i18n.currentLang);
+  }
+
+  placeholderFor(f: CertificateTypeFieldDto): string {
+    return certificateTypeFieldPlaceholder(f, this.i18n.currentLang);
+  }
+
+  helpFor(f: CertificateTypeFieldDto): string | null {
+    return certificateTypeFieldHelpText(f, this.i18n.currentLang);
+  }
+
+  selectOptionsFor(f: CertificateTypeFieldDto): CertificateTypeFieldSelectOption[] {
+    return certificateTypeFieldSelectOptions(f, this.i18n.currentLang);
+  }
+
+  /** Header badge (login / shell hydration) → applicant name when still empty. */
+  private prefillApplicantNameFromBadge(): void {
+    const nameCtrl = this.applyForm?.get('name');
+    if (!nameCtrl) {
+      return;
+    }
+    if ((nameCtrl.value ?? '').trim()) {
+      return;
+    }
+    const name = this.loggedInCitizen.getBadgeDisplayName()?.trim();
+    if (name) {
+      nameCtrl.setValue(name);
+      this.cdr.markForCheck();
+    }
+  }
+
+  private rebuildApplyForm(): void {
+    const extraControls: Record<string, FormControl<string>> = {};
+    for (const extraField of this.selected.extraFields ?? []) {
+      if (extraField.dataType !== 'FILE') {
+        extraControls[extraField.fieldKey] = this.fb.nonNullable.control('');
       }
+    }
+
+    this.applyForm = this.fb.group({
+      name: this.fb.nonNullable.control(''),
+      phone: this.fb.nonNullable.control(''),
+      purpose: this.fb.nonNullable.control(''),
+      purposeDetails: this.fb.nonNullable.control(''),
+      address: this.fb.nonNullable.control(''),
+      extra: this.fb.group(extraControls)
     });
+
+    this.applyFilesByKey = {};
+    for (const f of this.selected.extraFields ?? []) {
+      if (f.dataType === 'FILE') {
+        this.applyFilesByKey[f.fieldKey] = [];
+      }
+    }
+    this.extraFieldErrors = {};
+    this.applyFieldErrors = {};
+    this.uploadErrorKey = null;
   }
 
   onBackdropClick(): void {
@@ -119,17 +195,17 @@ export class CertificateApplyModalComponent implements OnInit, AfterViewInit {
     ev.stopPropagation();
   }
 
-  onApplyFile(uploadKey: string, ev: Event): void {
-    const input = ev.target as HTMLInputElement;
-    this.uploadErrorKey = null;
-    const file = input.files?.[0] ?? null;
-    if (file && file.size > this.maxUploadBytes) {
-      this.uploadErrorKey = 'CERTIFICATE.ERR_UPLOAD_TOO_LARGE';
-      input.value = '';
-      this.applyFiles[uploadKey] = null;
+  onUploadSlotChange(e: CertificateApplyUploadSlotResult): void {
+    if (e.uploadErrorKey) {
+      this.uploadErrorKey = e.uploadErrorKey;
+      this.applyFilesByKey = { ...this.applyFilesByKey, [e.fieldKey]: e.files };
       return;
     }
-    this.applyFiles[uploadKey] = file;
+    this.uploadErrorKey = null;
+    this.applyFilesByKey = { ...this.applyFilesByKey, [e.fieldKey]: e.files };
+    const next = { ...this.extraFieldErrors };
+    delete next[e.fieldKey];
+    this.extraFieldErrors = next;
   }
 
   close(): void {
@@ -137,9 +213,32 @@ export class CertificateApplyModalComponent implements OnInit, AfterViewInit {
   }
 
   submit(): void {
-    const { ok, errors } = validateCertificateApply(this.certificateApplicationForm);
+    const raw = this.applyForm.getRawValue() as {
+      name: string;
+      phone: string;
+      purpose: string;
+      purposeDetails: string;
+      address: string;
+      extra: Record<string, string>;
+    };
+    const formModel: CertificateApplyFormModel = {
+      name: raw.name,
+      phone: raw.phone,
+      purpose: raw.purpose,
+      purposeDetails: raw.purposeDetails,
+      address: raw.address
+    };
+    const { ok, errors } = validateCertificateApply(formModel);
     this.applyFieldErrors = ok ? {} : errors;
-    if (!ok) {
+
+    const dyn = validateCertificateTypeExtraFields(
+      this.selected.extraFields,
+      raw.extra ?? {},
+      this.applyFilesByKey
+    );
+    this.extraFieldErrors = dyn.ok ? {} : dyn.errors;
+
+    if (!ok || !dyn.ok) {
       return;
     }
     this.applied.emit();

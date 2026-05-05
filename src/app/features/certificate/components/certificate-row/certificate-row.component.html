@@ -3,9 +3,6 @@
   <div class="certificate-row-text">
     <div class="certificate-row-titleline">
       <h4>{{ displayTitle() }}</h4>
-      <span *ngIf="row.isComplaint" class="certificate-row-badge">
-        {{ 'CERTIFICATE.BADGE_COMPLAINT' | translate }}
-      </span>
     </div>
     <p>{{ displayDescription() }}</p>
     <div class="certificate-row-fee">
@@ -26,14 +23,9 @@
         }}</span>
       </ng-container>
       <span class="certificate-fee-sep" aria-hidden="true">·</span>
-      <ng-container *ngIf="row.isComplaint">
-        <span class="certificate-fee-meta">{{ 'CERTIFICATE.FEE_TAIL_WHATSAPP' | translate }}</span>
-      </ng-container>
-      <ng-container *ngIf="!row.isComplaint">
-        <span class="certificate-fee-meta">{{
-          row.estimatedDaysTxt || ('CERTIFICATE.DAYS.DASH' | translate)
-        }}</span>
-      </ng-container>
+      <span class="certificate-fee-meta">{{
+        row.estimatedDaysTxt || ('CERTIFICATE.DAYS.DASH' | translate)
+      }}</span>
     </div>
   </div>
   <div class="certificate-row-chevron" aria-hidden="true">›</div>

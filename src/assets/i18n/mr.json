@@ -176,6 +176,7 @@
     "EXTRA": {
       "ERR_REQUIRED": "हे माहीत आवश्यक आहे.",
       "ERR_SELECT": "एक पर्याय निवडा.",
+      "ERR_NUMBER_INVALID": "वैध संख्या टाका.",
       "HEAD_JANM_DAKH": "👶 जन्म दाखला",
       "LABEL_CERT_SUBJECT_NAME": "कोणाच्या जन्माचा दाखला — त्याचे/तिचे नाव",
       "PH_CERT_SUBJECT_NAME": "पूर्ण नाव लिहा",

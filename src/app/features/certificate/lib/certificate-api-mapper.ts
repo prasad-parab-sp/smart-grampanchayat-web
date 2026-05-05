@@ -1,26 +1,24 @@
-import { CertificateTypeCategory, CertificateTypeDto } from '../../../core/certificate-type.models';
-import type { SupportedLang } from '../../../i18n/i18n.service';
 import {
-  CertificateCatalogRow,
-  CertificateCatalogSectionRow,
-  CertificateCatalogTypeRow
-} from '../data/certificate-catalog.data';
+  CertificateTypeCategory,
+  CertificateTypeDto,
+  CertificateTypeFieldDto
+} from '../../../core/certificate-type.models';
+import type { SupportedLang } from '../../../i18n/i18n.service';
 
 /**
- * Fixed catalog sections (UI order). Matches API {@code CertificateTypeCategory}:
- * Certificate → REGISTRATION → License ({@code PERMISSIONS}) → Other ({@code OTHERS}).
- * Each {@link CertificateTypeDto} is placed under {@link CertificateTypeDto#category}.
+ * Fixed UI order for grouping certificate types by API {@link CertificateTypeCategory}.
  */
-const CATEGORY_ORDER: CertificateTypeCategory[] = [
+export const CERTIFICATE_CATALOG_CATEGORY_ORDER: CertificateTypeCategory[] = [
   CertificateTypeCategory.CERTIFICATE,
   CertificateTypeCategory.REGISTRATION,
   CertificateTypeCategory.PERMISSIONS,
   CertificateTypeCategory.OTHERS
 ];
 
-const SECTION_BY_CATEGORY: Record<
+/** Icons / title keys for section headings when the rendered category changes (not persisted). */
+export const CERTIFICATE_CATALOG_SECTION_META: Record<
   CertificateTypeCategory,
-  Pick<CertificateCatalogSectionRow, 'icon' | 'titleKey'>
+  { icon: string; titleKey: string }
 > = {
   [CertificateTypeCategory.CERTIFICATE]: { icon: '📄', titleKey: 'CERTIFICATE.SECTION.CERTIFICATES' },
   [CertificateTypeCategory.REGISTRATION]: { icon: '📋', titleKey: 'CERTIFICATE.SECTION.REGISTRATION' },
@@ -28,21 +26,27 @@ const SECTION_BY_CATEGORY: Record<
   [CertificateTypeCategory.OTHERS]: { icon: '📌', titleKey: 'CERTIFICATE.SECTION.OTHER' }
 };
 
-function pickName(dto: CertificateTypeDto, lang: SupportedLang): string {
-  if (lang === 'en' && dto.nameEn?.trim()) {
-    return dto.nameEn.trim();
-  }
-  return dto.nameMr?.trim() || dto.code;
-}
-
-function pickDesc(dto: CertificateTypeDto, lang: SupportedLang): string {
+/**
+ * Mr/En copy from API: trimmed English when UI is English (if present), else trimmed Marathi,
+ * else {@code whenEmpty}.
+ */
+function pickLocalizedString(
+  lang: SupportedLang,
+  mr: string | null | undefined,
+  en: string | null | undefined,
+  whenEmpty: string | null = null
+): string | null {
   if (lang === 'en') {
-    const en = dto.descriptionEn?.trim();
-    if (en) {
-      return en;
+    const trimmedEn = en?.trim();
+    if (trimmedEn) {
+      return trimmedEn;
     }
   }
-  return dto.descriptionMr?.trim() || '';
+  const trimmedMr = mr?.trim();
+  if (trimmedMr) {
+    return trimmedMr;
+  }
+  return whenEmpty;
 }
 
 /** Display title for a catalog type row or DTO (same fields as API). */
@@ -50,7 +54,7 @@ export function certificateCatalogDisplayName(
   row: Pick<CertificateTypeDto, 'code' | 'nameMr' | 'nameEn'>,
   lang: SupportedLang
 ): string {
-  return pickName(row as CertificateTypeDto, lang);
+  return pickLocalizedString(lang, row.nameMr, row.nameEn, row.code) ?? row.code;
 }
 
 /** Display description for a catalog type row or DTO. */
@@ -58,7 +62,7 @@ export function certificateCatalogDisplayDescription(
   row: Pick<CertificateTypeDto, 'descriptionMr' | 'descriptionEn'>,
   lang: SupportedLang
 ): string {
-  return pickDesc(row as CertificateTypeDto, lang);
+  return pickLocalizedString(lang, row.descriptionMr, row.descriptionEn, '') ?? '';
 }
 
 /** Display heading above applicant/details block from API {@code extra_fields_section_title_*}. */
@@ -66,39 +70,90 @@ export function certificateCatalogExtraSectionTitle(
   row: Pick<CertificateTypeDto, 'extraFieldsSectionTitleMr' | 'extraFieldsSectionTitleEn'>,
   lang: SupportedLang
 ): string | null {
-  if (lang === 'en') {
-    const en = row.extraFieldsSectionTitleEn?.trim();
-    if (en) {
-      return en;
-    }
-  }
-  return row.extraFieldsSectionTitleMr?.trim() || null;
+  return pickLocalizedString(lang, row.extraFieldsSectionTitleMr, row.extraFieldsSectionTitleEn);
 }
 
-/** API nested {@code tenantCertificateTypeConfig} is present for this row. */
-export function certificateHasTenantTypeConfig(
-  row: Pick<CertificateCatalogTypeRow, 'tenantCertificateTypeConfig'>
-): boolean {
-  return row.tenantCertificateTypeConfig != null;
-}
-
-/**
- * Effective GP fee differs from platform catalog default — show catalog amount as context
- * (nested tenant config row exists from API).
- */
 export function certificateShowsCatalogDefaultVersusTenantFee(
-  row: Pick<CertificateCatalogTypeRow, 'tenantCertificateTypeConfig' | 'defaultFeeAmount' | 'feeAmount'>
+  row: Pick<CertificateTypeDto, 'tenantCertificateTypeConfig' | 'defaultFeeAmount' | 'feeAmount'>
 ): boolean {
-  if (!certificateHasTenantTypeConfig(row)) {
+  if (row.tenantCertificateTypeConfig == null) {
     return false;
   }
   return Number(row.defaultFeeAmount) !== Number(row.feeAmount);
 }
 
-export function mapCertificateTypesToCatalogRows(types: CertificateTypeDto[]): CertificateCatalogRow[] {
+/** Label / placeholder / help for one dynamic certificate field (API Mr + optional En). */
+export function certificateTypeFieldLabel(field: CertificateTypeFieldDto, lang: SupportedLang): string {
+  return pickLocalizedString(lang, field.labelMr, field.labelEn, field.fieldKey) ?? field.fieldKey;
+}
+
+export function certificateTypeFieldPlaceholder(
+  field: CertificateTypeFieldDto,
+  lang: SupportedLang
+): string {
+  return pickLocalizedString(lang, field.placeholderMr, field.placeholderEn, '') ?? '';
+}
+
+export function certificateTypeFieldHelpText(
+  field: CertificateTypeFieldDto,
+  lang: SupportedLang
+): string | null {
+  return pickLocalizedString(lang, field.helpTextMr, field.helpTextEn);
+}
+
+export interface CertificateTypeFieldSelectOption {
+  value: string;
+  label: string;
+}
+
+/** SELECT {@code optionsJson}: {@code [{ value, label_mr, label_en? }]}. */
+export function certificateTypeFieldSelectOptions(
+  field: CertificateTypeFieldDto,
+  lang: SupportedLang
+): CertificateTypeFieldSelectOption[] {
+  const raw = field.optionsJson;
+  if (!Array.isArray(raw)) {
+    return [];
+  }
+  const out: CertificateTypeFieldSelectOption[] = [];
+  for (const item of raw) {
+    if (item == null || typeof item !== 'object') {
+      continue;
+    }
+    const o = item as Record<string, unknown>;
+    const value = String(o['value'] ?? '').trim();
+    if (!value) {
+      continue;
+    }
+    const lmRaw = o['label_mr'] ?? o['labelMr'];
+    const leRaw = o['label_en'] ?? o['labelEn'];
+    const lm = typeof lmRaw === 'string' ? lmRaw : undefined;
+    const le = typeof leRaw === 'string' ? leRaw : undefined;
+    const label = pickLocalizedString(lang, lm, le, value) ?? value;
+    out.push({ value, label });
+  }
+  return out;
+}
+
+/** Field keys for FILE-type dynamic fields (upload hints, etc.). */
+export function certificateTypeFileFieldKeys(dto: Pick<CertificateTypeDto, 'extraFields'>): string[] {
+  const extras = dto.extraFields ?? [];
+  return extras.filter((f) => f.dataType === 'FILE').map((f) => f.fieldKey);
+}
+
+/**
+ * Turns raw {@code GET /certificate-types} payloads into a single list ready for the catalog UI.
+ *
+ * 1. **Filter:** Drops inactive rows ({@code active} / {@code isActive} false).
+ * 2. **Sort:** Groups by category in UI order (Certificate → Registration → Permissions → Other), then {@code sortOrder}.
+ *    Unknown categories are bucketed under {@code OTHERS}.
+ * 3. **Normalize:** Trims {@code code}, {@code estimatedDaysTxt}; default {@code nameMr}; category fallback {@code icon};
+ *    omits empty categories. Returns new objects (safe for change detection).
+ */
+export function sortAndFilterCertificateTypesForCatalog(types: CertificateTypeDto[]): CertificateTypeDto[] {
   const activeOnly = types.filter((t) => t.active !== false && t.isActive !== false);
   const byCategory = new Map<CertificateTypeCategory, CertificateTypeDto[]>();
-  for (const c of CATEGORY_ORDER) {
+  for (const c of CERTIFICATE_CATALOG_CATEGORY_ORDER) {
     byCategory.set(c, []);
   }
   for (const t of activeOnly) {
@@ -108,52 +163,26 @@ export function mapCertificateTypesToCatalogRows(types: CertificateTypeDto[]): C
     list.sort((a, b) => a.sortOrder - b.sortOrder);
   }
 
-  const rows: CertificateCatalogRow[] = [];
-  for (const cat of CATEGORY_ORDER) {
+  const rows: CertificateTypeDto[] = [];
+  for (const cat of CERTIFICATE_CATALOG_CATEGORY_ORDER) {
     const list = byCategory.get(cat) ?? [];
     if (list.length === 0) {
       continue;
     }
-    const section = SECTION_BY_CATEGORY[cat];
-    rows.push({
-      kind: 'section',
-      category: cat,
-      icon: section.icon,
-      titleKey: section.titleKey
-    });
+    const meta = CERTIFICATE_CATALOG_SECTION_META[cat];
     for (const dto of list) {
-      const rowIcon = dto.icon?.trim() || section.icon;
-      const code = dto.code.trim();
-      const complaint =
-        code === 'COMPLAINT' ||
-        code === 'TICKET_COMPLAINT' ||
-        code.endsWith('_COMPLAINT');
-      const item: CertificateCatalogTypeRow = {
-        kind: 'type',
-        id: dto.id,
-        tenantId: dto.tenantId ?? null,
-        code,
-        category: cat,
+      const rowIcon = dto.icon?.trim() || meta.icon;
+      const extras = dto.extraFields ?? [];
+      rows.push({
+        ...dto,
+        code: dto.code.trim(),
+        category: dto.category,
         nameMr: dto.nameMr ?? '',
-        nameEn: dto.nameEn,
-        descriptionMr: dto.descriptionMr,
-        descriptionEn: dto.descriptionEn,
-        extraFieldsSectionTitleMr: dto.extraFieldsSectionTitleMr,
-        extraFieldsSectionTitleEn: dto.extraFieldsSectionTitleEn,
-        defaultFeeAmount: dto.defaultFeeAmount,
-        feeAmount: dto.feeAmount,
-        tenantCertificateTypeConfig: dto.tenantCertificateTypeConfig ?? null,
         estimatedDaysTxt: dto.estimatedDaysTxt?.trim() || null,
+        tenantCertificateTypeConfig: dto.tenantCertificateTypeConfig ?? null,
         icon: rowIcon,
-        sortOrder: dto.sortOrder,
-        active: dto.active !== false && dto.isActive !== false,
-        createdAt: dto.createdAt,
-        updatedAt: dto.updatedAt,
-        docKeys: [],
-        uploadKeys: [],
-        isComplaint: complaint
-      };
-      rows.push(item);
+        extraFields: extras
+      });
     }
   }
   return rows;

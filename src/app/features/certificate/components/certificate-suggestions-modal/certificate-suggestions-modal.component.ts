@@ -10,8 +10,6 @@ import {
   Output,
   ViewChild
 } from '@angular/core';
-import { prefillApplicantNameField } from '../../../../core/citizen-applicant-prefill';
-import { CitizenService } from '../../../../core/citizen.service';
 import { LoggedInCitizenService } from '../../../../core/logged-in-citizen.service';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -30,7 +28,6 @@ export class CertificateSuggestionsModalComponent implements OnInit, AfterViewIn
   @Output() submitted = new EventEmitter<void>();
 
   private readonly loggedInCitizen = inject(LoggedInCitizenService);
-  private readonly citizenService = inject(CitizenService);
   private readonly cdr = inject(ChangeDetectorRef);
 
   readonly suggestionsCategoryKeys = CERTIFICATE_SUGGESTIONS_CATEGORY_KEYS;
@@ -53,19 +50,27 @@ export class CertificateSuggestionsModalComponent implements OnInit, AfterViewIn
   closeBtnRef?: ElementRef<HTMLButtonElement>;
 
   ngOnInit(): void {
-    prefillApplicantNameField(this.loggedInCitizen, this.citizenService, this.suggestionsForm, this.cdr);
+    this.prefillNameFromBadge();
   }
 
   ngAfterViewInit(): void {
-    queueMicrotask(() => {
-      if (!this.suggestionsForm.name?.trim()) {
-        prefillApplicantNameField(this.loggedInCitizen, this.citizenService, this.suggestionsForm, this.cdr);
-      }
-    });
+    queueMicrotask(() => this.prefillNameFromBadge());
   }
 
   onBackdropClick(): void {
     this.cancelled.emit();
+  }
+
+  private prefillNameFromBadge(): void {
+    const f = this.suggestionsForm;
+    if (f.name?.trim()) {
+      return;
+    }
+    const n = this.loggedInCitizen.getBadgeDisplayName()?.trim();
+    if (n) {
+      f.name = n;
+      this.cdr.markForCheck();
+    }
   }
 
   onPanelClick(ev: MouseEvent): void {
