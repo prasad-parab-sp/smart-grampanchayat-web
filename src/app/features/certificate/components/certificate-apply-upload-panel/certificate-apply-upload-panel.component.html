@@ -3,11 +3,21 @@
   <p class="certificate-upload-panel-lead">{{ 'CERTIFICATE.UPLOADS_INTRO' | translate }}</p>
   <p class="certificate-upload-hint">{{ 'CERTIFICATE.UPLOADS_OPTIONAL' | translate }}</p>
   <div *ngFor="let f of fileFields; trackBy: trackExtraField" class="certificate-upload-slot">
-    <div class="certificate-upload-slot-label">
+    <div
+      class="certificate-upload-slot-label"
+      [attr.id]="'certificate-upload-slot-label-' + f.fieldKey">
       📄 {{ labelFor(f) }}
       <span *ngIf="f.required" class="req">*</span>
     </div>
-    <label [attr.for]="'certificate-apply-up-' + f.fieldKey" class="certificate-upload-dashed">
+    <p *ngIf="placeholderFor(f) as ph" class="certificate-upload-slot-placeholder">{{ ph }}</p>
+    <p *ngIf="helpFor(f) as fileHelp" class="certificate-extra-fields-hint" [attr.id]="'certificate-upload-help-' + f.fieldKey">
+      {{ fileHelp }}
+    </p>
+    <label
+      [attr.for]="'certificate-apply-up-' + f.fieldKey"
+      class="certificate-upload-dashed"
+      [attr.aria-labelledby]="'certificate-upload-slot-label-' + f.fieldKey"
+      [attr.aria-describedby]="helpFor(f) ? 'certificate-upload-help-' + f.fieldKey : null">
       <span class="certificate-upload-dashed-icon">📎</span>
       <span class="certificate-upload-dashed-pick">{{ 'CERTIFICATE.UPLOAD_PICK_FILE' | translate }}</span>
       <span class="certificate-upload-dashed-meta">{{ 'CERTIFICATE.UPLOAD_META' | translate }}</span>

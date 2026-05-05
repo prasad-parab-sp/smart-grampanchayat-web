@@ -3,7 +3,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import type { CertificateTypeFieldDto } from '../../../../core/certificate-type.models';
 import { TranslateModule } from '@ngx-translate/core';
 import { I18nService } from '../../../../i18n/i18n.service';
-import { certificateTypeFieldLabel } from '../../lib/certificate-api-mapper';
+import {
+  certificateTypeFieldHelpText,
+  certificateTypeFieldLabel,
+  certificateTypeFieldPlaceholder
+} from '../../lib/certificate-api-mapper';
 
 export interface CertificateApplyUploadSlotResult {
   fieldKey: string;
@@ -42,6 +46,15 @@ export class CertificateApplyUploadPanelComponent {
 
   labelFor(f: CertificateTypeFieldDto): string {
     return certificateTypeFieldLabel(f, this.i18n.currentLang);
+  }
+
+  placeholderFor(f: CertificateTypeFieldDto): string | null {
+    const p = certificateTypeFieldPlaceholder(f, this.i18n.currentLang)?.trim();
+    return p ? p : null;
+  }
+
+  helpFor(f: CertificateTypeFieldDto): string | null {
+    return certificateTypeFieldHelpText(f, this.i18n.currentLang);
   }
 
   fileAccept(field: CertificateTypeFieldDto): string {

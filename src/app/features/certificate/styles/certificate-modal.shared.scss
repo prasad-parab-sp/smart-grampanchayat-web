@@ -173,6 +173,43 @@
   color: var(--navy);
 }
 
+/* Master renderExtraFields: green card for API extraFields (inputs + uploads). */
+.certificate-extra-fields-section {
+  background: var(--glt);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 14px;
+  border-left: 3px solid var(--green);
+}
+
+.certificate-extra-fields-section-title {
+  font-size: 13px;
+  font-weight: 800;
+  margin: 0 0 12px;
+  color: var(--gdk);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.35;
+}
+
+.certificate-extra-fields-section-icon {
+  flex-shrink: 0;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+/* Master .hint parity — helpTextMr/helpTextEn from API */
+.certificate-extra-fields-hint {
+  background: rgba(255, 255, 255, 0.65);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--gdk);
+  line-height: 1.65;
+  margin: 8px 0 0;
+}
+
 .certificate-modal-close {
   position: absolute;
   top: 16px;
@@ -226,6 +263,14 @@
   font-weight: 700;
   color: var(--navy);
   margin-bottom: 6px;
+}
+
+.certificate-upload-slot-placeholder {
+  font-size: 11px;
+  color: var(--sub);
+  font-weight: 600;
+  margin: 0 0 6px;
+  line-height: 1.45;
 }
 
 .certificate-upload-dashed {
