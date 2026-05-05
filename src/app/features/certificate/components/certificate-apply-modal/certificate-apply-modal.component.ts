@@ -45,7 +45,7 @@ import {
   styleUrls: ['../../styles/certificate-modal.shared.scss']
 })
 export class CertificateApplyModalComponent implements OnInit, AfterViewInit {
-  @Input({ required: true }) selected!: CertificateTypeDto;
+  @Input({ required: true }) selectedCertificate!: CertificateTypeDto;
 
   @Output() cancelled = new EventEmitter<void>();
   @Output() applied = new EventEmitter<void>();
@@ -60,36 +60,41 @@ export class CertificateApplyModalComponent implements OnInit, AfterViewInit {
 
   /** Modal title line uses API-aligned Mr/En names. */
   get selectedDisplayTitle(): string {
-    return certificateCatalogDisplayName(this.selected, this.i18n.currentLang);
+    return certificateCatalogDisplayName(this.selectedCertificate, this.i18n.currentLang);
   }
 
   /** Lead copy from API descriptions. */
   get selectedDisplayDescription(): string {
-    return certificateCatalogDisplayDescription(this.selected, this.i18n.currentLang);
+    return certificateCatalogDisplayDescription(this.selectedCertificate, this.i18n.currentLang);
   }
 
-  /** Optional API heading ({@code extra_fields_section_title_*}) above applicant fields. */
+  /** Optional API heading ({@code extra_fields_section_title_*}) for the extra-fields card. */
   get selectedExtraSectionTitle(): string | null {
-    return certificateCatalogExtraSectionTitle(this.selected, this.i18n.currentLang);
+    return certificateCatalogExtraSectionTitle(this.selectedCertificate, this.i18n.currentLang);
   }
 
   /** GP fee from nested tenant config differs from platform catalog default. */
   get showsCatalogDefaultVersusTenantFee(): boolean {
-    return certificateShowsCatalogDefaultVersusTenantFee(this.selected);
+    return certificateShowsCatalogDefaultVersusTenantFee(this.selectedCertificate);
   }
 
   /** Non-FILE dynamic rows from {@code CertificateTypeDto.extraFields}, sorted. */
   get extraInputFields(): CertificateTypeFieldDto[] {
-    return (this.selected.extraFields ?? [])
+    return (this.selectedCertificate.extraFields ?? [])
       .filter((f) => f.dataType !== 'FILE')
       .sort((a, b) => a.sortOrder - b.sortOrder);
   }
 
   /** FILE dynamic rows for uploads panel. */
   get extraFileFields(): CertificateTypeFieldDto[] {
-    return (this.selected.extraFields ?? [])
+    return (this.selectedCertificate.extraFields ?? [])
       .filter((f) => f.dataType === 'FILE')
       .sort((a, b) => a.sortOrder - b.sortOrder);
+  }
+
+  /** Extra-fields card (master {@code renderExtraFields} parity): any API-defined inputs or file slots. */
+  get hasCertificateExtraFieldsSection(): boolean {
+    return this.extraInputFields.length > 0 || this.extraFileFields.length > 0;
   }
 
   readonly applyPurposeKeys = CERTIFICATE_APPLY_PURPOSE_KEYS;
@@ -99,8 +104,8 @@ export class CertificateApplyModalComponent implements OnInit, AfterViewInit {
    */
   applyForm!: FormGroup;
 
-  /** Keys match {@link CertificateTypeFieldDto#fieldKey} for FILE rows. */
-  applyFilesByKey: Record<string, File[]> = {};
+  /** Selected files for API {@code extraFields} with {@code dataType === 'FILE'}; key = {@link CertificateTypeFieldDto#fieldKey}. */
+  uploadedFilesByExtraFieldKey: Record<string, File[]> = {};
 
   applyFieldErrors: Partial<Record<'name' | 'phone' | 'purpose', string | undefined>> = {};
 
@@ -161,7 +166,7 @@ export class CertificateApplyModalComponent implements OnInit, AfterViewInit {
 
   private rebuildApplyForm(): void {
     const extraControls: Record<string, FormControl<string>> = {};
-    for (const extraField of this.selected.extraFields ?? []) {
+    for (const extraField of this.selectedCertificate.extraFields ?? []) {
       if (extraField.dataType !== 'FILE') {
         extraControls[extraField.fieldKey] = this.fb.nonNullable.control('');
       }
@@ -176,10 +181,10 @@ export class CertificateApplyModalComponent implements OnInit, AfterViewInit {
       extra: this.fb.group(extraControls)
     });
 
-    this.applyFilesByKey = {};
-    for (const f of this.selected.extraFields ?? []) {
+    this.uploadedFilesByExtraFieldKey = {};
+    for (const f of this.selectedCertificate.extraFields ?? []) {
       if (f.dataType === 'FILE') {
-        this.applyFilesByKey[f.fieldKey] = [];
+        this.uploadedFilesByExtraFieldKey[f.fieldKey] = [];
       }
     }
     this.extraFieldErrors = {};
@@ -198,14 +203,16 @@ export class CertificateApplyModalComponent implements OnInit, AfterViewInit {
   onUploadSlotChange(e: CertificateApplyUploadSlotResult): void {
     if (e.uploadErrorKey) {
       this.uploadErrorKey = e.uploadErrorKey;
-      this.applyFilesByKey = { ...this.applyFilesByKey, [e.fieldKey]: e.files };
-      return;
+    } else {
+      this.uploadErrorKey = null;
+      const next = { ...this.extraFieldErrors };
+      delete next[e.fieldKey];
+      this.extraFieldErrors = next;
     }
-    this.uploadErrorKey = null;
-    this.applyFilesByKey = { ...this.applyFilesByKey, [e.fieldKey]: e.files };
-    const next = { ...this.extraFieldErrors };
-    delete next[e.fieldKey];
-    this.extraFieldErrors = next;
+    this.uploadedFilesByExtraFieldKey = {
+      ...this.uploadedFilesByExtraFieldKey,
+      [e.fieldKey]: e.files
+    };
   }
 
   close(): void {
@@ -232,9 +239,9 @@ export class CertificateApplyModalComponent implements OnInit, AfterViewInit {
     this.applyFieldErrors = ok ? {} : errors;
 
     const dyn = validateCertificateTypeExtraFields(
-      this.selected.extraFields,
+      this.selectedCertificate.extraFields,
       raw.extra ?? {},
-      this.applyFilesByKey
+      this.uploadedFilesByExtraFieldKey
     );
     this.extraFieldErrors = dyn.ok ? {} : dyn.errors;
 

@@ -30,7 +30,7 @@
 </div>
 
 <app-certificate-apply-modal
-  *ngIf="certificateApplyModalOpen && selected"
-  [selected]="selected"
+  *ngIf="certificateApplyModalOpen && selectedCertificate"
+  [selectedCertificate]="selectedCertificate"
   (cancelled)="closeApply()"
   (applied)="onApplySubmitted()" />

@@ -15,8 +15,8 @@
       ✕
     </button>
     <h3 id="certificate-dialog-apply-title" class="certificate-modal-title-row">
-      <span *ngIf="selected.icon" class="certificate-modal-title-icon" aria-hidden="true">{{
-        selected.icon
+      <span *ngIf="selectedCertificate.icon" class="certificate-modal-title-icon" aria-hidden="true">{{
+        selectedCertificate.icon
       }}</span>
       <span class="certificate-modal-title-text">
         {{ selectedDisplayTitle }} —
@@ -27,8 +27,6 @@
       <ng-container *ngIf="selectedDisplayDescription; else defaultApplyIntro">{{ selectedDisplayDescription }}</ng-container>
       <ng-template #defaultApplyIntro>{{ 'CERTIFICATE.APPLY_SUB' | translate }}</ng-template>
     </p>
-
-    <h4 *ngIf="selectedExtraSectionTitle as extraHead" class="certificate-modal-subhead">{{ extraHead }}</h4>
 
     <div [formGroup]="applyForm">
       <div class="certificate-modal-field-group">
@@ -91,99 +89,124 @@
           rows="2"
           [placeholder]="'CERTIFICATE.PH_ADDRESS' | translate"></textarea>
       </div>
-
-      <div formGroupName="extra">
-        <ng-container *ngFor="let f of extraInputFields; trackBy: trackExtraField">
-          <div class="certificate-modal-field-group">
-            <label [attr.for]="'certificate-extra-' + f.fieldKey">
-              {{ labelFor(f) }}
-              <span *ngIf="f.required" class="req">*</span>
-            </label>
-            <ng-container [ngSwitch]="f.dataType">
-              <input
-                *ngSwitchCase="'TEXT'"
-                [id]="'certificate-extra-' + f.fieldKey"
-                type="text"
-                [formControlName]="f.fieldKey"
-                [placeholder]="placeholderFor(f)"
-                [attr.aria-required]="f.required ? 'true' : null"
-                [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null" />
-              <textarea
-                *ngSwitchCase="'TEXTAREA'"
-                [id]="'certificate-extra-' + f.fieldKey"
-                [formControlName]="f.fieldKey"
-                rows="3"
-                [placeholder]="placeholderFor(f)"
-                [attr.aria-required]="f.required ? 'true' : null"
-                [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null"></textarea>
-              <input
-                *ngSwitchCase="'DATE'"
-                [id]="'certificate-extra-' + f.fieldKey"
-                type="date"
-                [formControlName]="f.fieldKey"
-                [attr.aria-required]="f.required ? 'true' : null"
-                [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null" />
-              <input
-                *ngSwitchCase="'NUMBER'"
-                [id]="'certificate-extra-' + f.fieldKey"
-                type="number"
-                step="any"
-                [formControlName]="f.fieldKey"
-                [placeholder]="placeholderFor(f)"
-                [attr.aria-required]="f.required ? 'true' : null"
-                [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null" />
-              <select
-                *ngSwitchCase="'SELECT'"
-                [id]="'certificate-extra-' + f.fieldKey"
-                [formControlName]="f.fieldKey"
-                [attr.aria-required]="f.required ? 'true' : null"
-                [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null">
-                <option value="">{{ 'CERTIFICATE.PURPOSE_PICK' | translate }}</option>
-                <option *ngFor="let opt of selectOptionsFor(f)" [value]="opt.value">{{ opt.label }}</option>
-              </select>
-              <input
-                *ngSwitchDefault
-                [id]="'certificate-extra-' + f.fieldKey"
-                type="text"
-                [formControlName]="f.fieldKey"
-                [placeholder]="placeholderFor(f)"
-                [attr.aria-required]="f.required ? 'true' : null"
-                [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null" />
-            </ng-container>
-            <p *ngIf="helpFor(f) as hint" class="certificate-modal-help">{{ hint }}</p>
-            <p *ngIf="extraFieldErrors[f.fieldKey] as errKey" class="certificate-field-err" role="alert">
-              {{ errKey | translate }}
-            </p>
-          </div>
-        </ng-container>
-      </div>
     </div>
 
-    <app-certificate-apply-upload-panel
-      [fileFields]="extraFileFields"
-      [filesByKey]="applyFilesByKey"
-      [fieldErrors]="extraFieldErrors"
-      [uploadErrorKey]="uploadErrorKey"
-      (slotChange)="onUploadSlotChange($event)" />
+    <!-- Master renderExtraFields parity: green panel + API section title + dynamic extraFields (inputs + files). -->
+    <section
+      *ngIf="hasCertificateExtraFieldsSection"
+      class="certificate-extra-fields-section"
+      aria-labelledby="certificate-extra-fields-heading">
+      <h4 id="certificate-extra-fields-heading" class="certificate-extra-fields-section-title">
+        <span *ngIf="selectedCertificate.icon" class="certificate-extra-fields-section-icon" aria-hidden="true">{{
+          selectedCertificate.icon
+        }}</span>
+        <span>{{
+          selectedExtraSectionTitle ? selectedExtraSectionTitle : ('CERTIFICATE.EXTRA_SECTION_FALLBACK' | translate)
+        }}</span>
+      </h4>
+
+      <div [formGroup]="applyForm">
+        <div formGroupName="extra">
+          <ng-container *ngFor="let f of extraInputFields; trackBy: trackExtraField">
+            <div class="certificate-modal-field-group">
+              <label [attr.for]="'certificate-extra-' + f.fieldKey">
+                {{ labelFor(f) }}
+                <span *ngIf="f.required" class="req">*</span>
+              </label>
+              <ng-container [ngSwitch]="f.dataType">
+                <input
+                  *ngSwitchCase="'TEXT'"
+                  [id]="'certificate-extra-' + f.fieldKey"
+                  type="text"
+                  [formControlName]="f.fieldKey"
+                  [placeholder]="placeholderFor(f)"
+                  [attr.aria-required]="f.required ? 'true' : null"
+                  [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null"
+                  [attr.aria-describedby]="helpFor(f) ? 'certificate-extra-help-' + f.fieldKey : null" />
+                <textarea
+                  *ngSwitchCase="'TEXTAREA'"
+                  [id]="'certificate-extra-' + f.fieldKey"
+                  [formControlName]="f.fieldKey"
+                  rows="3"
+                  [placeholder]="placeholderFor(f)"
+                  [attr.aria-required]="f.required ? 'true' : null"
+                  [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null"
+                  [attr.aria-describedby]="helpFor(f) ? 'certificate-extra-help-' + f.fieldKey : null"></textarea>
+                <input
+                  *ngSwitchCase="'DATE'"
+                  [id]="'certificate-extra-' + f.fieldKey"
+                  type="date"
+                  [formControlName]="f.fieldKey"
+                  [attr.aria-required]="f.required ? 'true' : null"
+                  [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null"
+                  [attr.aria-describedby]="helpFor(f) ? 'certificate-extra-help-' + f.fieldKey : null" />
+                <input
+                  *ngSwitchCase="'NUMBER'"
+                  [id]="'certificate-extra-' + f.fieldKey"
+                  type="number"
+                  step="any"
+                  [formControlName]="f.fieldKey"
+                  [placeholder]="placeholderFor(f)"
+                  [attr.aria-required]="f.required ? 'true' : null"
+                  [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null"
+                  [attr.aria-describedby]="helpFor(f) ? 'certificate-extra-help-' + f.fieldKey : null" />
+                <select
+                  *ngSwitchCase="'SELECT'"
+                  [id]="'certificate-extra-' + f.fieldKey"
+                  [formControlName]="f.fieldKey"
+                  [attr.aria-required]="f.required ? 'true' : null"
+                  [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null"
+                  [attr.aria-describedby]="helpFor(f) ? 'certificate-extra-help-' + f.fieldKey : null">
+                  <option value="">{{ 'CERTIFICATE.PURPOSE_PICK' | translate }}</option>
+                  <option *ngFor="let opt of selectOptionsFor(f)" [value]="opt.value">{{ opt.label }}</option>
+                </select>
+                <input
+                  *ngSwitchDefault
+                  [id]="'certificate-extra-' + f.fieldKey"
+                  type="text"
+                  [formControlName]="f.fieldKey"
+                  [placeholder]="placeholderFor(f)"
+                  [attr.aria-required]="f.required ? 'true' : null"
+                  [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null"
+                  [attr.aria-describedby]="helpFor(f) ? 'certificate-extra-help-' + f.fieldKey : null" />
+              </ng-container>
+              <p *ngIf="helpFor(f) as hint" class="certificate-extra-fields-hint" [id]="'certificate-extra-help-' + f.fieldKey">
+                {{ hint }}
+              </p>
+              <p *ngIf="extraFieldErrors[f.fieldKey] as errKey" class="certificate-field-err" role="alert">
+                {{ errKey | translate }}
+              </p>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <app-certificate-apply-upload-panel
+        [fileFields]="extraFileFields"
+        [filesByKey]="uploadedFilesByExtraFieldKey"
+        [fieldErrors]="extraFieldErrors"
+        [uploadErrorKey]="uploadErrorKey"
+        (slotChange)="onUploadSlotChange($event)" />
+    </section>
 
     <div class="certificate-fee-summary">
-      <div class="row" *ngIf="selected.estimatedDaysTxt">
+      <div class="row" *ngIf="selectedCertificate.estimatedDaysTxt">
         <span>{{ 'CERTIFICATE.ESTIMATED_TIME_LABEL' | translate }}</span>
-        <strong>{{ selected.estimatedDaysTxt }}</strong>
+        <strong>{{ selectedCertificate.estimatedDaysTxt }}</strong>
       </div>
-      <div class="sep" *ngIf="selected.estimatedDaysTxt"></div>
+      <div class="sep" *ngIf="selectedCertificate.estimatedDaysTxt"></div>
       <div class="row">
         <span>{{ 'CERTIFICATE.FEE_LABEL' | translate }}</span>
-        <strong>{{ selected.feeAmount > 0 ? ('₹' + selected.feeAmount) : ('CERTIFICATE.FREE' | translate) }}</strong>
+        <strong>{{ selectedCertificate.feeAmount > 0 ? ('₹' + selectedCertificate.feeAmount) : ('CERTIFICATE.FREE' | translate) }}</strong>
       </div>
       <div class="row certificate-fee-summary-catalog-note" *ngIf="showsCatalogDefaultVersusTenantFee">
-        <span>{{ 'CERTIFICATE.FEE_CATALOG_DEFAULT' | translate: { amount: selected.defaultFeeAmount } }}</span>
+        <span>{{ 'CERTIFICATE.FEE_CATALOG_DEFAULT' | translate: { amount: selectedCertificate.defaultFeeAmount } }}</span>
       </div>
       <div class="sep"></div>
       <div class="row certificate-fee-summary-row-total">
         <span class="certificate-fee-summary-total-label">{{ 'CERTIFICATE.TOTAL_LABEL' | translate }}</span>
         <strong class="certificate-fee-summary-total-value">{{
-          selected.feeAmount > 0 ? ('₹' + selected.feeAmount) : ('CERTIFICATE.FREE' | translate)
+          selectedCertificate.feeAmount > 0 ? ('₹' + selectedCertificate.feeAmount) : ('CERTIFICATE.FREE' | translate)
         }}</strong>
       </div>
     </div>

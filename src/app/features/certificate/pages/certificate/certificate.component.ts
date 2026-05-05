@@ -55,7 +55,7 @@ export class CertificateComponent implements OnInit, OnDestroy {
 
   certificateApplyModalOpen = false;
 
-  selected: CertificateTypeDto | null = null;
+  selectedCertificate: CertificateTypeDto | null = null;
 
   submitMessage: string | null = null;
 
@@ -214,10 +214,11 @@ export class CertificateComponent implements OnInit, OnDestroy {
   }
 
   openRow(row: CertificateTypeDto): void {
+    console.log('openRow', row);
     this.submitMessage = null;
     this.clearToastTimer();
     this.stashFocus();
-    this.selected = row;
+    this.selectedCertificate = row;
     this.certificateApplyModalOpen = true;
     this.syncBodyScrollLock();
     this.focusModalClose();
@@ -225,7 +226,7 @@ export class CertificateComponent implements OnInit, OnDestroy {
 
   closeApply(): void {
     this.certificateApplyModalOpen = false;
-    this.selected = null;
+    this.selectedCertificate = null;
     this.restoreFocus();
     this.syncBodyScrollLock();
   }
@@ -233,7 +234,7 @@ export class CertificateComponent implements OnInit, OnDestroy {
   onApplySubmitted(): void {
     this.submitMessage = 'CERTIFICATE.STUB_APPLY_ACK';
     this.certificateApplyModalOpen = false;
-    this.selected = null;
+    this.selectedCertificate = null;
     this.restoreFocus();
     this.syncBodyScrollLock();
     this.scheduleToastDismiss();
