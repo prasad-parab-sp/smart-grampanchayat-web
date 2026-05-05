@@ -4,9 +4,9 @@ import { citizenBadgeDisplayName } from './citizen-name.util';
 import { Citizen } from './citizen.models';
 
 /**
- * Tab-scoped logged-in citizen (no JWT). Persisted: {@link CURRENT_CITIZEN_ID_KEY} in sessionStorage.
- * Header badge label is in-memory only; after refresh, load citizen by id and call `setBadgeDisplayName`.
- * Tenant remains in {@link TenantSessionStore}.
+ * Tab-scoped logged-in citizen (no JWT). Persisted: {@link CURRENT_CITIZEN_ID_KEY} in sessionStorage only —
+ * not the full {@link Citizen}. Badge label is in-memory; {@link GramAppHeaderComponent} hydrates it via
+ * citizen API after refresh when empty. Tenant remains in {@link TenantSessionStore}.
  */
 const CURRENT_CITIZEN_ID_KEY = 'smart-gp.citizen-id';
 

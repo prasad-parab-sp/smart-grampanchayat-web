@@ -176,6 +176,7 @@
     "EXTRA": {
       "ERR_REQUIRED": "This field is required.",
       "ERR_SELECT": "Please choose an option.",
+      "ERR_NUMBER_INVALID": "Enter a valid number.",
       "HEAD_JANM_DAKH": "👶 Birth certificate",
       "LABEL_CERT_SUBJECT_NAME": "Certificate is for whose birth — full name",
       "PH_CERT_SUBJECT_NAME": "Enter full name",

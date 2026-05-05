@@ -1,5 +1,80 @@
+import type { CertificateTypeFieldDto } from '../../../core/certificate-type.models';
+
+const EXTRA_NUMBER_OK = /^-?\d+(\.\d+)?$/;
+
 export function isPhoneOk(s: string): boolean {
   return /^\d{10}$/.test(s.trim());
+}
+
+/** Mutates {@code errors.name} / {@code errors.phone}; returns whether both fields are valid. */
+function validateNamePhoneFields<E extends { name?: string; phone?: string }>(
+  form: { name: string; phone: string },
+  errors: E
+): boolean {
+  let ok = true;
+  if (!form.name.trim()) {
+    errors.name = 'CERTIFICATE.ERR_NAME_REQUIRED';
+    ok = false;
+  }
+  if (!form.phone.trim()) {
+    errors.phone = 'CERTIFICATE.ERR_PHONE_REQUIRED';
+    ok = false;
+  } else if (!isPhoneOk(form.phone)) {
+    errors.phone = 'CERTIFICATE.ERR_PHONE_INVALID';
+    ok = false;
+  }
+  return ok;
+}
+
+/**
+ * Validates API-driven {@code certificate_type_field} rows: non-FILE values and FILE attachments.
+ */
+export function validateCertificateTypeExtraFields(
+  fields: CertificateTypeFieldDto[] | undefined,
+  values: Record<string, string>,
+  filesByKey: Record<string, File[]>
+): { ok: boolean; errors: Record<string, string> } {
+  const errors: Record<string, string> = {};
+  if (!fields?.length) {
+    return { ok: true, errors: {} };
+  }
+  let ok = true;
+  const sorted = [...fields].sort((a, b) => a.sortOrder - b.sortOrder);
+
+  for (const f of sorted) {
+    if (f.dataType === 'FILE') {
+      const list = filesByKey[f.fieldKey] ?? [];
+      if (f.required && list.length === 0) {
+        errors[f.fieldKey] = 'CERTIFICATE.EXTRA.ERR_REQUIRED';
+        ok = false;
+      }
+      continue;
+    }
+
+    const trimmed = (values[f.fieldKey] ?? '').trim();
+
+    if (f.dataType === 'SELECT') {
+      if (f.required && !trimmed) {
+        errors[f.fieldKey] = 'CERTIFICATE.EXTRA.ERR_SELECT';
+        ok = false;
+      }
+    } else if (f.dataType === 'NUMBER') {
+      if (f.required && !trimmed) {
+        errors[f.fieldKey] = 'CERTIFICATE.EXTRA.ERR_REQUIRED';
+        ok = false;
+      } else if (trimmed && !EXTRA_NUMBER_OK.test(trimmed)) {
+        errors[f.fieldKey] = 'CERTIFICATE.EXTRA.ERR_NUMBER_INVALID';
+        ok = false;
+      }
+    } else {
+      if (f.required && !trimmed) {
+        errors[f.fieldKey] = 'CERTIFICATE.EXTRA.ERR_REQUIRED';
+        ok = false;
+      }
+    }
+  }
+
+  return { ok, errors };
 }
 
 export interface CertificateApplyFormModel {
@@ -20,18 +95,7 @@ export function validateCertificateApply(form: CertificateApplyFormModel): {
   errors: CertificateApplyFieldErrors;
 } {
   const errors: CertificateApplyFieldErrors = {};
-  let ok = true;
-  if (!form.name.trim()) {
-    errors.name = 'CERTIFICATE.ERR_NAME_REQUIRED';
-    ok = false;
-  }
-  if (!form.phone.trim()) {
-    errors.phone = 'CERTIFICATE.ERR_PHONE_REQUIRED';
-    ok = false;
-  } else if (!isPhoneOk(form.phone)) {
-    errors.phone = 'CERTIFICATE.ERR_PHONE_INVALID';
-    ok = false;
-  }
+  let ok = validateNamePhoneFields(form, errors);
   if (!form.purpose) {
     errors.purpose = 'CERTIFICATE.ERR_PURPOSE';
     ok = false;
@@ -56,18 +120,7 @@ export function validateCertificateComplaint(form: CertificateComplaintFormModel
   errors: CertificateComplaintFieldErrors;
 } {
   const errors: CertificateComplaintFieldErrors = {};
-  let ok = true;
-  if (!form.name.trim()) {
-    errors.name = 'CERTIFICATE.ERR_NAME_REQUIRED';
-    ok = false;
-  }
-  if (!form.phone.trim()) {
-    errors.phone = 'CERTIFICATE.ERR_PHONE_REQUIRED';
-    ok = false;
-  } else if (!isPhoneOk(form.phone)) {
-    errors.phone = 'CERTIFICATE.ERR_PHONE_INVALID';
-    ok = false;
-  }
+  let ok = validateNamePhoneFields(form, errors);
   if (!form.subject) {
     errors.subject = 'CERTIFICATE.ERR_SUBJECT';
     ok = false;
@@ -96,18 +149,7 @@ export function validateCertificateSuggestions(form: CertificateSuggestionsFormM
   errors: CertificateSuggestionsFieldErrors;
 } {
   const errors: CertificateSuggestionsFieldErrors = {};
-  let ok = true;
-  if (!form.name.trim()) {
-    errors.name = 'CERTIFICATE.ERR_NAME_REQUIRED';
-    ok = false;
-  }
-  if (!form.phone.trim()) {
-    errors.phone = 'CERTIFICATE.ERR_PHONE_REQUIRED';
-    ok = false;
-  } else if (!isPhoneOk(form.phone)) {
-    errors.phone = 'CERTIFICATE.ERR_PHONE_INVALID';
-    ok = false;
-  }
+  let ok = validateNamePhoneFields(form, errors);
   if (!form.category) {
     errors.category = 'CERTIFICATE.ERR_CATEGORY';
     ok = false;

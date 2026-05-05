@@ -1,8 +1,4 @@
-import {
-  CertificateCatalogRow,
-  CertificateCatalogTypeRow,
-  isCertificateSectionRow
-} from '../data/certificate-catalog.data';
+import type { CertificateTypeDto } from '../../../core/certificate-type.models';
 import { CertificateFilterPreset } from '../data/certificate-filters.data';
 import type { SupportedLang } from '../../../i18n/i18n.service';
 import {
@@ -10,35 +6,27 @@ import {
   certificateCatalogDisplayName
 } from './certificate-api-mapper';
 
-/** Codes or legacy static name keys allowed by the active preset (API rows match `code`). */
-function identifierSetForFilter(
+/** Resolve preset once; derive identifier/category sets (same rules as before per field). */
+function filterSetsForPreset(
   presets: CertificateFilterPreset[],
   activeFilterId: string
-): Set<string> | null {
+): {
+  allowedIdentifiers: Set<string> | null;
+  allowedCategories: Set<string> | null;
+} {
   const preset = presets.find((p) => p.id === activeFilterId);
   if (!preset || preset.id === 'all') {
-    return null;
+    return { allowedIdentifiers: null, allowedCategories: null };
   }
   const ids = [...(preset.codes ?? []), ...(preset.nameKeys ?? [])].filter(Boolean);
-  if (ids.length === 0) {
-    return null;
-  }
-  return new Set(ids);
-}
-
-function categorySetForFilter(
-  presets: CertificateFilterPreset[],
-  activeFilterId: string
-): Set<string> | null {
-  const preset = presets.find((p) => p.id === activeFilterId);
-  if (!preset || preset.id === 'all' || !preset.categories?.length) {
-    return null;
-  }
-  return new Set(preset.categories);
+  const allowedIdentifiers = ids.length === 0 ? null : new Set(ids);
+  const allowedCategories =
+    preset.categories?.length ? new Set(preset.categories) : null;
+  return { allowedIdentifiers, allowedCategories };
 }
 
 function certificateItemMatchesFilterAndSearch(
-  row: CertificateCatalogTypeRow,
+  row: CertificateTypeDto,
   allowedIdentifiers: Set<string> | null,
   allowedCategories: Set<string> | null,
   searchQuery: string,
@@ -61,52 +49,16 @@ function certificateItemMatchesFilterAndSearch(
   return n.includes(q) || d.includes(q);
 }
 
+/** Filters flat catalog rows (category order already applied by {@link sortAndFilterCertificateTypesForCatalog}). */
 export function buildCertificateDisplayRows(
-  rows: CertificateCatalogRow[],
+  rows: CertificateTypeDto[],
   presets: CertificateFilterPreset[],
   activeFilterId: string,
   searchQuery: string,
   lang: SupportedLang
-): CertificateCatalogRow[] {
-  const allowedIdentifiers = identifierSetForFilter(presets, activeFilterId);
-  const allowedCategories = categorySetForFilter(presets, activeFilterId);
-  const res: CertificateCatalogRow[] = [];
-  let group: CertificateCatalogRow[] = [];
-
-  const flush = () => {
-    if (group.length === 0) {
-      return;
-    }
-    const h = group[0];
-    if (!isCertificateSectionRow(h)) {
-      group = [];
-      return;
-    }
-    const items = group
-      .slice(1)
-      .filter((r) =>
-        certificateItemMatchesFilterAndSearch(
-          r as CertificateCatalogTypeRow,
-          allowedIdentifiers,
-          allowedCategories,
-          searchQuery,
-          lang
-        )
-      ) as CertificateCatalogTypeRow[];
-    if (items.length > 0) {
-      res.push(h, ...items);
-    }
-    group = [];
-  };
-
-  for (const r of rows) {
-    if (isCertificateSectionRow(r)) {
-      flush();
-      group = [r];
-    } else {
-      group.push(r);
-    }
-  }
-  flush();
-  return res;
+): CertificateTypeDto[] {
+  const { allowedIdentifiers, allowedCategories } = filterSetsForPreset(presets, activeFilterId);
+  return rows.filter((r) =>
+    certificateItemMatchesFilterAndSearch(r, allowedIdentifiers, allowedCategories, searchQuery, lang)
+  );
 }

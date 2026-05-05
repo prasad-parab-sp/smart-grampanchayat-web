@@ -146,11 +146,6 @@ export const ICONS = {
 // Type for icon keys
 export type IconKey = keyof typeof ICONS;
 
-// Helper function to get icon
-export function getIcon(key: IconKey): string {
-  return ICONS[key];
-}
-
 // Commonly used icon groups for easy access
 export const ICON_GROUPS = {
   STATUS: {

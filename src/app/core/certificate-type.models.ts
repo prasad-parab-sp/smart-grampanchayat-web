@@ -21,6 +21,28 @@ export interface TenantCertificateTypeConfigDto {
   updatedAt?: string;
 }
 
+/** Mirrors API {@code CertificateTypeFieldDto} — defines extra inputs per {@code CertificateTypeDto}. */
+export interface CertificateTypeFieldDto {
+  id: string;
+  fieldKey: string;
+  labelMr: string;
+  /** When API adds English copy for dynamic labels. */
+  labelEn?: string | null;
+  placeholderMr?: string | null;
+  placeholderEn?: string | null;
+  helpTextMr?: string | null;
+  helpTextEn?: string | null;
+  /** TEXT, TEXTAREA, DATE, NUMBER, SELECT, or FILE */
+  dataType: string;
+  required: boolean;
+  sortOrder: number;
+  /** SELECT options: {@code { value, label_mr }[]} */
+  optionsJson?: unknown;
+  maxFiles?: number | null;
+  maxBytes?: number | null;
+  allowedMimeCsv?: string | null;
+}
+
 export interface CertificateTypeDto {
   id: string;
   tenantId: string | null;
@@ -46,4 +68,6 @@ export interface CertificateTypeDto {
   isActive?: boolean;
   createdAt?: string;
   updatedAt?: string;
+  /** Dynamic form rows from {@code certificate_type_field}; empty when none configured. */
+  extraFields?: CertificateTypeFieldDto[];
 }

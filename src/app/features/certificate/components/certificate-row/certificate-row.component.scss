@@ -45,18 +45,6 @@
   min-width: 0;
 }
 
-.certificate-row-badge {
-  flex-shrink: 0;
-  font-size: 10px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #c62828;
-  background: var(--rlt);
-  padding: 3px 8px;
-  border-radius: 8px;
-}
-
 .certificate-row-fee {
   display: flex;
   flex-wrap: wrap;

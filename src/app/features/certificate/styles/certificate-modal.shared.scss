@@ -326,6 +326,13 @@
   border-color: var(--green);
 }
 
+.certificate-modal-help {
+  font-size: 12px;
+  color: var(--sub);
+  margin: 6px 0 0;
+  line-height: 1.45;
+}
+
 /* Horizontal row of field groups (e.g. phone + dropdown) */
 .certificate-modal-fields-row {
   display: flex;
