@@ -13,5 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class CertificateToastComponent {
   @Input({ required: true }) messageKey!: string;
+  /** Optional ngx-translate interpolation params (e.g. reference number). */
+  @Input() translateParams: Record<string, unknown> | null = null;
   @Output() readonly dismissed = new EventEmitter<void>();
 }
