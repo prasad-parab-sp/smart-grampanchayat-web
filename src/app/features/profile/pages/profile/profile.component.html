@@ -1,0 +1,111 @@
+<section class="profile-root">
+  <h2 class="sec-title">{{ 'PROFILE.PAGE_TITLE' | translate }}</h2>
+
+  <div *ngIf="loading" class="card profile-loading">
+    {{ 'PROFILE.LOADING' | translate }}
+  </div>
+
+  <ng-container *ngIf="!loading && citizen">
+    <!-- User card — master sec-profile -->
+    <div class="card profile-user-card">
+      <div class="profile-user-icon" aria-hidden="true">👤</div>
+      <div class="profile-user-name">{{ displayName() }}</div>
+      <div class="profile-user-phone" *ngIf="citizen.mobile?.trim()">
+        📱 {{ citizen.mobile!.trim() }}
+      </div>
+      <div class="profile-user-role">{{ 'PROFILE.ROLE_CITIZEN' | translate }}</div>
+    </div>
+
+    <!-- भरणे व पावत्या — placeholder until tax/receipt API -->
+    <h3 class="profile-subtitle">{{ 'PROFILE.SECTION_PAYMENTS' | translate }}</h3>
+    <div class="card profile-empty">
+      {{ 'PROFILE.EMPTY_PAYMENTS' | translate }}
+    </div>
+
+    <!-- माझे अर्ज — live certificate applications -->
+    <h3 class="profile-subtitle">{{ 'PROFILE.SECTION_APPLICATIONS' | translate }}</h3>
+    <ng-container *ngIf="applications.length === 0">
+      <div class="card profile-empty">
+        {{ 'PROFILE.EMPTY_APPLICATIONS' | translate }}
+      </div>
+    </ng-container>
+    <div *ngFor="let app of applications" class="card profile-app-card" [class.profile-app-card--approved]="app.status === 'APPROVED'" [class.profile-app-card--rejected]="app.status === 'REJECTED' || app.status === 'CANCELLED'">
+      <div class="row profile-app-head">
+        <div class="profile-app-main">
+          <div class="profile-app-type">{{ certificateTypeLabel(app.certificateTypeId) }}</div>
+          <div class="profile-app-meta">
+            {{ app.applicationNumber }} • {{ formatSubmittedAt(app.submittedAt) }}
+          </div>
+        </div>
+        <span class="badge" [ngClass]="statusBadgeClass(app.status)">{{ statusLabel(app.status) }}</span>
+      </div>
+      <p
+        *ngIf="app.status === 'PENDING_REVIEW' || app.status === 'SUBMITTED'"
+        class="profile-app-msg profile-app-msg--pending">
+        {{ 'PROFILE.APP_PENDING_REVIEW' | translate }}
+      </p>
+      <p *ngIf="app.status === 'PENDING_PAYMENT'" class="profile-app-msg profile-app-msg--pending">
+        {{ 'PROFILE.APP_PENDING_PAYMENT' | translate }}
+      </p>
+      <p *ngIf="app.status === 'APPROVED'" class="profile-app-msg profile-app-msg--ok">
+        {{ 'PROFILE.APP_APPROVED' | translate }}
+      </p>
+      <p *ngIf="app.status === 'REJECTED' || app.status === 'CANCELLED'" class="profile-app-msg profile-app-msg--bad">
+        {{ app.status === 'CANCELLED' ? ('PROFILE.STATUS_CANCELLED' | translate) : ('PROFILE.APP_REJECTED' | translate) }}
+      </p>
+    </div>
+    <a routerLink="/certificate" class="profile-cta-link">{{ 'PROFILE.GOTO_CERTIFICATES' | translate }}</a>
+
+    <h3 class="profile-subtitle">{{ 'PROFILE.SECTION_MACHINERY' | translate }}</h3>
+    <div class="card profile-empty">
+      {{ 'PROFILE.EMPTY_MACHINERY' | translate }}
+    </div>
+
+    <h3 class="profile-subtitle">{{ 'PROFILE.SECTION_SCHEMES' | translate }}</h3>
+    <div class="card profile-empty">
+      {{ 'PROFILE.EMPTY_SCHEMES' | translate }}
+    </div>
+
+    <h3 class="profile-subtitle">{{ 'PROFILE.SECTION_UPLOADED_CERTS' | translate }}</h3>
+    <div class="card profile-empty">
+      {{ 'PROFILE.EMPTY_UPLOADED_CERTS' | translate }}
+    </div>
+
+    <!-- Payment notify admin — UI from master; backend not wired -->
+    <h3 class="profile-subtitle">{{ 'PROFILE.SECTION_PAYMENT_NOTIFY' | translate }}</h3>
+    <div class="card profile-pay-card">
+      <p class="profile-pay-lead">{{ 'PROFILE.PAYMENT_NOTIFY_LEAD' | translate }}</p>
+
+      <div class="fg">
+        <label>{{ 'PROFILE.PAYMENT_KAR_TYPE' | translate }} <span class="req">*</span></label>
+        <select disabled class="profile-input">
+          <option>{{ 'PROFILE.PAYMENT_SELECT_PLACEHOLDER' | translate }}</option>
+        </select>
+      </div>
+
+      <div class="fg">
+        <label>{{ 'PROFILE.PAYMENT_METHOD' | translate }} <span class="req">*</span></label>
+        <div class="profile-radio-row">
+          <span class="profile-radio-pill">📱 UPI</span>
+          <span class="profile-radio-pill">🏦 NEFT</span>
+          <span class="profile-radio-pill">💵 {{ 'PROFILE.PAYMENT_CASH' | translate }}</span>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-g profile-pay-btn" (click)="onPaymentNotifyClick()">
+        {{ 'PROFILE.PAYMENT_NOTIFY_BUTTON' | translate }}
+      </button>
+    </div>
+
+    <button type="button" class="btn btn-o profile-logout" (click)="logout()">
+      {{ 'HOME.LOGOUT' | translate }}
+    </button>
+  </ng-container>
+
+  <div *ngIf="!loading && loadError && !citizen" class="card profile-empty">
+    {{ 'PROFILE.ERROR_LOAD' | translate }}
+    <button type="button" class="btn btn-g profile-retry" (click)="bootstrap()">
+      {{ 'TENANT_ERROR.RETRY' | translate }}
+    </button>
+  </div>
+</section>
