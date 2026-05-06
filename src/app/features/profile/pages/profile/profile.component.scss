@@ -1,0 +1,185 @@
+.profile-root {
+  display: block;
+  padding-bottom: 24px;
+}
+
+.profile-loading {
+  text-align: center;
+  color: var(--sub);
+  font-size: 14px;
+}
+
+.profile-user-card {
+  text-align: center;
+  padding: 20px;
+}
+
+.profile-user-icon {
+  font-size: 40px;
+  margin-bottom: 8px;
+}
+
+.profile-user-name {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.profile-user-phone {
+  font-size: 13px;
+  color: var(--sub);
+  margin-top: 4px;
+}
+
+.profile-user-role {
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 6px;
+  color: var(--green);
+}
+
+.profile-subtitle {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--gdk);
+  margin: 14px 0 8px;
+}
+
+.profile-empty {
+  text-align: center;
+  color: var(--sub);
+  font-size: 13px;
+}
+
+.profile-app-card {
+  border-left: 4px solid var(--orange);
+}
+
+.profile-app-card--approved {
+  border-left-color: var(--green);
+}
+
+.profile-app-card--rejected {
+  border-left-color: var(--red);
+}
+
+.profile-app-head {
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.profile-app-main {
+  min-width: 0;
+  flex: 1;
+  padding-right: 8px;
+}
+
+.profile-app-type {
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.profile-app-meta {
+  font-size: 12px;
+  color: var(--sub);
+  margin-top: 4px;
+}
+
+.profile-app-msg {
+  font-size: 12px;
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  line-height: 1.5;
+}
+
+.profile-app-msg--pending {
+  background: var(--olt);
+  color: var(--orange);
+}
+
+.profile-app-msg--ok {
+  background: var(--glt);
+  color: var(--gdk);
+  font-weight: 700;
+}
+
+.profile-app-msg--bad {
+  background: var(--rlt);
+  color: var(--red);
+}
+
+.profile-cta-link {
+  display: inline-block;
+  margin: 10px 0 4px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--blue);
+  text-decoration: underline;
+}
+
+.profile-pay-card {
+  .profile-pay-lead {
+    font-size: 12px;
+    color: var(--sub);
+    margin-bottom: 12px;
+    line-height: 1.6;
+  }
+}
+
+.fg {
+  margin-bottom: 12px;
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .req {
+    color: var(--red);
+  }
+}
+
+.profile-input {
+  width: 100%;
+  padding: 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  font-size: 14px;
+  background: #f5f5f5;
+  color: var(--sub);
+}
+
+.profile-radio-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.profile-radio-pill {
+  flex: 1;
+  min-width: 72px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--sub);
+  background: #fafafa;
+}
+
+.profile-pay-btn {
+  margin-top: 4px;
+}
+
+.profile-logout {
+  margin-top: 14px;
+}
+
+.profile-retry {
+  margin-top: 12px;
+}

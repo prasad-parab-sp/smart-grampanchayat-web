@@ -22,10 +22,13 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/certificate/certificate.module').then((m) => m.CertificateModule)
       },
+      {
+        path: 'profile',
+        loadChildren: () => import('./features/profile/profile.module').then((m) => m.ProfileModule)
+      },
       { path: 'stub/:slug', component: ShellPlaceholderComponent },
       { path: 'kar', component: ShellPlaceholderComponent },
-      { path: 'notice', component: ShellPlaceholderComponent },
-      { path: 'profile', component: ShellPlaceholderComponent }
+      { path: 'notice', component: ShellPlaceholderComponent }
     ]
   },
   { path: '**', redirectTo: 'login' }
