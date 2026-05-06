@@ -1,0 +1,60 @@
+<div class="admin-home">
+  <app-gram-app-header
+    [badgeDisplayNameOverride]="adminDisplayName"
+    (logout)="logout()" />
+
+  <section class="admin-identity" *ngIf="adminDisplayName || adminRoleLabel">
+    <div class="admin-identity__name" *ngIf="adminDisplayName">
+      👤 {{ adminDisplayName }}
+    </div>
+    <div class="admin-identity__role" *ngIf="adminRoleLabel">
+      🛡️ {{ 'ADMIN_HOME.ROLE' | translate }}: {{ adminRoleLabel }}
+    </div>
+  </section>
+
+  <div class="chip-strip">
+    <button
+      type="button"
+      class="chip"
+      *ngFor="let chip of chips"
+      [class.chip--active]="chip.active">
+      {{ chip.icon }} {{ chip.labelKey | translate }}
+    </button>
+  </div>
+
+  <div class="service-card">
+    <div>
+      <div class="service-title">🌐 {{ 'ADMIN_HOME.ONLINE_SERVICE' | translate }}</div>
+      <div class="service-sub">{{ 'ADMIN_HOME.ONLINE_SERVICE_SUB' | translate }}</div>
+    </div>
+    <div class="service-status">{{ 'ADMIN_HOME.ONLINE_ENABLED' | translate }}</div>
+  </div>
+
+  <div class="stats-grid">
+    <article class="stat-card">
+      <div class="stat-value stat-value--orange">0</div>
+      <div class="stat-label">🚜 {{ 'ADMIN_HOME.STAT_MACHINE' | translate }}</div>
+    </article>
+    <article class="stat-card">
+      <div class="stat-value stat-value--red">0</div>
+      <div class="stat-label">📣 {{ 'ADMIN_HOME.STAT_COMPLAINTS' | translate }}</div>
+    </article>
+    <article class="stat-card">
+      <div class="stat-value stat-value--green">0</div>
+      <div class="stat-label">💡 {{ 'ADMIN_HOME.STAT_SUGGESTIONS' | translate }}</div>
+    </article>
+  </div>
+
+  <div class="pending-txn">
+    <div class="pending-label">💳 {{ 'ADMIN_HOME.PENDING_TXN' | translate }}</div>
+    <div class="pending-count">0</div>
+  </div>
+
+  <div class="actions-grid">
+    <article class="action-card" *ngFor="let action of quickActions">
+      <div class="action-icon">{{ action.icon }}</div>
+      <div class="action-title">{{ action.titleKey | translate }}</div>
+      <div class="action-sub">{{ action.subtitleKey | translate }}</div>
+    </article>
+  </div>
+</div>

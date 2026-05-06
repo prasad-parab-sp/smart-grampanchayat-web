@@ -15,6 +15,9 @@ import { ToastService } from '../../core/toast.service';
 import { CitizenService } from '../../core/citizen.service';
 import { LoggedInCitizenService } from '../../core/logged-in-citizen.service';
 import { citizenFullDisplayName } from '../../core/citizen-name.util';
+import { AdminAuthService } from '../../core/admin-auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AdminSessionService } from '../../core/admin-session.service';
 
 @Component({
   selector: 'app-login',
@@ -32,8 +35,13 @@ import { citizenFullDisplayName } from '../../core/citizen-name.util';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit, OnDestroy {
+  loginMode: 'citizen' | 'admin' = 'citizen';
   mobileNumber: string = '';
-  loginPending = false;
+  adminIdentifier: string = '';
+  adminPassword: string = '';
+  showAdminPassword = false;
+  citizenLoginPending = false;
+  adminLoginPending = false;
 
   readonly icons = ICONS;
 
@@ -57,7 +65,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     private readonly translate: TranslateService,
     private readonly toast: ToastService,
     private readonly loggedInCitizen: LoggedInCitizenService,
-    private readonly citizenService: CitizenService
+    private readonly citizenService: CitizenService,
+    private readonly adminAuthService: AdminAuthService,
+    private readonly adminSession: AdminSessionService
   ) {}
 
   ngOnInit() {
@@ -80,18 +90,30 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
+  setLoginMode(mode: 'citizen' | 'admin'): void {
+    this.loginMode = mode;
+  }
+
   async doLogin() {
+    if (this.loginMode === 'admin') {
+      await this.doAdminLogin();
+      return;
+    }
+    await this.doCitizenLogin();
+  }
+
+  private async doCitizenLogin() {
     const raw = this.mobileNumber.trim();
     if (!raw) {
       this.toast.show(this.i18n.translate('LOGIN.ERROR_EMPTY'), 'error');
       return;
     }
-    if (this.loginPending) {
+    if (this.citizenLoginPending) {
       return;
     }
 
     if (/^\d{10}$/.test(raw)) {
-      this.loginPending = true;
+      this.citizenLoginPending = true;
       try {
         const citizen = await firstValueFrom(this.citizenService.getByMobile(raw));
         const fullName = citizen ? citizenFullDisplayName(citizen) : '';
@@ -99,6 +121,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.toast.show(`${this.icons.ERROR} ${this.i18n.translate('LOGIN.ERROR_MOBILE_NOT_FOUND')}`, 'error');
           return;
         }
+        this.adminSession.clear();
         this.loggedInCitizen.setLoggedInCitizen(citizen);
         void this.router.navigate(['/home']).then(() => {
           this.toast.showLoginWelcome(
@@ -110,7 +133,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       } catch {
         this.toast.show(`${this.icons.ERROR} ${this.i18n.translate('LOGIN.ERROR_CITIZEN_LOOKUP')}`, 'error');
       } finally {
-        this.loginPending = false;
+        this.citizenLoginPending = false;
       }
       return;
     }
@@ -118,9 +141,56 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.toast.show(`${this.icons.ERROR} ${this.i18n.translate('LOGIN.ERROR_INVALID')}`, 'error');
   }
 
+  private async doAdminLogin(): Promise<void> {
+    const identifier = this.adminIdentifier.trim();
+    const password = this.adminPassword.trim();
+
+    if (!identifier) {
+      this.toast.show(`${this.icons.ERROR} ${this.i18n.translate('LOGIN.ADMIN.ERROR_IDENTIFIER_REQUIRED')}`, 'error');
+      return;
+    }
+    if (!password) {
+      this.toast.show(`${this.icons.ERROR} ${this.i18n.translate('LOGIN.ADMIN.ERROR_PASSWORD_REQUIRED')}`, 'error');
+      return;
+    }
+    if (this.adminLoginPending) {
+      return;
+    }
+
+    this.adminLoginPending = true;
+    try {
+      const res = await firstValueFrom(this.adminAuthService.login(identifier, password));
+      const fullName = `${res.user.firstName ?? ''} ${res.user.lastName ?? ''}`.trim() || identifier;
+      this.adminSession.set({
+        id: res.user.id,
+        role: res.user.role,
+        firstName: res.user.firstName,
+        lastName: res.user.lastName
+      });
+      void this.router.navigate(['/admin/home']).then(() => {
+        this.toast.showLoginWelcome(
+          fullName,
+          this.i18n.translate('LOGIN.ADMIN.WELCOME_SUFFIX'),
+          { truncatePrimary: 24 }
+        );
+      });
+    } catch (err) {
+      const status = (err as HttpErrorResponse | undefined)?.status ?? 0;
+      if (status === 401) {
+        this.toast.show(`${this.icons.ERROR} ${this.i18n.translate('LOGIN.ADMIN.ERROR_INVALID_CREDENTIALS')}`, 'error');
+      } else if (status === 403) {
+        this.toast.show(`${this.icons.ERROR} ${this.i18n.translate('LOGIN.ADMIN.ERROR_INACTIVE')}`, 'error');
+      } else {
+        this.toast.show(`${this.icons.ERROR} ${this.i18n.translate('LOGIN.ADMIN.ERROR_SERVER')}`, 'error');
+      }
+    } finally {
+      this.adminLoginPending = false;
+    }
+  }
+
   onEnterKeyPress(event: KeyboardEvent) {
     if (event.key === 'Enter') {
-      this.doLogin();
+      void this.doLogin();
     }
   }
 }

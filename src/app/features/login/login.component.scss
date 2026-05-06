@@ -86,8 +86,55 @@
   margin: 4px 0 20px;
 }
 
+.login-mode-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 6px;
+  border-radius: 12px;
+  background: #f1f5f9;
+}
+
+.mode-btn {
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 10px;
+  padding: 9px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:focus-visible {
+    outline: 2px solid #1b5e20;
+    outline-offset: 1px;
+  }
+}
+
+.mode-btn--active {
+  background: #ffffff;
+  color: #1b5e20;
+  border-color: rgba(27, 94, 32, 0.2);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+}
+
 .login-form {
   width: 100%;
+}
+
+.admin-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #b45309;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  margin-bottom: 12px;
 }
 
 .login-form-group {
@@ -123,6 +170,28 @@
   &::placeholder {
     color: #bdbdbd;
   }
+}
+
+.password-field {
+  position: relative;
+}
+
+.login-input-field--password {
+  padding-right: 48px;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 16px;
+  line-height: 1;
+  padding: 6px;
 }
 
 .btn {
