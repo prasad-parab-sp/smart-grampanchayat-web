@@ -10,9 +10,36 @@
   <div class="login-page">
     <div class="login-panel">
       <h2>{{ icons.LOGIN }} {{ 'LOGIN.TITLE' | translate }}</h2>
-      <p class="login-subtitle">{{ 'LOGIN.SUBTITLE' | translate }}</p>
+      <p class="login-subtitle">
+        {{
+          (loginMode === 'admin'
+            ? 'LOGIN.ADMIN.SUBTITLE'
+            : 'LOGIN.SUBTITLE') | translate
+        }}
+      </p>
 
-      <div class="login-form">
+      <div class="login-mode-toggle" role="tablist" [attr.aria-label]="'LOGIN.MODE_SWITCH' | translate">
+        <button
+          type="button"
+          class="mode-btn"
+          role="tab"
+          [attr.aria-selected]="loginMode === 'citizen'"
+          [class.mode-btn--active]="loginMode === 'citizen'"
+          (click)="setLoginMode('citizen')">
+          {{ icons.CITIZEN }} {{ 'LOGIN.CITIZEN_TAB' | translate }}
+        </button>
+        <button
+          type="button"
+          class="mode-btn"
+          role="tab"
+          [attr.aria-selected]="loginMode === 'admin'"
+          [class.mode-btn--active]="loginMode === 'admin'"
+          (click)="setLoginMode('admin')">
+          {{ icons.ADMIN }} {{ 'LOGIN.ADMIN.TAB' | translate }}
+        </button>
+      </div>
+
+      <div class="login-form" *ngIf="loginMode === 'citizen'; else adminLoginForm">
         <div class="login-form-group">
           <label>{{ 'LOGIN.LABEL_INPUT' | translate }} <span class="req">*</span></label>
           <input
@@ -28,11 +55,55 @@
         <button
           type="button"
           class="btn btn-g login-submit-btn"
-          [disabled]="loginPending"
+          [disabled]="citizenLoginPending"
           (click)="doLogin()">
-          {{ icons.SUCCESS }} {{ 'LOGIN.BUTTON' | translate }}
+          {{ icons.SUCCESS }}
+          {{ (citizenLoginPending ? 'LOGIN.BUTTON_PENDING' : 'LOGIN.BUTTON') | translate }}
         </button>
       </div>
+
+      <ng-template #adminLoginForm>
+        <div class="login-form">
+          <div class="admin-badge">{{ 'LOGIN.ADMIN.BADGE' | translate }}</div>
+          <div class="login-form-group">
+            <label>{{ 'LOGIN.ADMIN.LABEL_IDENTIFIER' | translate }} <span class="req">*</span></label>
+            <input
+              type="text"
+              [(ngModel)]="adminIdentifier"
+              [placeholder]="'LOGIN.ADMIN.PLACEHOLDER_IDENTIFIER' | translate"
+              class="login-input-field"
+              (keydown)="onEnterKeyPress($event)"
+              autocomplete="username" />
+          </div>
+          <div class="login-form-group">
+            <label>{{ 'LOGIN.ADMIN.LABEL_PASSWORD' | translate }} <span class="req">*</span></label>
+            <div class="password-field">
+              <input
+                [type]="showAdminPassword ? 'text' : 'password'"
+                [(ngModel)]="adminPassword"
+                [placeholder]="'LOGIN.ADMIN.PLACEHOLDER_PASSWORD' | translate"
+                class="login-input-field login-input-field--password"
+                (keydown)="onEnterKeyPress($event)"
+                autocomplete="current-password" />
+              <button
+                type="button"
+                class="password-toggle-btn"
+                (click)="showAdminPassword = !showAdminPassword"
+                [attr.aria-label]="(showAdminPassword ? 'LOGIN.ADMIN.HIDE_PASSWORD' : 'LOGIN.ADMIN.SHOW_PASSWORD') | translate">
+                {{ showAdminPassword ? icons.HIDE : icons.SHOW }}
+              </button>
+            </div>
+          </div>
+          <button
+            type="button"
+            class="btn btn-g login-submit-btn"
+            [disabled]="adminLoginPending"
+            (click)="doLogin()">
+            {{ icons.SECURITY }}
+            {{ (adminLoginPending ? 'LOGIN.ADMIN.BUTTON_PENDING' : 'LOGIN.ADMIN.BUTTON') | translate }}
+          </button>
+        </div>
+      </ng-template>
     </div>
   </div>
 

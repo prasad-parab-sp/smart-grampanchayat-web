@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 
@@ -23,6 +23,8 @@ import { LanguageSwitcherComponent } from '../language-switcher/language-switche
   styleUrls: ['./gram-app-header.component.scss']
 })
 export class GramAppHeaderComponent implements OnInit {
+  @Input() badgeDisplayNameOverride: string | null = null;
+
   readonly i18n = inject(I18nService);
   private readonly session = inject(TenantSessionStore);
   private readonly loggedInCitizen = inject(LoggedInCitizenService);
@@ -45,7 +47,7 @@ export class GramAppHeaderComponent implements OnInit {
 
   /** Badge: first + last in memory (set at login or after refresh hydration); max 20 chars + ellipsis in template. */
   get badgeNameForHeader(): string | null {
-    const raw = this.loggedInCitizen.getBadgeDisplayName()?.trim();
+    const raw = (this.badgeDisplayNameOverride ?? this.loggedInCitizen.getBadgeDisplayName())?.trim();
     if (!raw) {
       return null;
     }
