@@ -59,6 +59,8 @@ export class CertificateComponent implements OnInit, OnDestroy {
 
   submitMessage: string | null = null;
 
+  submitToastParams: Record<string, unknown> | null = null;
+
   private toastClearTimer: ReturnType<typeof setTimeout> | null = null;
   private readonly destroy$ = new Subject<void>();
   private lastFocus: HTMLElement | null = null;
@@ -204,6 +206,7 @@ export class CertificateComponent implements OnInit, OnDestroy {
     this.clearToastTimer();
     this.toastClearTimer = setTimeout(() => {
       this.submitMessage = null;
+      this.submitToastParams = null;
       this.toastClearTimer = null;
     }, 4500);
   }
@@ -211,11 +214,12 @@ export class CertificateComponent implements OnInit, OnDestroy {
   dismissToast(): void {
     this.clearToastTimer();
     this.submitMessage = null;
+    this.submitToastParams = null;
   }
 
   openRow(row: CertificateTypeDto): void {
-    console.log('openRow', row);
     this.submitMessage = null;
+    this.submitToastParams = null;
     this.clearToastTimer();
     this.stashFocus();
     this.selectedCertificate = row;
@@ -231,8 +235,9 @@ export class CertificateComponent implements OnInit, OnDestroy {
     this.syncBodyScrollLock();
   }
 
-  onApplySubmitted(): void {
-    this.submitMessage = 'CERTIFICATE.STUB_APPLY_ACK';
+  onApplySubmitted(ev: { applicationNumber: string }): void {
+    this.submitMessage = 'CERTIFICATE.APPLY_SUCCESS_ACK';
+    this.submitToastParams = { number: ev.applicationNumber };
     this.certificateApplyModalOpen = false;
     this.selectedCertificate = null;
     this.restoreFocus();

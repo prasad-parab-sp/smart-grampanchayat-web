@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
@@ -11,9 +12,12 @@ import {
   ViewChild
 } from '@angular/core';
 import { LoggedInCitizenService } from '../../../../core/logged-in-citizen.service';
+import { CertificateApplicationService } from '../../../../core/certificate-application.service';
+import type { CertificateApplicationSubmitRequest } from '../../../../core/certificate-application.models';
 import type { CertificateTypeDto, CertificateTypeFieldDto } from '../../../../core/certificate-type.models';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { take } from 'rxjs';
 import { I18nService } from '../../../../i18n/i18n.service';
 import { CERTIFICATE_APPLY_PURPOSE_KEYS } from '../../data/certificate-form-options.data';
 import {
@@ -32,6 +36,7 @@ import {
   validateCertificateApply,
   validateCertificateTypeExtraFields
 } from '../../lib/certificate-form-validation';
+import { buildCertificateAdditionalValues } from '../../lib/certificate-application-payload';
 import {
   CertificateApplyUploadPanelComponent,
   type CertificateApplyUploadSlotResult
@@ -48,12 +53,19 @@ export class CertificateApplyModalComponent implements OnInit, AfterViewInit {
   @Input({ required: true }) selectedCertificate!: CertificateTypeDto;
 
   @Output() cancelled = new EventEmitter<void>();
-  @Output() applied = new EventEmitter<void>();
+  @Output() applied = new EventEmitter<{ applicationNumber: string }>();
 
+
+  /** Inline message for login/API failures (may be translated locally or plain text from server). */
+  applySubmitError: string | null = null;
+
+  submitting = false;
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly loggedInCitizen: LoggedInCitizenService,
+    private readonly certificateApplicationService: CertificateApplicationService,
+    private readonly translate: TranslateService,
     private readonly cdr: ChangeDetectorRef,
     readonly i18n: I18nService
   ) {}
@@ -190,6 +202,8 @@ export class CertificateApplyModalComponent implements OnInit, AfterViewInit {
     this.extraFieldErrors = {};
     this.applyFieldErrors = {};
     this.uploadErrorKey = null;
+    this.applySubmitError = null;
+    this.submitting = false;
   }
 
   onBackdropClick(): void {
@@ -220,6 +234,8 @@ export class CertificateApplyModalComponent implements OnInit, AfterViewInit {
   }
 
   submit(): void {
+    this.applySubmitError = null;
+
     const raw = this.applyForm.getRawValue() as {
       name: string;
       phone: string;
@@ -248,6 +264,58 @@ export class CertificateApplyModalComponent implements OnInit, AfterViewInit {
     if (!ok || !dyn.ok) {
       return;
     }
-    this.applied.emit();
+
+    const citizenId = this.loggedInCitizen.getCurrentLoggedInCitizenId()?.trim();
+    if (!citizenId) {
+      this.applySubmitError = this.translate.instant('CERTIFICATE.ERR_APPLY_LOGIN_REQUIRED');
+      return;
+    }
+
+    const purposeLabel = this.translate.instant(raw.purpose).trim().slice(0, 200);
+    const additional = buildCertificateAdditionalValues(this.selectedCertificate.extraFields, raw.extra ?? {});
+
+    const payload: CertificateApplicationSubmitRequest = {
+      certificateTypeId: this.selectedCertificate.id,
+      applicantFullName: raw.name.trim(),
+      applicantMobile: raw.phone.trim(),
+      citizenId,
+      reasonShort: purposeLabel,
+      additionalValues: additional
+    };
+    const purposeDetails = raw.purposeDetails?.trim();
+    if (purposeDetails) {
+      payload.reasonDetails = purposeDetails;
+    }
+    const addressText = raw.address?.trim();
+    if (addressText) {
+      payload.addressText = addressText;
+    }
+
+    this.submitting = true;
+    this.certificateApplicationService
+      .submit(payload)
+      .pipe(take(1))
+      .subscribe({
+        next: (dto) => {
+          this.submitting = false;
+          this.applied.emit({ applicationNumber: dto.applicationNumber });
+        },
+        error: (err: HttpErrorResponse) => {
+          this.submitting = false;
+          this.applySubmitError = this.formatSubmitError(err);
+          this.cdr.markForCheck();
+        }
+      });
+  }
+
+  private formatSubmitError(err: HttpErrorResponse): string {
+    const body = err.error as { message?: unknown } | null;
+    if (body && typeof body.message === 'string' && body.message.trim()) {
+      return body.message.trim();
+    }
+    if (err.status === 0) {
+      return this.translate.instant('CERTIFICATE.ERR_APPLY_NETWORK');
+    }
+    return this.translate.instant('CERTIFICATE.ERR_APPLY_SUBMIT');
   }
 }

@@ -1,6 +1,6 @@
 <div class="certificate-toast card" role="status">
   <div class="certificate-toast-row">
-    <span>{{ messageKey | translate }}</span>
+    <span>{{ messageKey | translate:(translateParams ?? {}) }}</span>
     <button
       type="button"
       class="certificate-toast-dismiss"

@@ -4,6 +4,7 @@
   <app-certificate-toast
     *ngIf="submitMessage as toastKey"
     [messageKey]="toastKey"
+    [translateParams]="submitToastParams"
     (dismissed)="dismissToast()" />
   <p *ngIf="catalogLoading" class="certificate-loading">
     {{ 'CERTIFICATE.LOADING' | translate }}
@@ -33,4 +34,4 @@
   *ngIf="certificateApplyModalOpen && selectedCertificate"
   [selectedCertificate]="selectedCertificate"
   (cancelled)="closeApply()"
-  (applied)="onApplySubmitted()" />
+  (applied)="onApplySubmitted($event)" />
