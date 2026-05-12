@@ -169,8 +169,10 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.adminSession.set({
         id: res.user.id,
         role: res.user.effectiveRole ?? res.user.role,
+        storedRole: res.user.role,
         firstName: res.user.firstName,
-        lastName: res.user.lastName
+        lastName: res.user.lastName,
+        loginIdentifier: identifier
       });
       void this.router.navigate(['/admin/home']).then(() => {
         this.toast.showLoginWelcome(

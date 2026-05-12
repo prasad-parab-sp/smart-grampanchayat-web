@@ -2,9 +2,14 @@ import { Injectable } from '@angular/core';
 
 export interface AdminSessionUser {
   id: string;
+  /** Effective role (e.g. acting Sarpanch) — for display. */
   role: string;
+  /** Stored DB role — use for permission checks (e.g. only Gramsevak may approve). */
+  storedRole: string;
   firstName: string;
   lastName: string;
+  /** Mobile or email as entered at login — for re-auth on sensitive actions. */
+  loginIdentifier: string;
 }
 
 const ADMIN_SESSION_KEY = 'smart-gp.admin-user';
@@ -29,11 +34,14 @@ export class AdminSessionService {
       if (!parsed.id || !parsed.role) {
         return null;
       }
+      const stored = (parsed.storedRole ?? parsed.role).trim();
       return {
         id: parsed.id,
         role: parsed.role,
+        storedRole: stored,
         firstName: parsed.firstName ?? '',
-        lastName: parsed.lastName ?? ''
+        lastName: parsed.lastName ?? '',
+        loginIdentifier: (parsed.loginIdentifier ?? '').trim()
       };
     } catch {
       return null;

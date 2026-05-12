@@ -12,6 +12,74 @@
     </div>
   </section>
 
+  <section class="admin-pending-cert" *ngIf="isGramsevak">
+    <button
+      type="button"
+      class="admin-pending-cert__summary"
+      (click)="togglePendingCertPanel()"
+      [attr.aria-expanded]="pendingCertExpanded">
+      <span class="admin-pending-cert__summary-left">
+        <span class="admin-pending-cert__summary-icon" aria-hidden="true">📋</span>
+        <span class="admin-pending-cert__summary-titles">
+          <span class="admin-pending-cert__summary-title">{{ 'ADMIN_HOME.PENDING_CERT_TITLE' | translate }}</span>
+          <span class="admin-pending-cert__summary-kicker">{{ 'ADMIN_HOME.PENDING_CERT_KICKER' | translate }}</span>
+        </span>
+      </span>
+      <span class="admin-pending-cert__summary-right">
+        <span class="admin-pending-cert__badge" *ngIf="!pendingLoading && !pendingErrorKey" [class.admin-pending-cert__badge--zero]="pendingRows.length === 0">
+          {{ pendingRows.length }}
+        </span>
+        <span class="admin-pending-cert__badge admin-pending-cert__badge--ghost" *ngIf="pendingLoading">…</span>
+        <span class="admin-pending-cert__chev" aria-hidden="true">{{ pendingCertExpanded ? '▼' : '▶' }}</span>
+      </span>
+    </button>
+    <p class="admin-pending-cert__toggle-hint" *ngIf="!pendingCertExpanded">
+      {{ 'ADMIN_HOME.PENDING_CERT_TOGGLE_HINT' | translate }}
+    </p>
+
+    <div class="admin-pending-cert__body" *ngIf="pendingCertExpanded">
+      <div class="admin-pending-cert__toolbar">
+        <p class="admin-pending-cert__hint">{{ 'ADMIN_HOME.PENDING_CERT_HINT' | translate }}</p>
+        <button type="button" class="admin-pending-cert__refresh" (click)="onRefreshPending()" [disabled]="pendingLoading">
+          {{ 'ADMIN_HOME.PENDING_CERT_REFRESH' | translate }}
+        </button>
+      </div>
+      <p *ngIf="pendingLoading" class="admin-pending-cert__msg">{{ 'ADMIN_HOME.PENDING_CERT_LOADING' | translate }}</p>
+      <p *ngIf="pendingErrorKey" class="admin-pending-cert__err" role="alert">{{ pendingErrorKey | translate }}</p>
+      <p *ngIf="!pendingLoading && !pendingErrorKey && pendingRows.length === 0" class="admin-pending-cert__msg">
+        {{ 'ADMIN_HOME.PENDING_CERT_EMPTY' | translate }}
+      </p>
+      <div *ngIf="pendingRows.length" class="admin-pending-cert__table-wrap">
+        <table class="admin-pending-cert__table">
+          <thead>
+            <tr>
+              <th>{{ 'ADMIN_HOME.PENDING_CERT_COL_APP' | translate }}</th>
+              <th>{{ 'ADMIN_HOME.PENDING_CERT_COL_APPLICANT' | translate }}</th>
+              <th>{{ 'ADMIN_HOME.PENDING_CERT_COL_MOBILE' | translate }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of pendingRows">
+              <td>
+                <span class="admin-pending-cert__mono">{{ row.applicationNumber }}</span>
+              </td>
+              <td>{{ row.applicantFullName }}</td>
+              <td>
+                <span class="admin-pending-cert__mono">{{ row.applicantMobile }}</span>
+              </td>
+              <td>
+                <button type="button" class="admin-pending-cert__approve" (click)="openApproveDialog(row)">
+                  {{ 'ADMIN_HOME.PENDING_CERT_APPROVE' | translate }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
   <div class="chip-strip">
     <button
       type="button"
@@ -21,14 +89,6 @@
       (click)="openRoute(chip.route)">
       {{ chip.icon }} {{ chip.labelKey | translate }}
     </button>
-  </div>
-
-  <div class="service-card">
-    <div>
-      <div class="service-title">🌐 {{ 'ADMIN_HOME.ONLINE_SERVICE' | translate }}</div>
-      <div class="service-sub">{{ 'ADMIN_HOME.ONLINE_SERVICE_SUB' | translate }}</div>
-    </div>
-    <div class="service-status">{{ 'ADMIN_HOME.ONLINE_ENABLED' | translate }}</div>
   </div>
 
   <div class="stats-grid">
@@ -46,11 +106,6 @@
     </article>
   </div>
 
-  <div class="pending-txn">
-    <div class="pending-label">💳 {{ 'ADMIN_HOME.PENDING_TXN' | translate }}</div>
-    <div class="pending-count">0</div>
-  </div>
-
   <div class="actions-grid">
     <article
       class="action-card"
@@ -61,5 +116,31 @@
       <div class="action-title">{{ action.titleKey | translate }}</div>
       <div class="action-sub">{{ action.subtitleKey | translate }}</div>
     </article>
+  </div>
+
+  <div class="admin-modal-backdrop" *ngIf="approveDialogOpen" (click)="closeApproveDialog()">
+    <div class="admin-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+      <h4 class="admin-modal__title">{{ 'ADMIN_HOME.PENDING_CERT_DIALOG_TITLE' | translate }}</h4>
+      <p class="admin-modal__meta" *ngIf="approveTarget">
+        {{ approveTarget.applicationNumber }} — {{ approveTarget.applicantFullName }}
+      </p>
+      <form [formGroup]="approveForm" (ngSubmit)="confirmApprove()">
+        <label class="admin-modal__label">{{ 'ADMIN_HOME.PENDING_CERT_FIELD_ID' | translate }}</label>
+        <input class="admin-modal__input" type="text" formControlName="identifier" autocomplete="username" />
+        <label class="admin-modal__label">{{ 'LOGIN.ADMIN.LABEL_PASSWORD' | translate }}</label>
+        <input class="admin-modal__input" type="password" formControlName="password" autocomplete="current-password" />
+        <div class="admin-modal__actions">
+          <button type="button" class="admin-modal__btn admin-modal__btn--ghost" (click)="closeApproveDialog()">
+            {{ 'ADMIN_FORMATS.CANCEL' | translate }}
+          </button>
+          <button
+            type="submit"
+            class="admin-modal__btn admin-modal__btn--primary"
+            [disabled]="approveSubmitting || approveForm.invalid">
+            {{ 'ADMIN_HOME.PENDING_CERT_CONFIRM' | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>

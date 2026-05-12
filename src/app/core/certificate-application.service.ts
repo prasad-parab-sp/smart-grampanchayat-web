@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import type {
+  CertificateApplicationApproveRequest,
   CertificateApplicationDto,
   CertificateApplicationStatus,
   CertificateApplicationSubmitRequest
@@ -35,5 +36,13 @@ export class CertificateApplicationService {
       params = params.set('status', status);
     }
     return this.http.get<CertificateApplicationDto[]>(url, { params });
+  }
+
+  /**
+   * Gramsevak only — server checks stored role and credentials.
+   */
+  approve(applicationId: string, body: CertificateApplicationApproveRequest): Observable<CertificateApplicationDto> {
+    const url = `${environment.apiBaseUrl}/api/certificate-applications/${encodeURIComponent(applicationId)}/approve`;
+    return this.http.post<CertificateApplicationDto>(url, body);
   }
 }
