@@ -10,7 +10,13 @@ export interface AdminUser {
   tenantId: string;
   email: string | null;
   phone: string | null;
+  /** Stored role from DB (`users.role`). */
   role: string;
+  /** Role for UI and permissions while elevation window is active. */
+  effectiveRole: string;
+  elevatedRole: string | null;
+  actingFrom: string | null;
+  actingUntil: string | null;
   firstName: string;
   lastName: string;
   active: boolean;

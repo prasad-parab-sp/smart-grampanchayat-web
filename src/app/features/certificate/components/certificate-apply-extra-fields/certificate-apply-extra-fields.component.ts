@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   CertificateExtraErrors,
@@ -15,7 +14,7 @@ import {
 @Component({
   selector: 'app-certificate-apply-extra-fields',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './certificate-apply-extra-fields.component.html',
   styleUrls: ['./certificate-apply-extra-fields.component.scss', '../../styles/certificate-modal.shared.scss']
 })

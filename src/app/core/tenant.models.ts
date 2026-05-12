@@ -24,4 +24,7 @@ export interface Tenant {
   imageUrl: string | null;
   createdAt: string;
   updatedAt: string;
+  /** From district {@code grampanchayat} row (certificate footer). */
+  sarpanchName?: string | null;
+  gramsevakName?: string | null;
 }

@@ -1,0 +1,190 @@
+<section class="admin-formats">
+  <app-gram-app-header
+    [badgeDisplayNameOverride]="adminDisplayName"
+    (logout)="logout()" />
+
+  <section class="admin-identity" *ngIf="adminDisplayName || adminRoleLabel">
+    <div class="admin-identity__name" *ngIf="adminDisplayName">👤 {{ adminDisplayName }}</div>
+    <div class="admin-identity__role" *ngIf="adminRoleLabel">🛡️ {{ 'ADMIN_HOME.ROLE' | translate }}: {{ adminRoleLabel }}</div>
+  </section>
+
+  <article class="card formats-card">
+    <div class="formats-header">
+      <div>
+        <h2 class="sec-title">📄 {{ 'ADMIN_FORMATS.TITLE' | translate }}</h2>
+        <p class="formats-sub">{{ 'ADMIN_FORMATS.SUBTITLE' | translate }}</p>
+      </div>
+      <button type="button" class="btn btn-g btn-sm" (click)="openAddEditor()">
+        ➕ {{ 'ADMIN_FORMATS.ADD' | translate }}
+      </button>
+    </div>
+
+    <div class="formats-toolbar" [formGroup]="filterForm">
+      <input
+        type="text"
+        class="formats-search"
+        formControlName="searchTerm"
+        [placeholder]="'ADMIN_FORMATS.SEARCH_PLACEHOLDER' | translate" />
+
+      <div class="formats-chips">
+        <button type="button" class="chip" [class.on]="activeType === 'all'" (click)="activeType = 'all'">
+          {{ 'ADMIN_FORMATS.FILTER_ALL' | translate }}
+        </button>
+        <button type="button" class="chip" [class.on]="activeType === 'dakhala'" (click)="activeType = 'dakhala'">
+          {{ 'ADMIN_FORMATS.TYPE_DAKHALA' | translate }}
+        </button>
+        <button type="button" class="chip" [class.on]="activeType === 'receipt'" (click)="activeType = 'receipt'">
+          {{ 'ADMIN_FORMATS.TYPE_RECEIPT' | translate }}
+        </button>
+        <button type="button" class="chip" [class.on]="activeType === 'notice'" (click)="activeType = 'notice'">
+          {{ 'ADMIN_FORMATS.TYPE_NOTICE' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Editor panel (Word-like) -->
+    <div *ngIf="editorOpen" class="formats-editor-panel card" [formGroup]="editorForm">
+      <h3 class="editor-title">{{ editingId ? ('ADMIN_FORMATS.EDIT_TITLE' | translate) : ('ADMIN_FORMATS.NEW_TITLE' | translate) }}</h3>
+
+      <div class="formats-form-field">
+        <label>{{ 'ADMIN_FORMATS.FIELD_NAME' | translate }} <span class="form-required-mark">*</span></label>
+        <input
+          type="text"
+          formControlName="name"
+          [placeholder]="'ADMIN_FORMATS.FIELD_NAME_PH' | translate" />
+      </div>
+
+      <div class="formats-form-field">
+        <label>{{ 'ADMIN_FORMATS.FIELD_DOC_TITLE' | translate }}</label>
+        <input
+          type="text"
+          formControlName="documentTitle"
+          [placeholder]="'ADMIN_FORMATS.FIELD_DOC_TITLE_PH' | translate" />
+      </div>
+
+      <div class="formats-form-field formats-editor-certificate-field">
+        <label>{{ 'ADMIN_FORMATS.FIELD_CERT' | translate }}</label>
+        <p class="formats-hint-inline" *ngIf="certificateTypes.length === 0">{{ 'ADMIN_FORMATS.CERT_HINT_EMPTY' | translate }}</p>
+        <select formControlName="certificateCode" [disabled]="certificateTypes.length === 0">
+          <option value="" *ngIf="certificateTypes.length > 0">
+            {{ 'ADMIN_FORMATS.CERT_PLACEHOLDER' | translate }}
+          </option>
+          <option *ngFor="let certificateType of certificateTypes" [value]="certificateType.code">{{ certificateLabel(certificateType) }}</option>
+        </select>
+        <p class="formats-hint-inline" *ngIf="certificateTypes.length > 0">{{ 'ADMIN_FORMATS.CERT_HINT' | translate }}</p>
+      </div>
+
+      <div class="formats-form-field">
+        <label>{{ 'ADMIN_FORMATS.FIELD_TYPE' | translate }}</label>
+        <select formControlName="formatType">
+          <option value="dakhala">{{ 'ADMIN_FORMATS.TYPE_DAKHALA' | translate }}</option>
+          <option value="bill">{{ 'ADMIN_FORMATS.TYPE_BILL' | translate }}</option>
+          <option value="receipt">{{ 'ADMIN_FORMATS.TYPE_RECEIPT' | translate }}</option>
+          <option value="notice">{{ 'ADMIN_FORMATS.TYPE_NOTICE' | translate }}</option>
+          <option value="other">{{ 'ADMIN_FORMATS.TYPE_OTHER' | translate }}</option>
+        </select>
+      </div>
+
+      <div class="editor-toolbar-label">{{ 'ADMIN_FORMATS.EDITOR_LABEL' | translate }} <span class="form-required-mark">*</span></div>
+      <div class="editor-toolbar">
+        <button type="button" class="formats-editor-toolbar__btn" (click)="runRichTextCommand('bold')" title="Bold">B</button>
+        <button type="button" class="formats-editor-toolbar__btn formats-editor-toolbar__btn--underline" (click)="runRichTextCommand('underline')" title="Underline">U</button>
+        <button type="button" class="formats-editor-toolbar__btn" (click)="runRichTextCommand('insertOrderedList')">1≡</button>
+        <button type="button" class="formats-editor-toolbar__btn" (click)="runRichTextCommand('insertUnorderedList')">•≡</button>
+        <span class="formats-editor-toolbar__separator"></span>
+        <button type="button" class="formats-editor-toolbar__btn formats-editor-toolbar__btn--table" (click)="insertBodyTableTemplate()">{{ 'ADMIN_FORMATS.TOOL_TABLE' | translate }}</button>
+        <span class="formats-editor-toolbar__separator"></span>
+        <span class="formats-editor-toolbar__placeholder-label">{{ 'ADMIN_FORMATS.PLACEHOLDERS' | translate }}</span>
+        <button type="button" class="formats-editor-toolbar__placeholder-chip" (click)="insertBodyPlaceholderToken(tokHeader)">{{ tokHeader }}</button>
+        <button type="button" class="formats-editor-toolbar__placeholder-chip" (click)="insertBodyPlaceholderToken(tokFooter)">{{ tokFooter }}</button>
+        <button type="button" class="formats-editor-toolbar__placeholder-chip" (click)="insertBodyPlaceholderToken(tokHeaderBracket)">{{ tokHeaderBracket }}</button>
+        <button type="button" class="formats-editor-toolbar__placeholder-chip" (click)="insertBodyPlaceholderToken(tokFooterBracket)">{{ tokFooterBracket }}</button>
+        <button type="button" class="formats-editor-toolbar__placeholder-chip" (click)="insertBodyPlaceholderToken(tokTitle)">{{ tokTitle }}</button>
+        <button type="button" class="formats-editor-toolbar__placeholder-chip" (click)="insertBodyPlaceholderToken(tokTitleBracket)">{{ tokTitleBracket }}</button>
+        <button type="button" class="formats-editor-toolbar__placeholder-chip" (click)="insertBodyPlaceholderToken('[नाव]')">[नाव]</button>
+        <button type="button" class="formats-editor-toolbar__placeholder-chip" (click)="insertBodyPlaceholderToken('[कशासाठी]')">[कशासाठी]</button>
+        <button type="button" class="formats-editor-toolbar__placeholder-chip" (click)="insertBodyPlaceholderToken('[मोबाईल]')">[मोबाईल]</button>
+        <button type="button" class="formats-editor-toolbar__placeholder-chip" (click)="insertBodyPlaceholderToken('[पत्ता]')">[पत्ता]</button>
+        <button type="button" class="formats-editor-toolbar__placeholder-chip" (click)="insertBodyPlaceholderToken('[दिनांक]')">[दिनांक]</button>
+        <button type="button" class="formats-editor-toolbar__placeholder-chip" (click)="insertBodyPlaceholderToken('[दाखला_क्र]')">[दाखला_क्र]</button>
+      </div>
+
+      <div
+        #bodyEditor
+        class="formats-editor-body"
+        contenteditable="true"
+        (input)="onBodyInput()"
+        spellcheck="false"></div>
+
+      <div class="formats-form-field">
+        <label>{{ 'ADMIN_FORMATS.FIELD_FOOTER_NOTE' | translate }}</label>
+        <input
+          type="text"
+          formControlName="footerNote"
+          [placeholder]="'ADMIN_FORMATS.FIELD_FOOTER_NOTE_PH' | translate" />
+      </div>
+
+      <div class="formats-form-field">
+        <label>{{ 'ADMIN_FORMATS.FIELD_DESC' | translate }}</label>
+        <textarea
+          rows="2"
+          formControlName="internalNote"
+          [placeholder]="'ADMIN_FORMATS.FIELD_DESC_PH' | translate"></textarea>
+      </div>
+
+      <div class="formats-editor-hint"><strong>{{ 'ADMIN_FORMATS.HINT_TITLE' | translate }}</strong> {{ 'ADMIN_FORMATS.HINT_BODY' | translate }}</div>
+
+      <div class="editor-actions">
+        <button type="button" class="btn btn-b btn-sm" (click)="openPreview()">👁️ {{ 'ADMIN_FORMATS.PREVIEW' | translate }}</button>
+        <button type="button" class="btn btn-o btn-sm" (click)="cancelEditor()">{{ 'ADMIN_FORMATS.CANCEL' | translate }}</button>
+        <button type="button" class="btn btn-g btn-sm" (click)="saveTemplate()">
+          💾 {{ editingId ? ('ADMIN_FORMATS.UPDATE' | translate) : ('ADMIN_FORMATS.SAVE' | translate) }}
+        </button>
+      </div>
+    </div>
+
+    <!-- List -->
+    <div class="formats-list" *ngIf="filteredTemplates.length; else noFormats">
+      <article class="format-row" *ngFor="let item of filteredTemplates">
+        <div class="format-row__main">
+          <div class="format-row__title">{{ item.name }}</div>
+          <div class="format-row__meta">
+            <span class="badge badge-b">{{ ('ADMIN_FORMATS.TYPE_' + item.type.toUpperCase()) | translate }}</span>
+            <span class="badge badge-o" *ngIf="item.certificateTypeCode">{{ certLabelForTemplate(item) }}</span>
+            <span class="badge badge-p" *ngIf="!item.certificateTypeCode">{{ 'ADMIN_FORMATS.COMPOSE_ONLY' | translate }}</span>
+            <span class="badge" [class.badge-g]="item.active" [class.badge-r]="!item.active">
+              {{ item.active ? ('ADMIN_FORMATS.STATUS_ACTIVE' | translate) : ('ADMIN_FORMATS.STATUS_INACTIVE' | translate) }}
+            </span>
+          </div>
+          <p class="format-row__desc" *ngIf="item.documentTitle">{{ item.documentTitle }}</p>
+        </div>
+        <div class="format-row__actions">
+          <button type="button" class="btn btn-sm btn-b" (click)="openPreview(item)">{{ 'ADMIN_FORMATS.PREVIEW' | translate }}</button>
+          <button type="button" class="btn btn-sm btn-o" (click)="startEdit(item)">{{ 'ADMIN_FORMATS.EDIT' | translate }}</button>
+          <button type="button" class="btn btn-sm btn-b" (click)="toggleActive(item)">
+            {{ item.active ? ('ADMIN_FORMATS.DEACTIVATE' | translate) : ('ADMIN_FORMATS.ACTIVATE' | translate) }}
+          </button>
+          <button type="button" class="btn btn-sm btn-o danger" (click)="remove(item)">{{ 'ADMIN_FORMATS.DELETE' | translate }}</button>
+        </div>
+      </article>
+    </div>
+
+    <ng-template #noFormats>
+      <p class="formats-empty">{{ 'ADMIN_FORMATS.EMPTY' | translate }}</p>
+    </ng-template>
+  </article>
+
+  <!-- Preview modal -->
+  <div class="preview-overlay preview-print-area" *ngIf="previewOpen" (click)="closePreview()">
+    <div class="preview-modal card" (click)="$event.stopPropagation()">
+      <button type="button" class="preview-close" (click)="closePreview()">✕</button>
+      <h3 class="preview-modal-title">{{ 'ADMIN_FORMATS.PREVIEW_TITLE' | translate }}</h3>
+      <p class="preview-note">{{ 'ADMIN_FORMATS.PREVIEW_NOTE' | translate }}</p>
+      <div class="preview-sheet" [innerHTML]="previewSafe"></div>
+      <div class="preview-actions">
+        <button type="button" class="btn btn-o btn-sm" (click)="closePreview()">{{ 'ADMIN_FORMATS.CLOSE' | translate }}</button>
+        <button type="button" class="btn btn-g btn-sm" (click)="printPreview()">🖨️ {{ 'ADMIN_FORMATS.PRINT' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</section>

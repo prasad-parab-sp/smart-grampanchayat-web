@@ -5,6 +5,7 @@
     role="dialog"
     aria-modal="true"
     aria-labelledby="certificate-dialog-suggestions-title"
+    [formGroup]="suggestionsForm"
     (click)="onPanelClick($event)">
     <button
       #closeBtn
@@ -23,12 +24,11 @@
     </div>
 
     <div class="certificate-modal-field-group">
-      <label for="certificate-suggestions-name">{{ 'CERTIFICATE.LABEL_NAME' | translate }} <span class="req">*</span></label>
+      <label for="certificate-suggestions-name">{{ 'CERTIFICATE.LABEL_NAME' | translate }} <span class="form-required-mark">*</span></label>
       <input
         id="certificate-suggestions-name"
         type="text"
-        [(ngModel)]="suggestionsForm.name"
-        name="sName"
+        formControlName="name"
         required
         aria-required="true"
         [attr.aria-invalid]="suggestionsFieldErrors['name'] ? 'true' : null" />
@@ -37,12 +37,11 @@
       </p>
     </div>
     <div class="certificate-modal-field-group">
-      <label for="certificate-suggestions-phone">{{ 'CERTIFICATE.LABEL_PHONE' | translate }} <span class="req">*</span></label>
+      <label for="certificate-suggestions-phone">{{ 'CERTIFICATE.LABEL_PHONE' | translate }} <span class="form-required-mark">*</span></label>
       <input
         id="certificate-suggestions-phone"
         type="tel"
-        [(ngModel)]="suggestionsForm.phone"
-        name="sPhone"
+        formControlName="phone"
         maxlength="10"
         inputmode="numeric"
         required
@@ -53,11 +52,10 @@
       </p>
     </div>
     <div class="certificate-modal-field-group">
-      <label for="certificate-suggestions-category">{{ 'CERTIFICATE.LABEL_SUGGESTIONS_TYPE' | translate }} <span class="req">*</span></label>
+      <label for="certificate-suggestions-category">{{ 'CERTIFICATE.LABEL_SUGGESTIONS_TYPE' | translate }} <span class="form-required-mark">*</span></label>
       <select
         id="certificate-suggestions-category"
-        [(ngModel)]="suggestionsForm.category"
-        name="sCat"
+        formControlName="category"
         required
         aria-required="true"
         [attr.aria-invalid]="suggestionsFieldErrors['category'] ? 'true' : null">
@@ -69,11 +67,10 @@
       </p>
     </div>
     <div class="certificate-modal-field-group">
-      <label for="certificate-suggestions-details">{{ 'CERTIFICATE.LABEL_SUGGESTIONS_DETAIL' | translate }} <span class="req">*</span></label>
+      <label for="certificate-suggestions-details">{{ 'CERTIFICATE.LABEL_SUGGESTIONS_DETAIL' | translate }} <span class="form-required-mark">*</span></label>
       <textarea
         id="certificate-suggestions-details"
-        [(ngModel)]="suggestionsForm.details"
-        name="sDet"
+        formControlName="details"
         rows="5"
         required
         aria-required="true"
@@ -84,7 +81,7 @@
     </div>
     <div class="certificate-modal-field-group">
       <label for="certificate-suggestions-benefit">{{ 'CERTIFICATE.LABEL_SUGGESTIONS_BENEFIT' | translate }}</label>
-      <input id="certificate-suggestions-benefit" type="text" [(ngModel)]="suggestionsForm.benefit" name="sBen" />
+      <input id="certificate-suggestions-benefit" type="text" formControlName="benefit" />
     </div>
 
     <div class="certificate-modal-actions">

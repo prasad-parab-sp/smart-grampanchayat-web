@@ -30,7 +30,7 @@
 
     <div [formGroup]="applyForm">
       <div class="certificate-modal-field-group">
-        <label for="certificate-apply-name">{{ 'CERTIFICATE.LABEL_NAME' | translate }} <span class="req">*</span></label>
+        <label for="certificate-apply-name">{{ 'CERTIFICATE.LABEL_NAME' | translate }} <span class="form-required-mark">*</span></label>
         <input
           id="certificate-apply-name"
           type="text"
@@ -44,7 +44,7 @@
       </div>
       <div class="certificate-modal-fields-row">
         <div class="certificate-modal-field-group">
-          <label for="certificate-apply-phone">{{ 'CERTIFICATE.LABEL_PHONE' | translate }} <span class="req">*</span></label>
+          <label for="certificate-apply-phone">{{ 'CERTIFICATE.LABEL_PHONE' | translate }} <span class="form-required-mark">*</span></label>
           <input
             id="certificate-apply-phone"
             type="tel"
@@ -59,14 +59,14 @@
           </p>
         </div>
         <div class="certificate-modal-field-group">
-          <label for="certificate-apply-purpose">{{ 'CERTIFICATE.LABEL_PURPOSE' | translate }} <span class="req">*</span></label>
+          <label for="certificate-apply-purpose">{{ 'CERTIFICATE.LABEL_PURPOSE' | translate }} <span class="form-required-mark">*</span></label>
           <select
             id="certificate-apply-purpose"
             formControlName="purpose"
             aria-required="true"
             [attr.aria-invalid]="applyFieldErrors['purpose'] ? 'true' : null">
             <option value="">{{ 'CERTIFICATE.PURPOSE_PICK' | translate }}</option>
-            <option *ngFor="let p of applyPurposeKeys" [value]="p">{{ p | translate }}</option>
+            <option *ngFor="let purposeKey of applyPurposeKeys" [value]="purposeKey">{{ purposeKey | translate }}</option>
           </select>
           <p *ngIf="applyFieldErrors['purpose']" class="certificate-field-err" role="alert">
             {{ applyFieldErrors['purpose'] | translate }}
@@ -107,73 +107,73 @@
 
       <div [formGroup]="applyForm">
         <div formGroupName="extra">
-          <ng-container *ngFor="let f of extraInputFields; trackBy: trackExtraField">
+          <ng-container *ngFor="let extraField of extraInputFields; trackBy: trackExtraField">
             <div class="certificate-modal-field-group">
-              <label [attr.for]="'certificate-extra-' + f.fieldKey">
-                {{ labelFor(f) }}
-                <span *ngIf="f.required" class="req">*</span>
+              <label [attr.for]="'certificate-extra-' + extraField.fieldKey">
+                {{ labelFor(extraField) }}
+                <span *ngIf="extraField.required" class="form-required-mark">*</span>
               </label>
-              <ng-container [ngSwitch]="f.dataType">
+              <ng-container [ngSwitch]="extraField.dataType">
                 <input
                   *ngSwitchCase="'TEXT'"
-                  [id]="'certificate-extra-' + f.fieldKey"
+                  [id]="'certificate-extra-' + extraField.fieldKey"
                   type="text"
-                  [formControlName]="f.fieldKey"
-                  [placeholder]="placeholderFor(f)"
-                  [attr.aria-required]="f.required ? 'true' : null"
-                  [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null"
-                  [attr.aria-describedby]="helpFor(f) ? 'certificate-extra-help-' + f.fieldKey : null" />
+                  [formControlName]="extraField.fieldKey"
+                  [placeholder]="placeholderFor(extraField)"
+                  [attr.aria-required]="extraField.required ? 'true' : null"
+                  [attr.aria-invalid]="extraFieldErrors[extraField.fieldKey] ? 'true' : null"
+                  [attr.aria-describedby]="helpFor(extraField) ? 'certificate-extra-help-' + extraField.fieldKey : null" />
                 <textarea
                   *ngSwitchCase="'TEXTAREA'"
-                  [id]="'certificate-extra-' + f.fieldKey"
-                  [formControlName]="f.fieldKey"
+                  [id]="'certificate-extra-' + extraField.fieldKey"
+                  [formControlName]="extraField.fieldKey"
                   rows="3"
-                  [placeholder]="placeholderFor(f)"
-                  [attr.aria-required]="f.required ? 'true' : null"
-                  [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null"
-                  [attr.aria-describedby]="helpFor(f) ? 'certificate-extra-help-' + f.fieldKey : null"></textarea>
+                  [placeholder]="placeholderFor(extraField)"
+                  [attr.aria-required]="extraField.required ? 'true' : null"
+                  [attr.aria-invalid]="extraFieldErrors[extraField.fieldKey] ? 'true' : null"
+                  [attr.aria-describedby]="helpFor(extraField) ? 'certificate-extra-help-' + extraField.fieldKey : null"></textarea>
                 <input
                   *ngSwitchCase="'DATE'"
-                  [id]="'certificate-extra-' + f.fieldKey"
+                  [id]="'certificate-extra-' + extraField.fieldKey"
                   type="date"
-                  [formControlName]="f.fieldKey"
-                  [attr.aria-required]="f.required ? 'true' : null"
-                  [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null"
-                  [attr.aria-describedby]="helpFor(f) ? 'certificate-extra-help-' + f.fieldKey : null" />
+                  [formControlName]="extraField.fieldKey"
+                  [attr.aria-required]="extraField.required ? 'true' : null"
+                  [attr.aria-invalid]="extraFieldErrors[extraField.fieldKey] ? 'true' : null"
+                  [attr.aria-describedby]="helpFor(extraField) ? 'certificate-extra-help-' + extraField.fieldKey : null" />
                 <input
                   *ngSwitchCase="'NUMBER'"
-                  [id]="'certificate-extra-' + f.fieldKey"
+                  [id]="'certificate-extra-' + extraField.fieldKey"
                   type="number"
                   step="any"
-                  [formControlName]="f.fieldKey"
-                  [placeholder]="placeholderFor(f)"
-                  [attr.aria-required]="f.required ? 'true' : null"
-                  [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null"
-                  [attr.aria-describedby]="helpFor(f) ? 'certificate-extra-help-' + f.fieldKey : null" />
+                  [formControlName]="extraField.fieldKey"
+                  [placeholder]="placeholderFor(extraField)"
+                  [attr.aria-required]="extraField.required ? 'true' : null"
+                  [attr.aria-invalid]="extraFieldErrors[extraField.fieldKey] ? 'true' : null"
+                  [attr.aria-describedby]="helpFor(extraField) ? 'certificate-extra-help-' + extraField.fieldKey : null" />
                 <select
                   *ngSwitchCase="'SELECT'"
-                  [id]="'certificate-extra-' + f.fieldKey"
-                  [formControlName]="f.fieldKey"
-                  [attr.aria-required]="f.required ? 'true' : null"
-                  [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null"
-                  [attr.aria-describedby]="helpFor(f) ? 'certificate-extra-help-' + f.fieldKey : null">
+                  [id]="'certificate-extra-' + extraField.fieldKey"
+                  [formControlName]="extraField.fieldKey"
+                  [attr.aria-required]="extraField.required ? 'true' : null"
+                  [attr.aria-invalid]="extraFieldErrors[extraField.fieldKey] ? 'true' : null"
+                  [attr.aria-describedby]="helpFor(extraField) ? 'certificate-extra-help-' + extraField.fieldKey : null">
                   <option value="">{{ 'CERTIFICATE.PURPOSE_PICK' | translate }}</option>
-                  <option *ngFor="let opt of selectOptionsFor(f)" [value]="opt.value">{{ opt.label }}</option>
+                  <option *ngFor="let opt of selectOptionsFor(extraField)" [value]="opt.value">{{ opt.label }}</option>
                 </select>
                 <input
                   *ngSwitchDefault
-                  [id]="'certificate-extra-' + f.fieldKey"
+                  [id]="'certificate-extra-' + extraField.fieldKey"
                   type="text"
-                  [formControlName]="f.fieldKey"
-                  [placeholder]="placeholderFor(f)"
-                  [attr.aria-required]="f.required ? 'true' : null"
-                  [attr.aria-invalid]="extraFieldErrors[f.fieldKey] ? 'true' : null"
-                  [attr.aria-describedby]="helpFor(f) ? 'certificate-extra-help-' + f.fieldKey : null" />
+                  [formControlName]="extraField.fieldKey"
+                  [placeholder]="placeholderFor(extraField)"
+                  [attr.aria-required]="extraField.required ? 'true' : null"
+                  [attr.aria-invalid]="extraFieldErrors[extraField.fieldKey] ? 'true' : null"
+                  [attr.aria-describedby]="helpFor(extraField) ? 'certificate-extra-help-' + extraField.fieldKey : null" />
               </ng-container>
-              <p *ngIf="helpFor(f) as hint" class="certificate-extra-fields-hint" [id]="'certificate-extra-help-' + f.fieldKey">
+              <p *ngIf="helpFor(extraField) as hint" class="certificate-extra-fields-hint" [id]="'certificate-extra-help-' + extraField.fieldKey">
                 {{ hint }}
               </p>
-              <p *ngIf="extraFieldErrors[f.fieldKey] as errKey" class="certificate-field-err" role="alert">
+              <p *ngIf="extraFieldErrors[extraField.fieldKey] as errKey" class="certificate-field-err" role="alert">
                 {{ errKey | translate }}
               </p>
             </div>

@@ -1,6 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription, firstValueFrom } from 'rxjs';
@@ -24,7 +24,7 @@ import { AdminSessionService } from '../../core/admin-session.service';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     TranslateModule,
     HeroBannerComponent,
     ContactBannerComponent,
@@ -36,9 +36,14 @@ import { AdminSessionService } from '../../core/admin-session.service';
 })
 export class LoginComponent implements OnInit, OnDestroy {
   loginMode: 'citizen' | 'admin' = 'citizen';
-  mobileNumber: string = '';
-  adminIdentifier: string = '';
-  adminPassword: string = '';
+
+  private readonly fb = inject(FormBuilder);
+  readonly loginForm = this.fb.group({
+    mobileNumber: this.fb.nonNullable.control(''),
+    adminIdentifier: this.fb.nonNullable.control(''),
+    adminPassword: this.fb.nonNullable.control('')
+  });
+
   showAdminPassword = false;
   citizenLoginPending = false;
   adminLoginPending = false;
@@ -103,7 +108,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   private async doCitizenLogin() {
-    const raw = this.mobileNumber.trim();
+    const raw = this.loginForm.controls.mobileNumber.value.trim();
     if (!raw) {
       this.toast.show(this.i18n.translate('LOGIN.ERROR_EMPTY'), 'error');
       return;
@@ -142,8 +147,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   private async doAdminLogin(): Promise<void> {
-    const identifier = this.adminIdentifier.trim();
-    const password = this.adminPassword.trim();
+    const identifier = this.loginForm.controls.adminIdentifier.value.trim();
+    const password = this.loginForm.controls.adminPassword.value.trim();
 
     if (!identifier) {
       this.toast.show(`${this.icons.ERROR} ${this.i18n.translate('LOGIN.ADMIN.ERROR_IDENTIFIER_REQUIRED')}`, 'error');
@@ -163,7 +168,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       const fullName = `${res.user.firstName ?? ''} ${res.user.lastName ?? ''}`.trim() || identifier;
       this.adminSession.set({
         id: res.user.id,
-        role: res.user.role,
+        role: res.user.effectiveRole ?? res.user.role,
         firstName: res.user.firstName,
         lastName: res.user.lastName
       });
