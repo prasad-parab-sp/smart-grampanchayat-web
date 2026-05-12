@@ -13,6 +13,11 @@ export interface CertificateApplicationSubmitRequest {
   additionalValues?: Record<string, unknown> | null;
 }
 
+export interface CertificateApplicationApproveRequest {
+  identifier: string;
+  password: string;
+}
+
 export type CertificateApplicationStatus =
   | 'SUBMITTED'
   | 'PENDING_PAYMENT'
@@ -37,5 +42,7 @@ export interface CertificateApplicationDto {
   submittedAt: string;
   paidAt?: string | null;
   paymentReference?: string | null;
+  approvedAt?: string | null;
+  approvedByUserId?: string | null;
   additionalValues?: Record<string, unknown>;
 }
