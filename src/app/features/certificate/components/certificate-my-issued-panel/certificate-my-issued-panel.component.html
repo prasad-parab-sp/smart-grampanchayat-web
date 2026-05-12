@@ -1,0 +1,132 @@
+<section *ngIf="visible" class="my-issued" [attr.aria-label]="'CERTIFICATE.ISSUED_ARIA' | translate">
+  <button type="button" class="my-issued__summary" (click)="toggleExpanded()" [attr.aria-expanded]="expanded">
+    <span class="my-issued__summary-left">
+      <span class="my-issued__summary-icon" aria-hidden="true">📜</span>
+      <span class="my-issued__summary-titles">
+        <span class="my-issued__summary-title">{{ 'CERTIFICATE.ISSUED_SUMMARY_TITLE' | translate }}</span>
+        <span class="my-issued__summary-kicker">{{ 'CERTIFICATE.ISSUED_SUMMARY_KICKER' | translate }}</span>
+      </span>
+    </span>
+    <span class="my-issued__summary-right">
+      <span
+        class="my-issued__badge"
+        *ngIf="!loading && !loadError"
+        [class.my-issued__badge--zero]="issued.length === 0">
+        {{ issued.length }}
+      </span>
+      <span class="my-issued__badge my-issued__badge--ghost" *ngIf="loading">…</span>
+      <span class="my-issued__chev" aria-hidden="true">{{ expanded ? '▼' : '▶' }}</span>
+    </span>
+  </button>
+
+  <p class="my-issued__toggle-hint" *ngIf="!expanded">
+    {{ 'CERTIFICATE.ISSUED_TOGGLE_HINT' | translate }}
+  </p>
+
+  <div class="my-issued__body" *ngIf="expanded">
+    <div class="my-issued__ribbon" *ngIf="issued.length > 0">
+      <span class="my-issued__ribbon-icon" aria-hidden="true">✓</span>
+      <span>{{ 'CERTIFICATE.ISSUED_RIBBON' | translate }}</span>
+    </div>
+
+    <div class="my-issued__toolbar">
+      <label class="my-issued__search-wrap">
+        <span class="my-issued__search-icon" aria-hidden="true">🔎</span>
+        <input
+          type="search"
+          class="my-issued__search"
+          [(ngModel)]="filterText"
+          (ngModelChange)="onFilterInput()"
+          [attr.placeholder]="'CERTIFICATE.ISSUED_SEARCH_PH' | translate"
+          autocomplete="off" />
+      </label>
+    </div>
+
+    <p *ngIf="loading" class="my-issued__msg">{{ 'CERTIFICATE.ISSUED_LOADING' | translate }}</p>
+    <p *ngIf="loadError" class="my-issued__err" role="alert">{{ 'CERTIFICATE.ISSUED_ERR_LIST' | translate }}</p>
+
+    <p *ngIf="!loading && !loadError && issued.length === 0" class="my-issued__empty">
+      {{ 'CERTIFICATE.ISSUED_EMPTY' | translate }}
+    </p>
+
+    <p *ngIf="!loading && !loadError && issued.length > 0 && filteredTotal === 0" class="my-issued__empty">
+      {{ 'CERTIFICATE.ISSUED_FILTER_EMPTY' | translate }}
+    </p>
+
+    <div class="my-issued__scroll" *ngIf="!loading && !loadError && pagedIssued.length">
+      <article *ngFor="let app of pagedIssued; trackBy: trackByApp" class="my-issued__card">
+        <div class="my-issued__card-accent" aria-hidden="true"></div>
+        <div class="my-issued__card-inner">
+          <div class="my-issued__card-row">
+            <div class="my-issued__card-seal" aria-hidden="true">✓</div>
+            <div class="my-issued__card-main">
+              <h3 class="my-issued__card-type">{{ certificateTypeLabel(app.certificateTypeId) }}</h3>
+              <p class="my-issued__card-num">{{ app.applicationNumber }}</p>
+              <time class="my-issued__card-date">{{ formatSubmittedAt(app.submittedAt) }}</time>
+            </div>
+          </div>
+          <div class="my-issued__card-actions">
+            <button
+              type="button"
+              class="btn btn-g my-issued__card-cta"
+              (click)="openCertificate(app)"
+              [disabled]="certLoadAppId === app.id">
+              {{ 'CERTIFICATE.ISSUED_VIEW' | translate }}
+            </button>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="my-issued__footer" *ngIf="!loading && !loadError && filteredTotal > 0">
+      <p class="my-issued__count" *ngIf="filteredTotal > 0">
+        {{
+          'CERTIFICATE.ISSUED_SHOWING'
+            | translate
+              : {
+                  from: showingFrom,
+                  to: showingTo,
+                  total: filteredTotal
+                }
+        }}
+      </p>
+      <button type="button" class="btn btn-o my-issued__more" *ngIf="hasMore" (click)="loadMore()">
+        {{ 'CERTIFICATE.ISSUED_LOAD_MORE' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div
+    *ngIf="certModalOpen"
+    class="cert-modal-backdrop"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="'CERTIFICATE.ISSUED_MODAL_TITLE' | translate"
+    (click)="closeCertModal()">
+    <div class="cert-modal-panel" (click)="$event.stopPropagation()">
+      <div class="cert-modal-head">
+        <h3 class="cert-modal-title">{{ 'CERTIFICATE.ISSUED_MODAL_TITLE' | translate }}</h3>
+        <button
+          type="button"
+          class="cert-modal-x preview-close"
+          (click)="closeCertModal()"
+          [attr.aria-label]="'CERTIFICATE.ISSUED_MODAL_CLOSE' | translate">
+          ×
+        </button>
+      </div>
+      <p class="cert-modal-sub">{{ certModalNumber }}</p>
+      <div *ngIf="certModalLoading" class="cert-modal-loading">{{ 'CERTIFICATE.ISSUED_MODAL_LOADING' | translate }}</div>
+      <div *ngIf="!certModalLoading && certModalHtml" class="cert-preview-sheet">
+        <div class="preview-print-area cert-print-area" [innerHTML]="certModalHtml"></div>
+      </div>
+      <div *ngIf="!certModalLoading && certModalHtml" class="cert-modal-actions">
+        <button type="button" class="btn btn-g" (click)="printIssuedCertificate()">
+          {{ 'CERTIFICATE.ISSUED_MODAL_PRINT' | translate }}
+        </button>
+        <button type="button" class="btn btn-o" (click)="closeCertModal()">
+          {{ 'CERTIFICATE.ISSUED_MODAL_CLOSE' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
