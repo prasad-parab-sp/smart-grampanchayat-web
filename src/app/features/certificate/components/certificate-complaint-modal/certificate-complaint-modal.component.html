@@ -5,6 +5,7 @@
     role="dialog"
     aria-modal="true"
     aria-labelledby="certificate-dialog-complaint-title"
+    [formGroup]="complaintForm"
     (click)="onPanelClick($event)">
     <button
       #closeBtn
@@ -18,12 +19,11 @@
     <p class="certificate-modal-intro">{{ 'CERTIFICATE.COMPLAINT_SUB' | translate }}</p>
 
     <div class="certificate-modal-field-group">
-      <label for="certificate-complaint-name">{{ 'CERTIFICATE.LABEL_NAME' | translate }} <span class="req">*</span></label>
+      <label for="certificate-complaint-name">{{ 'CERTIFICATE.LABEL_NAME' | translate }} <span class="form-required-mark">*</span></label>
       <input
         id="certificate-complaint-name"
         type="text"
-        [(ngModel)]="complaintForm.name"
-        name="cName"
+        formControlName="name"
         required
         aria-required="true"
         [attr.aria-invalid]="complaintFieldErrors['name'] ? 'true' : null" />
@@ -32,12 +32,11 @@
       </p>
     </div>
     <div class="certificate-modal-field-group">
-      <label for="certificate-complaint-phone">{{ 'CERTIFICATE.LABEL_PHONE' | translate }} <span class="req">*</span></label>
+      <label for="certificate-complaint-phone">{{ 'CERTIFICATE.LABEL_PHONE' | translate }} <span class="form-required-mark">*</span></label>
       <input
         id="certificate-complaint-phone"
         type="tel"
-        [(ngModel)]="complaintForm.phone"
-        name="cPhone"
+        formControlName="phone"
         maxlength="10"
         inputmode="numeric"
         required
@@ -48,11 +47,10 @@
       </p>
     </div>
     <div class="certificate-modal-field-group">
-      <label for="certificate-complaint-subject">{{ 'CERTIFICATE.LABEL_SUBJECT' | translate }} <span class="req">*</span></label>
+      <label for="certificate-complaint-subject">{{ 'CERTIFICATE.LABEL_SUBJECT' | translate }} <span class="form-required-mark">*</span></label>
       <select
         id="certificate-complaint-subject"
-        [(ngModel)]="complaintForm.subject"
-        name="cSub"
+        formControlName="subject"
         required
         aria-required="true"
         [attr.aria-invalid]="complaintFieldErrors['subject'] ? 'true' : null">
@@ -65,14 +63,13 @@
     </div>
     <div class="certificate-modal-field-group">
       <label for="certificate-complaint-location">{{ 'CERTIFICATE.LABEL_LOCATION' | translate }}</label>
-      <input id="certificate-complaint-location" type="text" [(ngModel)]="complaintForm.location" name="cLoc" />
+      <input id="certificate-complaint-location" type="text" formControlName="location" />
     </div>
     <div class="certificate-modal-field-group">
-      <label for="certificate-complaint-details">{{ 'CERTIFICATE.LABEL_DETAILS' | translate }} <span class="req">*</span></label>
+      <label for="certificate-complaint-details">{{ 'CERTIFICATE.LABEL_DETAILS' | translate }} <span class="form-required-mark">*</span></label>
       <textarea
         id="certificate-complaint-details"
-        [(ngModel)]="complaintForm.details"
-        name="cDet"
+        formControlName="details"
         rows="4"
         required
         aria-required="true"

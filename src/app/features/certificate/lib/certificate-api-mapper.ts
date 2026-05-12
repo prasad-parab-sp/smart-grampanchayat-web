@@ -138,7 +138,9 @@ export function certificateTypeFieldSelectOptions(
 /** Field keys for FILE-type dynamic fields (upload hints, etc.). */
 export function certificateTypeFileFieldKeys(dto: Pick<CertificateTypeDto, 'extraFields'>): string[] {
   const extras = dto.extraFields ?? [];
-  return extras.filter((f) => f.dataType === 'FILE').map((f) => f.fieldKey);
+  return extras
+    .filter((field) => field.dataType === 'FILE')
+    .map((field) => field.fieldKey);
 }
 
 /**

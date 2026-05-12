@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { LoggedInCitizenService } from '../../../../core/logged-in-citizen.service';
 import { CertificateTypeDto } from '../../../../core/certificate-type.models';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { CERTIFICATE_COMPLAINT_SUBJECT_KEYS } from '../../data/certificate-form-options.data';
 import { certificateTypeFileFieldKeys } from '../../lib/certificate-api-mapper';
@@ -22,7 +22,7 @@ import { validateCertificateComplaint } from '../../lib/certificate-form-validat
 @Component({
   selector: 'app-certificate-complaint-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './certificate-complaint-modal.component.html',
   styleUrls: ['../../styles/certificate-modal.shared.scss']
 })
@@ -34,6 +34,15 @@ export class CertificateComplaintModalComponent implements OnInit, AfterViewInit
 
   private readonly loggedInCitizen = inject(LoggedInCitizenService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly fb = inject(FormBuilder);
+
+  readonly complaintForm = this.fb.nonNullable.group({
+    name: [''],
+    phone: [''],
+    subject: [''],
+    location: [''],
+    details: ['']
+  });
 
   readonly complaintSubjectKeys = CERTIFICATE_COMPLAINT_SUBJECT_KEYS;
 
@@ -41,14 +50,6 @@ export class CertificateComplaintModalComponent implements OnInit, AfterViewInit
   get complaintFileSlots(): string[] {
     return certificateTypeFileFieldKeys(this.sourceRow);
   }
-
-  complaintForm = {
-    name: '',
-    phone: '',
-    subject: '',
-    location: '',
-    details: ''
-  };
 
   complaintFieldErrors: Partial<
     Record<'name' | 'phone' | 'subject' | 'details', string | undefined>
@@ -74,13 +75,12 @@ export class CertificateComplaintModalComponent implements OnInit, AfterViewInit
   }
 
   private prefillNameFromBadge(): void {
-    const f = this.complaintForm;
-    if (f.name?.trim()) {
+    if (this.complaintForm.controls.name.value.trim()) {
       return;
     }
     const n = this.loggedInCitizen.getBadgeDisplayName()?.trim();
     if (n) {
-      f.name = n;
+      this.complaintForm.controls.name.setValue(n);
       this.cdr.markForCheck();
     }
   }
@@ -99,7 +99,7 @@ export class CertificateComplaintModalComponent implements OnInit, AfterViewInit
   }
 
   submit(): void {
-    const { ok, errors } = validateCertificateComplaint(this.complaintForm);
+    const { ok, errors } = validateCertificateComplaint(this.complaintForm.getRawValue());
     this.complaintFieldErrors = ok ? {} : errors;
     if (!ok) {
       return;

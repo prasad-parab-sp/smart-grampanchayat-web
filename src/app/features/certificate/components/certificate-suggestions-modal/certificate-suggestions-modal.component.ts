@@ -11,7 +11,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { LoggedInCitizenService } from '../../../../core/logged-in-citizen.service';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { CERTIFICATE_SUGGESTIONS_CATEGORY_KEYS } from '../../data/certificate-form-options.data';
 import { validateCertificateSuggestions } from '../../lib/certificate-form-validation';
@@ -19,7 +19,7 @@ import { validateCertificateSuggestions } from '../../lib/certificate-form-valid
 @Component({
   selector: 'app-certificate-suggestions-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './certificate-suggestions-modal.component.html',
   styleUrls: ['../../styles/certificate-modal.shared.scss']
 })
@@ -29,16 +29,17 @@ export class CertificateSuggestionsModalComponent implements OnInit, AfterViewIn
 
   private readonly loggedInCitizen = inject(LoggedInCitizenService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly fb = inject(FormBuilder);
+
+  readonly suggestionsForm = this.fb.nonNullable.group({
+    name: [''],
+    phone: [''],
+    category: [''],
+    details: [''],
+    benefit: ['']
+  });
 
   readonly suggestionsCategoryKeys = CERTIFICATE_SUGGESTIONS_CATEGORY_KEYS;
-
-  suggestionsForm = {
-    name: '',
-    phone: '',
-    category: '',
-    details: '',
-    benefit: ''
-  };
 
   suggestionsFieldErrors: Partial<
     Record<'name' | 'phone' | 'category' | 'details', string | undefined>
@@ -62,13 +63,12 @@ export class CertificateSuggestionsModalComponent implements OnInit, AfterViewIn
   }
 
   private prefillNameFromBadge(): void {
-    const f = this.suggestionsForm;
-    if (f.name?.trim()) {
+    if (this.suggestionsForm.controls.name.value.trim()) {
       return;
     }
     const n = this.loggedInCitizen.getBadgeDisplayName()?.trim();
     if (n) {
-      f.name = n;
+      this.suggestionsForm.controls.name.setValue(n);
       this.cdr.markForCheck();
     }
   }
@@ -82,7 +82,7 @@ export class CertificateSuggestionsModalComponent implements OnInit, AfterViewIn
   }
 
   submit(): void {
-    const { ok, errors } = validateCertificateSuggestions(this.suggestionsForm);
+    const { ok, errors } = validateCertificateSuggestions(this.suggestionsForm.getRawValue());
     this.suggestionsFieldErrors = ok ? {} : errors;
     if (!ok) {
       return;

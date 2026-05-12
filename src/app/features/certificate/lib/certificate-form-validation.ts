@@ -41,34 +41,34 @@ export function validateCertificateTypeExtraFields(
   let ok = true;
   const sorted = [...fields].sort((a, b) => a.sortOrder - b.sortOrder);
 
-  for (const f of sorted) {
-    if (f.dataType === 'FILE') {
-      const list = filesByKey[f.fieldKey] ?? [];
-      if (f.required && list.length === 0) {
-        errors[f.fieldKey] = 'CERTIFICATE.EXTRA.ERR_REQUIRED';
+  for (const field of sorted) {
+    if (field.dataType === 'FILE') {
+      const list = filesByKey[field.fieldKey] ?? [];
+      if (field.required && list.length === 0) {
+        errors[field.fieldKey] = 'CERTIFICATE.EXTRA.ERR_REQUIRED';
         ok = false;
       }
       continue;
     }
 
-    const trimmed = (values[f.fieldKey] ?? '').trim();
+    const trimmed = (values[field.fieldKey] ?? '').trim();
 
-    if (f.dataType === 'SELECT') {
-      if (f.required && !trimmed) {
-        errors[f.fieldKey] = 'CERTIFICATE.EXTRA.ERR_SELECT';
+    if (field.dataType === 'SELECT') {
+      if (field.required && !trimmed) {
+        errors[field.fieldKey] = 'CERTIFICATE.EXTRA.ERR_SELECT';
         ok = false;
       }
-    } else if (f.dataType === 'NUMBER') {
-      if (f.required && !trimmed) {
-        errors[f.fieldKey] = 'CERTIFICATE.EXTRA.ERR_REQUIRED';
+    } else if (field.dataType === 'NUMBER') {
+      if (field.required && !trimmed) {
+        errors[field.fieldKey] = 'CERTIFICATE.EXTRA.ERR_REQUIRED';
         ok = false;
       } else if (trimmed && !EXTRA_NUMBER_OK.test(trimmed)) {
-        errors[f.fieldKey] = 'CERTIFICATE.EXTRA.ERR_NUMBER_INVALID';
+        errors[field.fieldKey] = 'CERTIFICATE.EXTRA.ERR_NUMBER_INVALID';
         ok = false;
       }
     } else {
-      if (f.required && !trimmed) {
-        errors[f.fieldKey] = 'CERTIFICATE.EXTRA.ERR_REQUIRED';
+      if (field.required && !trimmed) {
+        errors[field.fieldKey] = 'CERTIFICATE.EXTRA.ERR_REQUIRED';
         ok = false;
       }
     }

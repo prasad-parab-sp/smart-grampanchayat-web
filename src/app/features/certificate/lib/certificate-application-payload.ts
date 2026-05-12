@@ -8,26 +8,26 @@ export function buildCertificateAdditionalValues(
   fields: CertificateTypeFieldDto[] | undefined,
   values: Record<string, string>
 ): Record<string, unknown> {
-  const out: Record<string, unknown> = {};
+  const additionalValues: Record<string, unknown> = {};
   if (!fields?.length) {
-    return out;
+    return additionalValues;
   }
-  for (const f of fields) {
-    if (f.dataType === 'FILE') {
+  for (const field of fields) {
+    if (field.dataType === 'FILE') {
       continue;
     }
-    const raw = values[f.fieldKey] ?? '';
+    const raw = values[field.fieldKey] ?? '';
     const trimmed = raw.trim();
-    if (!trimmed && !f.required) {
+    if (!trimmed && !field.required) {
       continue;
     }
-    switch (f.dataType) {
+    switch (field.dataType) {
       case 'NUMBER':
-        out[f.fieldKey] = Number(trimmed);
+        additionalValues[field.fieldKey] = Number(trimmed);
         break;
       default:
-        out[f.fieldKey] = trimmed;
+        additionalValues[field.fieldKey] = trimmed;
     }
   }
-  return out;
+  return additionalValues;
 }

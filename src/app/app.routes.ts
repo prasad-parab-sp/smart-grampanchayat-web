@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { adminSessionGuard } from './core/admin-session.guard';
 import { tenantReadyGuard } from './core/tenant-ready.guard';
 import { HomeComponent } from './features/home/home.component';
 import { LoginComponent } from './features/login/login.component';
@@ -11,7 +12,13 @@ export const routes: Routes = [
   { path: 'tenant-error', component: TenantErrorComponent },
   { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: 'login', component: LoginComponent, canActivate: [tenantReadyGuard] },
-  { path: 'admin/home', component: AdminHomeComponent, canActivate: [tenantReadyGuard] },
+  { path: 'admin/home', component: AdminHomeComponent, canActivate: [tenantReadyGuard, adminSessionGuard] },
+  {
+    path: 'admin/formats',
+    canActivate: [tenantReadyGuard, adminSessionGuard],
+    loadChildren: () =>
+      import('./features/admin-formats/admin-formats.module').then((m) => m.AdminFormatsModule)
+  },
   {
     path: '',
     component: MainShellComponent,

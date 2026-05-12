@@ -39,14 +39,14 @@
         </button>
       </div>
 
-      <div class="login-form" *ngIf="loginMode === 'citizen'; else adminLoginForm">
+      <div class="login-form" *ngIf="loginMode === 'citizen'; else adminLoginForm" [formGroup]="loginForm">
         <div class="login-form-group">
-          <label>{{ 'LOGIN.LABEL_INPUT' | translate }} <span class="req">*</span></label>
+          <label>{{ 'LOGIN.LABEL_INPUT' | translate }} <span class="form-required-mark">*</span></label>
           <input
             type="tel"
             inputmode="numeric"
             maxlength="10"
-            [(ngModel)]="mobileNumber"
+            formControlName="mobileNumber"
             [placeholder]="'LOGIN.PLACEHOLDER_INPUT' | translate"
             class="login-input-field"
             (keydown)="onEnterKeyPress($event)"
@@ -63,24 +63,24 @@
       </div>
 
       <ng-template #adminLoginForm>
-        <div class="login-form">
+        <div class="login-form" [formGroup]="loginForm">
           <div class="admin-badge">{{ 'LOGIN.ADMIN.BADGE' | translate }}</div>
           <div class="login-form-group">
-            <label>{{ 'LOGIN.ADMIN.LABEL_IDENTIFIER' | translate }} <span class="req">*</span></label>
+            <label>{{ 'LOGIN.ADMIN.LABEL_IDENTIFIER' | translate }} <span class="form-required-mark">*</span></label>
             <input
               type="text"
-              [(ngModel)]="adminIdentifier"
+              formControlName="adminIdentifier"
               [placeholder]="'LOGIN.ADMIN.PLACEHOLDER_IDENTIFIER' | translate"
               class="login-input-field"
               (keydown)="onEnterKeyPress($event)"
               autocomplete="username" />
           </div>
           <div class="login-form-group">
-            <label>{{ 'LOGIN.ADMIN.LABEL_PASSWORD' | translate }} <span class="req">*</span></label>
+            <label>{{ 'LOGIN.ADMIN.LABEL_PASSWORD' | translate }} <span class="form-required-mark">*</span></label>
             <div class="password-field">
               <input
                 [type]="showAdminPassword ? 'text' : 'password'"
-                [(ngModel)]="adminPassword"
+                formControlName="adminPassword"
                 [placeholder]="'LOGIN.ADMIN.PLACEHOLDER_PASSWORD' | translate"
                 class="login-input-field login-input-field--password"
                 (keydown)="onEnterKeyPress($event)"

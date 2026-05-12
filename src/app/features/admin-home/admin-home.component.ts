@@ -9,12 +9,14 @@ interface AdminChip {
   icon: string;
   labelKey: string;
   active?: boolean;
+  route?: string;
 }
 
 interface AdminQuickAction {
   icon: string;
   titleKey: string;
   subtitleKey: string;
+  route?: string;
 }
 
 @Component({
@@ -29,10 +31,10 @@ export class AdminHomeComponent implements OnInit {
   adminRoleLabel: string | null = null;
 
   readonly chips: AdminChip[] = [
-    { icon: '🏠', labelKey: 'ADMIN_HOME.CHIP_DASHBOARD', active: true },
+    { icon: '🏠', labelKey: 'ADMIN_HOME.CHIP_DASHBOARD', active: true, route: '/admin/home' },
     { icon: '📝', labelKey: 'ADMIN_HOME.CHIP_RECORDS' },
     { icon: '📢', labelKey: 'ADMIN_HOME.CHIP_NOTICES' },
-    { icon: '📄', labelKey: 'ADMIN_HOME.CHIP_FORMATS' },
+    { icon: '📄', labelKey: 'ADMIN_HOME.CHIP_FORMATS', route: '/admin/formats' },
     { icon: '🚜', labelKey: 'ADMIN_HOME.CHIP_MACHINERY' },
     { icon: '🏗️', labelKey: 'ADMIN_HOME.CHIP_FUNDS' },
     { icon: '🏦', labelKey: 'ADMIN_HOME.CHIP_BANK' },
@@ -45,7 +47,12 @@ export class AdminHomeComponent implements OnInit {
     { icon: '🏠', titleKey: 'ADMIN_HOME.ACTION_HOUSE_TAX', subtitleKey: 'ADMIN_HOME.ACTION_HOUSE_TAX_SUB' },
     { icon: '💧', titleKey: 'ADMIN_HOME.ACTION_WATER', subtitleKey: 'ADMIN_HOME.ACTION_WATER_SUB' },
     { icon: '📢', titleKey: 'ADMIN_HOME.ACTION_NOTICE', subtitleKey: 'ADMIN_HOME.ACTION_NOTICE_SUB' },
-    { icon: '📄', titleKey: 'ADMIN_HOME.ACTION_FORMAT', subtitleKey: 'ADMIN_HOME.ACTION_FORMAT_SUB' },
+    {
+      icon: '📄',
+      titleKey: 'ADMIN_HOME.ACTION_FORMAT',
+      subtitleKey: 'ADMIN_HOME.ACTION_FORMAT_SUB',
+      route: '/admin/formats'
+    },
     { icon: '📱', titleKey: 'ADMIN_HOME.ACTION_WHATSAPP', subtitleKey: 'ADMIN_HOME.ACTION_WHATSAPP_SUB' },
     { icon: '⚙️', titleKey: 'ADMIN_HOME.ACTION_SETTINGS', subtitleKey: 'ADMIN_HOME.ACTION_SETTINGS_SUB' },
     { icon: '🚜', titleKey: 'ADMIN_HOME.ACTION_MACHINERY', subtitleKey: 'ADMIN_HOME.ACTION_MACHINERY_SUB' },
@@ -74,5 +81,12 @@ export class AdminHomeComponent implements OnInit {
   logout(): void {
     this.adminSession.clear();
     void this.router.navigate(['/login']);
+  }
+
+  openRoute(route?: string): void {
+    if (!route) {
+      return;
+    }
+    void this.router.navigateByUrl(route);
   }
 }

@@ -93,14 +93,14 @@ export class CertificateApplyModalComponent implements OnInit, AfterViewInit {
   /** Non-FILE dynamic rows from {@code CertificateTypeDto.extraFields}, sorted. */
   get extraInputFields(): CertificateTypeFieldDto[] {
     return (this.selectedCertificate.extraFields ?? [])
-      .filter((f) => f.dataType !== 'FILE')
+      .filter((field) => field.dataType !== 'FILE')
       .sort((a, b) => a.sortOrder - b.sortOrder);
   }
 
   /** FILE dynamic rows for uploads panel. */
   get extraFileFields(): CertificateTypeFieldDto[] {
     return (this.selectedCertificate.extraFields ?? [])
-      .filter((f) => f.dataType === 'FILE')
+      .filter((field) => field.dataType === 'FILE')
       .sort((a, b) => a.sortOrder - b.sortOrder);
   }
 
@@ -140,24 +140,24 @@ export class CertificateApplyModalComponent implements OnInit, AfterViewInit {
     queueMicrotask(() => this.prefillApplicantNameFromBadge());
   }
 
-  trackExtraField(_index: number, f: CertificateTypeFieldDto): string {
-    return f.fieldKey;
+  trackExtraField(_index: number, field: CertificateTypeFieldDto): string {
+    return field.fieldKey;
   }
 
-  labelFor(f: CertificateTypeFieldDto): string {
-    return certificateTypeFieldLabel(f, this.i18n.currentLang);
+  labelFor(field: CertificateTypeFieldDto): string {
+    return certificateTypeFieldLabel(field, this.i18n.currentLang);
   }
 
-  placeholderFor(f: CertificateTypeFieldDto): string {
-    return certificateTypeFieldPlaceholder(f, this.i18n.currentLang);
+  placeholderFor(field: CertificateTypeFieldDto): string {
+    return certificateTypeFieldPlaceholder(field, this.i18n.currentLang);
   }
 
-  helpFor(f: CertificateTypeFieldDto): string | null {
-    return certificateTypeFieldHelpText(f, this.i18n.currentLang);
+  helpFor(field: CertificateTypeFieldDto): string | null {
+    return certificateTypeFieldHelpText(field, this.i18n.currentLang);
   }
 
-  selectOptionsFor(f: CertificateTypeFieldDto): CertificateTypeFieldSelectOption[] {
-    return certificateTypeFieldSelectOptions(f, this.i18n.currentLang);
+  selectOptionsFor(field: CertificateTypeFieldDto): CertificateTypeFieldSelectOption[] {
+    return certificateTypeFieldSelectOptions(field, this.i18n.currentLang);
   }
 
   /** Header badge (login / shell hydration) → applicant name when still empty. */
@@ -194,9 +194,9 @@ export class CertificateApplyModalComponent implements OnInit, AfterViewInit {
     });
 
     this.uploadedFilesByExtraFieldKey = {};
-    for (const f of this.selectedCertificate.extraFields ?? []) {
-      if (f.dataType === 'FILE') {
-        this.uploadedFilesByExtraFieldKey[f.fieldKey] = [];
+    for (const extraField of this.selectedCertificate.extraFields ?? []) {
+      if (extraField.dataType === 'FILE') {
+        this.uploadedFilesByExtraFieldKey[extraField.fieldKey] = [];
       }
     }
     this.extraFieldErrors = {};

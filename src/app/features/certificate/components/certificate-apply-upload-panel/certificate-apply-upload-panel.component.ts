@@ -40,21 +40,21 @@ export class CertificateApplyUploadPanelComponent {
 
   readonly maxUploadBytes = 5 * 1024 * 1024;
 
-  trackExtraField(_index: number, f: CertificateTypeFieldDto): string {
-    return f.fieldKey;
+  trackExtraField(_index: number, field: CertificateTypeFieldDto): string {
+    return field.fieldKey;
   }
 
-  labelFor(f: CertificateTypeFieldDto): string {
-    return certificateTypeFieldLabel(f, this.i18n.currentLang);
+  labelFor(field: CertificateTypeFieldDto): string {
+    return certificateTypeFieldLabel(field, this.i18n.currentLang);
   }
 
-  placeholderFor(f: CertificateTypeFieldDto): string | null {
-    const p = certificateTypeFieldPlaceholder(f, this.i18n.currentLang)?.trim();
+  placeholderFor(field: CertificateTypeFieldDto): string | null {
+    const p = certificateTypeFieldPlaceholder(field, this.i18n.currentLang)?.trim();
     return p ? p : null;
   }
 
-  helpFor(f: CertificateTypeFieldDto): string | null {
-    return certificateTypeFieldHelpText(f, this.i18n.currentLang);
+  helpFor(field: CertificateTypeFieldDto): string | null {
+    return certificateTypeFieldHelpText(field, this.i18n.currentLang);
   }
 
   fileAccept(field: CertificateTypeFieldDto): string {

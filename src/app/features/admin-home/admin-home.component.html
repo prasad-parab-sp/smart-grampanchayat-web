@@ -17,7 +17,8 @@
       type="button"
       class="chip"
       *ngFor="let chip of chips"
-      [class.chip--active]="chip.active">
+      [class.chip--active]="chip.active"
+      (click)="openRoute(chip.route)">
       {{ chip.icon }} {{ chip.labelKey | translate }}
     </button>
   </div>
@@ -51,7 +52,11 @@
   </div>
 
   <div class="actions-grid">
-    <article class="action-card" *ngFor="let action of quickActions">
+    <article
+      class="action-card"
+      *ngFor="let action of quickActions"
+      [class.action-card--link]="action.route"
+      (click)="openRoute(action.route)">
       <div class="action-icon">{{ action.icon }}</div>
       <div class="action-title">{{ action.titleKey | translate }}</div>
       <div class="action-sub">{{ action.subtitleKey | translate }}</div>

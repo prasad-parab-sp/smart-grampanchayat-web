@@ -2,36 +2,36 @@
   <div class="certificate-upload-panel-title">{{ 'CERTIFICATE.UPLOAD_PANEL_TITLE' | translate }}</div>
   <p class="certificate-upload-panel-lead">{{ 'CERTIFICATE.UPLOADS_INTRO' | translate }}</p>
   <p class="certificate-upload-hint">{{ 'CERTIFICATE.UPLOADS_OPTIONAL' | translate }}</p>
-  <div *ngFor="let f of fileFields; trackBy: trackExtraField" class="certificate-upload-slot">
+  <div *ngFor="let fileField of fileFields; trackBy: trackExtraField" class="certificate-upload-slot">
     <div
       class="certificate-upload-slot-label"
-      [attr.id]="'certificate-upload-slot-label-' + f.fieldKey">
-      📄 {{ labelFor(f) }}
-      <span *ngIf="f.required" class="req">*</span>
+      [attr.id]="'certificate-upload-slot-label-' + fileField.fieldKey">
+      📄 {{ labelFor(fileField) }}
+      <span *ngIf="fileField.required" class="form-required-mark">*</span>
     </div>
-    <p *ngIf="placeholderFor(f) as ph" class="certificate-upload-slot-placeholder">{{ ph }}</p>
-    <p *ngIf="helpFor(f) as fileHelp" class="certificate-extra-fields-hint" [attr.id]="'certificate-upload-help-' + f.fieldKey">
+    <p *ngIf="placeholderFor(fileField) as ph" class="certificate-upload-slot-placeholder">{{ ph }}</p>
+    <p *ngIf="helpFor(fileField) as fileHelp" class="certificate-extra-fields-hint" [attr.id]="'certificate-upload-help-' + fileField.fieldKey">
       {{ fileHelp }}
     </p>
     <label
-      [attr.for]="'certificate-apply-up-' + f.fieldKey"
+      [attr.for]="'certificate-apply-up-' + fileField.fieldKey"
       class="certificate-upload-dashed"
-      [attr.aria-labelledby]="'certificate-upload-slot-label-' + f.fieldKey"
-      [attr.aria-describedby]="helpFor(f) ? 'certificate-upload-help-' + f.fieldKey : null">
+      [attr.aria-labelledby]="'certificate-upload-slot-label-' + fileField.fieldKey"
+      [attr.aria-describedby]="helpFor(fileField) ? 'certificate-upload-help-' + fileField.fieldKey : null">
       <span class="certificate-upload-dashed-icon">📎</span>
       <span class="certificate-upload-dashed-pick">{{ 'CERTIFICATE.UPLOAD_PICK_FILE' | translate }}</span>
       <span class="certificate-upload-dashed-meta">{{ 'CERTIFICATE.UPLOAD_META' | translate }}</span>
       <input
-        [id]="'certificate-apply-up-' + f.fieldKey"
+        [id]="'certificate-apply-up-' + fileField.fieldKey"
         type="file"
         class="certificate-upload-hidden-input"
-        [attr.multiple]="(f.maxFiles ?? 1) > 1 ? '' : null"
-        [accept]="fileAccept(f)"
+        [attr.multiple]="(fileField.maxFiles ?? 1) > 1 ? '' : null"
+        [accept]="fileAccept(fileField)"
         capture="environment"
-        (change)="onFileSelected(f, $event)" />
+        (change)="onFileSelected(fileField, $event)" />
     </label>
-    <p *ngFor="let file of filesByKey[f.fieldKey]" class="certificate-upload-picked">✓ {{ file.name }}</p>
-    <p *ngIf="fieldErrors[f.fieldKey] as fileErr" class="certificate-field-err" role="alert">
+    <p *ngFor="let file of filesByKey[fileField.fieldKey]" class="certificate-upload-picked">✓ {{ file.name }}</p>
+    <p *ngIf="fieldErrors[fileField.fieldKey] as fileErr" class="certificate-field-err" role="alert">
       {{ fileErr | translate }}
     </p>
   </div>
