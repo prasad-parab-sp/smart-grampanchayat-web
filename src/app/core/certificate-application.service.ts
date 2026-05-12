@@ -7,7 +7,8 @@ import type {
   CertificateApplicationApproveRequest,
   CertificateApplicationDto,
   CertificateApplicationStatus,
-  CertificateApplicationSubmitRequest
+  CertificateApplicationSubmitRequest,
+  CertificateIssuedDocumentDto
 } from './certificate-application.models';
 
 @Injectable({ providedIn: 'root' })
@@ -44,5 +45,22 @@ export class CertificateApplicationService {
   approve(applicationId: string, body: CertificateApplicationApproveRequest): Observable<CertificateApplicationDto> {
     const url = `${environment.apiBaseUrl}/api/certificate-applications/${encodeURIComponent(applicationId)}/approve`;
     return this.http.post<CertificateApplicationDto>(url, body);
+  }
+
+  /**
+   * Approved applications only — server checks citizenId matches the row.
+   */
+  getIssuedDocument(
+    applicationId: string,
+    citizenId: string,
+    lang?: string
+  ): Observable<CertificateIssuedDocumentDto> {
+    const url = `${environment.apiBaseUrl}/api/certificate-applications/${encodeURIComponent(applicationId)}/issued-document`;
+    let params = new HttpParams().set('citizenId', citizenId.trim());
+    const l = lang?.trim();
+    if (l) {
+      params = params.set('lang', l);
+    }
+    return this.http.get<CertificateIssuedDocumentDto>(url, { params });
   }
 }

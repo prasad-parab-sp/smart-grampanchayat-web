@@ -20,6 +20,7 @@ import { CertificatePageHeaderComponent } from '../../components/certificate-pag
 import { CertificateSuggestionsPeekComponent } from '../../components/certificate-suggestions-peek/certificate-suggestions-peek.component';
 import { CertificateToastComponent } from '../../components/certificate-toast/certificate-toast.component';
 import { CertificateApplyModalComponent } from '../../components/certificate-apply-modal/certificate-apply-modal.component';
+import { CertificateMyIssuedPanelComponent } from '../../components/certificate-my-issued-panel/certificate-my-issued-panel.component';
 import { collectFocusableElements } from '../../lib/modal-focusables';
 
 /**
@@ -36,7 +37,8 @@ import { collectFocusableElements } from '../../lib/modal-focusables';
     CertificateToastComponent,
     CertificateToolbarComponent,
     CertificateCatalogListComponent,
-    CertificateApplyModalComponent
+    CertificateApplyModalComponent,
+    CertificateMyIssuedPanelComponent
   ],
   templateUrl: './certificate.component.html',
   styleUrls: ['./certificate.component.scss']
@@ -67,6 +69,9 @@ export class CertificateComponent implements OnInit, OnDestroy {
 
   @ViewChild(CertificateApplyModalComponent)
   private applyModal?: CertificateApplyModalComponent;
+
+  @ViewChild(CertificateMyIssuedPanelComponent)
+  private issuedPanel?: CertificateMyIssuedPanelComponent;
 
   constructor(
     private readonly translate: TranslateService,
@@ -243,5 +248,6 @@ export class CertificateComponent implements OnInit, OnDestroy {
     this.restoreFocus();
     this.syncBodyScrollLock();
     this.scheduleToastDismiss();
+    this.issuedPanel?.refresh();
   }
 }

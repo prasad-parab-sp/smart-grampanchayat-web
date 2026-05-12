@@ -120,7 +120,11 @@ export function expandFormatPlaceholders(bodyHtml: string, ctx: FormatPreviewCon
     ['{$certificate_no}', escapeHtml(sm.certificateNumber)],
     ['{$date}', escapeHtml(sm.dateDisplay)],
     ['{$gp_line}', escapeHtml(gpLine)],
-    ['{$gp_name}', escapeHtml(gpName)]
+    ['{$gp_name}', escapeHtml(gpName)],
+    ['{$sarpanch}', escapeHtml(sm.sarpanchName)],
+    ['{$gramsevak}', escapeHtml(sm.gramsevakName)],
+    ['[सरपंच]', escapeHtml(sm.sarpanchName)],
+    ['[ग्रामसेवक]', escapeHtml(sm.gramsevakName)]
   ];
 
   for (const [token, html] of pairs) {

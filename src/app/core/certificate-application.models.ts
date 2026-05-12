@@ -26,6 +26,11 @@ export type CertificateApplicationStatus =
   | 'REJECTED'
   | 'CANCELLED';
 
+export interface CertificateIssuedDocumentDto {
+  applicationNumber: string;
+  html: string;
+}
+
 export interface CertificateApplicationDto {
   id: string;
   tenantId: string;
