@@ -21,7 +21,8 @@ import {
 import { CertificateDocumentFormatService } from '../../../../core/certificate-document-format.service';
 import {
   CertificateTypeCategory,
-  CertificateTypeDto
+  CertificateTypeDto,
+  CertificateTypeFieldDto
 } from '../../../../core/certificate-type.models';
 import { CertificateTypeService } from '../../../../core/certificate-type.service';
 import { TenantSessionStore } from '../../../../core/tenant-session.store';
@@ -237,6 +238,31 @@ export class AdminFormatsComponent implements OnInit {
     this.onBodyInput();
   }
 
+  /** Extra fields from {@code GET /api/certificate-types} for the certificate selected in the editor (inserts {@code {$extra.fieldKey}}). */
+  extraFieldsForSelectedCertificate(): CertificateTypeFieldDto[] {
+    const code = this.editorForm.controls.certificateCode.value?.trim();
+    if (!code) {
+      return [];
+    }
+    const matchingCertificateType = this.certificateTypes.find((certificateType) => certificateType.code === code);
+    const list = matchingCertificateType?.extraFields ?? [];
+    return [...list].sort((a, b) => a.sortOrder - b.sortOrder);
+  }
+
+  insertExtraFieldPlaceholder(field: CertificateTypeFieldDto): void {
+    const key = field.fieldKey?.trim();
+    if (!key || !/^[a-zA-Z0-9_-]+$/.test(key)) {
+      return;
+    }
+    this.insertBodyPlaceholderToken(`{$extra.${key}}`);
+  }
+
+  extraFieldChipTitle(field: CertificateTypeFieldDto): string {
+    const en = this.i18n.currentLang === 'en';
+    const label = (en ? field.labelEn : field.labelMr)?.trim() || field.labelMr;
+    return `${label} → {$extra.${field.fieldKey}}`;
+  }
+
   insertBodyTableTemplate(): void {
     const table = `<table class="fmt-inner-table" border="1" cellpadding="6" style="width:100%;border-collapse:collapse;font-size:13px;"><tbody><tr><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table>`;
     this.insertBodyPlaceholderToken(table);
@@ -323,7 +349,8 @@ export class AdminFormatsComponent implements OnInit {
       : (this.bodyEditor?.nativeElement?.innerHTML ?? this.draftBodyHtml);
     const footerExtra = item ? item.footerNote : this.editorForm.controls.footerNote.value;
     const documentTitle = item ? item.documentTitle : this.editorForm.controls.documentTitle.value;
-    const ctx = this.buildPreviewContext(documentTitle);
+    const certCode = item?.certificateTypeCode?.trim() || this.editorForm.controls.certificateCode.value?.trim() || null;
+    const ctx = this.buildPreviewContext(documentTitle, certCode);
     let html = expandFormatPlaceholders(body, ctx);
     html = injectDocumentTitleBelowHeaderIfMissing(html, documentTitle);
     if (footerExtra.trim()) {
@@ -351,11 +378,14 @@ export class AdminFormatsComponent implements OnInit {
       .replace(/"/g, '&quot;');
   }
 
-  private buildPreviewContext(documentTitle: string): FormatPreviewContext {
+  private buildPreviewContext(documentTitle: string, certificateTypeCode?: string | null): FormatPreviewContext {
     const tenant = this.tenantSession.getTenant();
     const banner = tenant ? heroBannerConfigFromTenant(tenant) : heroBannerConfigFromSession(this.tenantSession);
     const uiLang = this.i18n.currentLang;
-    const sample = this.samplePreviewData();
+    const sample: FormatPreviewSample = {
+      ...this.samplePreviewData(),
+      extraValues: this.extraPreviewValuesForCertificateCode(certificateTypeCode)
+    };
     return {
       banner,
       uiLang,
@@ -365,6 +395,30 @@ export class AdminFormatsComponent implements OnInit {
       documentTitle: documentTitle.trim(),
       sample
     };
+  }
+
+  private extraPreviewValuesForCertificateCode(certificateTypeCode?: string | null): Record<string, string> {
+    const code = certificateTypeCode?.trim();
+    if (!code) {
+      return {};
+    }
+    const matchingCertificateType = this.certificateTypes.find((certificateType) => certificateType.code === code);
+    const fields = matchingCertificateType?.extraFields;
+    if (!fields?.length) {
+      return {};
+    }
+    const en = this.i18n.currentLang === 'en';
+    const out: Record<string, string> = {};
+    for (const field of fields) {
+      const key = field.fieldKey?.trim();
+      if (!key || !/^[a-zA-Z0-9_-]+$/.test(key)) {
+        continue;
+      }
+      const placeholder = (en ? field.placeholderEn : field.placeholderMr)?.trim();
+      const label = (en ? field.labelEn : field.labelMr)?.trim() || field.labelMr;
+      out[key] = placeholder || `(${label})`;
+    }
+    return out;
   }
 
   private previewOfficerName(

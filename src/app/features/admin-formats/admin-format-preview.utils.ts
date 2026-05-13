@@ -13,6 +13,11 @@ export interface FormatPreviewSample {
   /** Optional — shown when API has no officer names yet. */
   sarpanchName: string;
   gramsevakName: string;
+  /**
+   * Values for {@code {$extra.fieldKey}} in the template body (preview only).
+   * Keys must match {@code certificate_type_field.field_key} / application {@code additional_values_json}.
+   */
+  extraValues?: Record<string, string>;
 }
 
 export interface FormatPreviewContext {
@@ -129,6 +134,13 @@ export function expandFormatPlaceholders(bodyHtml: string, ctx: FormatPreviewCon
 
   for (const [token, html] of pairs) {
     out = out.split(token).join(html);
+  }
+
+  for (const [k, v] of Object.entries(sm.extraValues ?? {})) {
+    if (!/^[a-zA-Z0-9_-]+$/.test(k)) {
+      continue;
+    }
+    out = out.split(`{$extra.${k}}`).join(escapeHtml(v));
   }
 
   return out;

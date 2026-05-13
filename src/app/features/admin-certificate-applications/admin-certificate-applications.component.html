@@ -1,0 +1,212 @@
+<div class="acr-root">
+  <app-gram-app-header [badgeDisplayNameOverride]="adminDisplayName" (logout)="logout()" />
+
+  <section class="acr-identity" *ngIf="adminDisplayName || adminRoleLabel">
+    <div class="acr-identity__name" *ngIf="adminDisplayName">👤 {{ adminDisplayName }}</div>
+    <div class="acr-identity__role" *ngIf="adminRoleLabel">
+      🛡️ {{ 'ADMIN_HOME.ROLE' | translate }}: {{ adminRoleLabel }}
+    </div>
+  </section>
+
+  <button type="button" class="acr-back" (click)="openAdminHome()">← {{ 'ADMIN_CERT_REGISTRY.BACK' | translate }}</button>
+
+  <h2 class="acr-title">{{ 'ADMIN_CERT_REGISTRY.TITLE' | translate }}</h2>
+  <p class="acr-sub">{{ 'ADMIN_CERT_REGISTRY.SUBTITLE' | translate }}</p>
+
+  <div class="acr-toolbar">
+    <button type="button" class="acr-refresh" (click)="load()" [disabled]="loading">
+      {{ 'ADMIN_CERT_REGISTRY.REFRESH' | translate }}
+    </button>
+  </div>
+
+  <label class="acr-search">
+    <span class="acr-search__label">{{ 'ADMIN_CERT_REGISTRY.SEARCH_LABEL' | translate }}</span>
+    <input
+      type="search"
+      class="acr-search__input"
+      [(ngModel)]="searchQuery"
+      [attr.placeholder]="'ADMIN_CERT_REGISTRY.SEARCH_PH' | translate"
+      autocomplete="off" />
+  </label>
+
+  <div class="acr-chip-strip" role="tablist">
+    <button
+      type="button"
+      *ngFor="let c of statusChips"
+      role="tab"
+      class="acr-chip"
+      [class.acr-chip--on]="statusFilter === c.value"
+      (click)="setStatusFilter(c.value)">
+      {{ c.labelKey | translate }}
+    </button>
+  </div>
+
+  <p *ngIf="loading" class="acr-msg">{{ 'ADMIN_CERT_REGISTRY.LOADING' | translate }}</p>
+  <p *ngIf="errorKey" class="acr-err" role="alert">{{ errorKey | translate }}</p>
+
+  <p *ngIf="!loading && !errorKey && filteredRows.length === 0" class="acr-msg">{{ 'ADMIN_CERT_REGISTRY.EMPTY' | translate }}</p>
+
+  <div *ngIf="!loading && !errorKey && filteredRows.length" class="acr-table-wrap">
+    <table class="acr-table">
+      <thead>
+        <tr>
+          <th>{{ 'ADMIN_CERT_REGISTRY.COL_APP' | translate }}</th>
+          <th>{{ 'ADMIN_CERT_REGISTRY.COL_TYPE' | translate }}</th>
+          <th>{{ 'ADMIN_CERT_REGISTRY.COL_APPLICANT' | translate }}</th>
+          <th>{{ 'ADMIN_CERT_REGISTRY.COL_MOBILE' | translate }}</th>
+          <th>{{ 'ADMIN_CERT_REGISTRY.COL_STATUS' | translate }}</th>
+          <th>{{ 'ADMIN_CERT_REGISTRY.COL_SUBMITTED' | translate }}</th>
+          <th>{{ 'ADMIN_CERT_REGISTRY.COL_ACTIONS' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of filteredRows">
+          <td>
+            <span class="acr-mono">{{ row.applicationNumber }}</span>
+          </td>
+          <td>{{ certificateTypeLabel(row.certificateTypeId) }}</td>
+          <td>{{ row.applicantFullName }}</td>
+          <td>
+            <span class="acr-mono">{{ row.applicantMobile }}</span>
+          </td>
+          <td>
+            <span [ngClass]="statusBadgeClass(row.status)">{{ statusLabel(row.status) }}</span>
+          </td>
+          <td>{{ formatSubmittedAt(row.submittedAt) }}</td>
+          <td class="acr-actions-cell">
+            <button type="button" class="acr-view" (click)="openApplicationDetail(row)">
+              {{ 'ADMIN_CERT_APP_DETAIL.VIEW' | translate }}
+            </button>
+            <button *ngIf="canRemarksOnlyRow(row)" type="button" class="acr-remarks" (click)="openRemarksOnlyDialog(row)">
+              {{ 'ADMIN_CERT_APP_DETAIL.REMARKS_ONLY' | translate }}
+            </button>
+            <button *ngIf="canRejectRow(row)" type="button" class="acr-reject" (click)="openRejectDialog(row)">
+              {{ 'ADMIN_CERT_APP_DETAIL.REJECT' | translate }}
+            </button>
+            <button *ngIf="canApproveRow(row)" type="button" class="acr-approve" (click)="openApproveDialog(row)">
+              {{ 'ADMIN_CERT_REGISTRY.APPROVE' | translate }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p *ngIf="isGramsevak" class="acr-footnote">{{ 'ADMIN_CERT_REGISTRY.GRAMSEVAK_HINT' | translate }}</p>
+</div>
+
+<div class="admin-modal-backdrop" *ngIf="approveDialogOpen" (click)="closeApproveDialog()">
+  <div class="admin-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <h4 class="admin-modal__title">{{ 'ADMIN_HOME.PENDING_CERT_DIALOG_TITLE' | translate }}</h4>
+    <p class="admin-modal__meta" *ngIf="approveTarget">
+      {{ approveTarget.applicationNumber }} — {{ approveTarget.applicantFullName }}
+    </p>
+    <form [formGroup]="approveForm" (ngSubmit)="confirmApprove()">
+      <label class="admin-modal__label">{{ 'ADMIN_HOME.PENDING_CERT_FIELD_ID' | translate }}</label>
+      <input class="admin-modal__input" type="text" formControlName="identifier" autocomplete="username" />
+      <label class="admin-modal__label">{{ 'LOGIN.ADMIN.LABEL_PASSWORD' | translate }}</label>
+      <input class="admin-modal__input" type="password" formControlName="password" autocomplete="current-password" />
+      <label class="admin-modal__label">{{ 'ADMIN_CERT_APP_DETAIL.APPROVE_REMARKS_LABEL' | translate }}</label>
+      <p class="admin-modal__hint">{{ 'ADMIN_CERT_APP_DETAIL.APPROVE_REMARKS_HINT' | translate }}</p>
+      <textarea
+        class="admin-modal__textarea"
+        rows="3"
+        name="approveRemarks"
+        [(ngModel)]="approveRemarksDraft"
+        [ngModelOptions]="{ standalone: true }"
+        [attr.placeholder]="'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_PH' | translate"></textarea>
+      <div class="admin-modal__actions">
+        <button type="button" class="admin-modal__btn admin-modal__btn--ghost" (click)="closeApproveDialog()">
+          {{ 'ADMIN_FORMATS.CANCEL' | translate }}
+        </button>
+        <button
+          type="submit"
+          class="admin-modal__btn admin-modal__btn--primary"
+          [disabled]="approveSubmitting || approveForm.invalid">
+          {{ 'ADMIN_HOME.PENDING_CERT_CONFIRM' | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="admin-modal-backdrop" *ngIf="rejectDialogOpen" (click)="closeRejectDialog()">
+  <div class="admin-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <h4 class="admin-modal__title">{{ 'ADMIN_CERT_APP_DETAIL.DIALOG_REJECT_TITLE' | translate }}</h4>
+    <p class="admin-modal__meta" *ngIf="rejectTarget">
+      {{ rejectTarget.applicationNumber }} — {{ rejectTarget.applicantFullName }}
+    </p>
+    <form [formGroup]="rejectForm" (ngSubmit)="confirmReject()">
+      <label class="admin-modal__label">{{ 'ADMIN_HOME.PENDING_CERT_FIELD_ID' | translate }}</label>
+      <input class="admin-modal__input" type="text" formControlName="identifier" autocomplete="username" />
+      <label class="admin-modal__label">{{ 'LOGIN.ADMIN.LABEL_PASSWORD' | translate }}</label>
+      <input class="admin-modal__input" type="password" formControlName="password" autocomplete="current-password" />
+      <label class="admin-modal__label">{{ 'ADMIN_CERT_APP_DETAIL.REJECT_REMARKS_LABEL' | translate }}</label>
+      <p class="admin-modal__hint">{{ 'ADMIN_CERT_APP_DETAIL.REJECT_REMARKS_HINT' | translate }}</p>
+      <textarea
+        class="admin-modal__textarea"
+        rows="3"
+        name="rejectRemarks"
+        [(ngModel)]="rejectRemarksDraft"
+        [ngModelOptions]="{ standalone: true }"
+        [attr.placeholder]="'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_PH' | translate"></textarea>
+      <div class="admin-modal__actions">
+        <button type="button" class="admin-modal__btn admin-modal__btn--ghost" (click)="closeRejectDialog()">
+          {{ 'ADMIN_FORMATS.CANCEL' | translate }}
+        </button>
+        <button
+          type="submit"
+          class="admin-modal__btn admin-modal__btn--danger"
+          [disabled]="rejectSubmitting || rejectForm.invalid">
+          {{ 'ADMIN_CERT_APP_DETAIL.REJECT' | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="admin-modal-backdrop" *ngIf="remarksOnlyDialogOpen" (click)="closeRemarksOnlyDialog()">
+  <div class="admin-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <h4 class="admin-modal__title">{{ 'ADMIN_CERT_APP_DETAIL.DIALOG_REMARKS_ONLY_TITLE' | translate }}</h4>
+    <p class="admin-modal__meta" *ngIf="remarksOnlyTarget">
+      {{ remarksOnlyTarget.applicationNumber }} — {{ remarksOnlyTarget.applicantFullName }}
+    </p>
+    <form [formGroup]="remarksOnlyForm" (ngSubmit)="confirmRemarksOnly()">
+      <label class="admin-modal__label">{{ 'ADMIN_HOME.PENDING_CERT_FIELD_ID' | translate }}</label>
+      <input class="admin-modal__input" type="text" formControlName="identifier" autocomplete="username" />
+      <label class="admin-modal__label">{{ 'LOGIN.ADMIN.LABEL_PASSWORD' | translate }}</label>
+      <input class="admin-modal__input" type="password" formControlName="password" autocomplete="current-password" />
+      <label class="admin-modal__label">{{ 'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_BODY' | translate }}</label>
+      <p class="admin-modal__hint">{{ 'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_HINT' | translate }}</p>
+      <textarea
+        class="admin-modal__textarea"
+        rows="4"
+        name="remarksOnlyBody"
+        [(ngModel)]="remarksOnlyDraft"
+        [ngModelOptions]="{ standalone: true }"
+        [attr.placeholder]="'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_PH' | translate"></textarea>
+      <div class="admin-modal__actions">
+        <button type="button" class="admin-modal__btn admin-modal__btn--ghost" (click)="closeRemarksOnlyDialog()">
+          {{ 'ADMIN_FORMATS.CANCEL' | translate }}
+        </button>
+        <button
+          type="submit"
+          class="admin-modal__btn admin-modal__btn--primary"
+          [disabled]="remarksOnlySubmitting || remarksOnlyForm.invalid">
+          {{ 'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_SAVE' | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<app-certificate-application-detail-sheet
+  [open]="detailSheetOpen"
+  [loading]="detailSheetLoading"
+  [application]="detailApplication"
+  [certificateTypeLabel]="detailCertificateTypeLabel"
+  [statusLabel]="detailStatusLabel"
+  [canAppendStaffRemarks]="detailCanAppendStaffRemarks"
+  [defaultStaffLoginIdentifier]="staffDefaultLoginIdentifier()"
+  (closed)="closeApplicationDetail()"
+  (staffRemarksUpdated)="onDetailStaffRemarksUpdated($event)" />

@@ -1,0 +1,147 @@
+<div class="cma-root">
+  <div class="cma-top">
+    <a routerLink="/certificate" class="cma-back">{{ 'CERTIFICATE_MY_APPLICATIONS.BACK' | translate }}</a>
+    <button type="button" class="cma-refresh" (click)="onRefresh()" [disabled]="loading">
+      {{ 'CERTIFICATE_MY_APPLICATIONS.REFRESH' | translate }}
+    </button>
+  </div>
+
+  <h2 class="sec-title cma-title">{{ 'CERTIFICATE_MY_APPLICATIONS.PAGE_TITLE' | translate }}</h2>
+  <p class="cma-sub">{{ 'CERTIFICATE_MY_APPLICATIONS.PAGE_SUB' | translate }}</p>
+
+  <div *ngIf="loading" class="card cma-loading">{{ 'PROFILE.LOADING' | translate }}</div>
+
+  <p *ngIf="!loading && loadError" class="card cma-empty" role="alert">{{ 'CERTIFICATE_MY_APPLICATIONS.ERR_LOAD' | translate }}</p>
+
+  <ng-container *ngIf="!loading && !loadError">
+    <p class="cma-count-hint">{{ 'CERTIFICATE_MY_APPLICATIONS.COUNT_HINT' | translate }}</p>
+
+    <div
+      class="cma-stats"
+      role="group"
+      [attr.aria-label]="'CERTIFICATE_MY_APPLICATIONS.COUNT_GROUP_ARIA' | translate">
+      <button
+        type="button"
+        class="cma-stat"
+        (click)="setSegment('all')"
+        [class.cma-stat--selected]="segment === 'all'"
+        [attr.aria-pressed]="segment === 'all' ? 'true' : 'false'">
+        <span class="cma-stat__n">{{ counts.total }}</span>
+        <span class="cma-stat__l">{{ 'CERTIFICATE_MY_APPLICATIONS.STAT_TOTAL' | translate }}</span>
+      </button>
+      <button
+        type="button"
+        class="cma-stat cma-stat--amber"
+        (click)="setSegment('progress')"
+        [class.cma-stat--selected]="segment === 'progress'"
+        [attr.aria-pressed]="segment === 'progress' ? 'true' : 'false'">
+        <span class="cma-stat__n">{{ counts.progress }}</span>
+        <span class="cma-stat__l">{{ 'CERTIFICATE_MY_APPLICATIONS.STAT_PROGRESS' | translate }}</span>
+      </button>
+      <button
+        type="button"
+        class="cma-stat cma-stat--green"
+        (click)="setSegment('approved')"
+        [class.cma-stat--selected]="segment === 'approved'"
+        [attr.aria-pressed]="segment === 'approved' ? 'true' : 'false'">
+        <span class="cma-stat__n">{{ counts.approved }}</span>
+        <span class="cma-stat__l">{{ 'CERTIFICATE_MY_APPLICATIONS.STAT_APPROVED' | translate }}</span>
+      </button>
+      <button
+        type="button"
+        class="cma-stat cma-stat--red"
+        (click)="setSegment('closed')"
+        [class.cma-stat--selected]="segment === 'closed'"
+        [attr.aria-pressed]="segment === 'closed' ? 'true' : 'false'">
+        <span class="cma-stat__n">{{ counts.closed }}</span>
+        <span class="cma-stat__l">{{ 'CERTIFICATE_MY_APPLICATIONS.STAT_CLOSED' | translate }}</span>
+      </button>
+    </div>
+
+    <label class="cma-search-label">
+      <span class="cma-search-label__text">{{ 'CERTIFICATE_MY_APPLICATIONS.SEARCH_LABEL' | translate }}</span>
+      <input
+        type="search"
+        class="cma-search-input"
+        [(ngModel)]="searchQuery"
+        [attr.placeholder]="'CERTIFICATE_MY_APPLICATIONS.SEARCH_PH' | translate"
+        autocomplete="off" />
+    </label>
+
+    <p *ngIf="counts.total === 0" class="card cma-empty">{{ 'PROFILE.EMPTY_APPLICATIONS' | translate }}</p>
+
+    <p *ngIf="counts.total > 0 && filteredRows.length === 0" class="card cma-empty">
+      {{ 'CERTIFICATE_MY_APPLICATIONS.EMPTY_FILTER' | translate }}
+    </p>
+
+    <div
+      *ngFor="let app of filteredRows"
+      class="card cma-card"
+      [class.cma-card--approved]="app.status === 'APPROVED'"
+      [class.cma-card--bad]="app.status === 'REJECTED' || app.status === 'CANCELLED'">
+      <div class="row cma-card__head">
+        <div class="cma-card__main">
+          <div class="cma-card__type">{{ certificateTypeLabel(app.certificateTypeId) }}</div>
+          <div class="cma-card__meta">
+            {{ app.applicationNumber }} • {{ formatSubmittedAt(app.submittedAt) }}
+          </div>
+        </div>
+        <span class="badge" [ngClass]="statusBadgeClass(app.status)">{{ statusLabel(app.status) }}</span>
+      </div>
+      <p class="cma-card__msg">{{ statusMessage(app) }}</p>
+      <section *ngIf="showCitizenStaffRemarks(app)" class="cma-card__remarks">
+        <div class="cma-card__remarks-title">{{ 'CERTIFICATE_MY_APPLICATIONS.STAFF_REMARKS_TITLE' | translate }}</div>
+        <p class="cma-card__remarks-sub">{{ 'CERTIFICATE_MY_APPLICATIONS.STAFF_REMARKS_SUB' | translate }}</p>
+        <ul class="cma-card__remarks-list">
+          <li *ngFor="let r of sortedStaffRemarks(app)" class="cma-card__remarks-item">
+            <div class="cma-card__remarks-meta">{{ formatRemarkDateTime(r.createdAt) }}</div>
+            <div class="cma-card__remarks-text">{{ r.text }}</div>
+          </li>
+        </ul>
+      </section>
+      <div class="cma-card__actions" *ngIf="app.status === 'APPROVED'">
+        <button
+          type="button"
+          class="btn btn-g cma-card__cta"
+          (click)="openCertificate(app)"
+          [disabled]="certLoadAppId === app.id">
+          {{ 'CERTIFICATE.ISSUED_VIEW' | translate }}
+        </button>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<div
+  *ngIf="certModalOpen"
+  class="cert-modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-label]="'CERTIFICATE.ISSUED_MODAL_TITLE' | translate"
+  (click)="closeCertModal()">
+  <div class="cert-modal-panel" (click)="$event.stopPropagation()">
+    <div class="cert-modal-head">
+      <h3 class="cert-modal-title">{{ 'CERTIFICATE.ISSUED_MODAL_TITLE' | translate }}</h3>
+      <button
+        type="button"
+        class="cert-modal-x preview-close"
+        (click)="closeCertModal()"
+        [attr.aria-label]="'CERTIFICATE.ISSUED_MODAL_CLOSE' | translate">
+        ×
+      </button>
+    </div>
+    <p class="cert-modal-sub">{{ certModalNumber }}</p>
+    <div *ngIf="certModalLoading" class="cert-modal-loading">{{ 'CERTIFICATE.ISSUED_MODAL_LOADING' | translate }}</div>
+    <div *ngIf="!certModalLoading && certModalHtml" class="cert-preview-sheet">
+      <div class="preview-print-area cert-print-area" [innerHTML]="certModalHtml"></div>
+    </div>
+    <div *ngIf="!certModalLoading && certModalHtml" class="cert-modal-actions">
+      <button type="button" class="btn btn-g" (click)="printIssuedCertificate()">
+        {{ 'CERTIFICATE.ISSUED_MODAL_PRINT' | translate }}
+      </button>
+      <button type="button" class="btn btn-o" (click)="closeCertModal()">
+        {{ 'CERTIFICATE.ISSUED_MODAL_CLOSE' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

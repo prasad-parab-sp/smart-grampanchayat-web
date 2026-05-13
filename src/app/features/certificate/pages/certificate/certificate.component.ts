@@ -6,6 +6,7 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CERTIFICATE_API_FILTER_PRESETS } from '../../data/certificate-filters.data';
@@ -20,8 +21,8 @@ import { CertificatePageHeaderComponent } from '../../components/certificate-pag
 import { CertificateSuggestionsPeekComponent } from '../../components/certificate-suggestions-peek/certificate-suggestions-peek.component';
 import { CertificateToastComponent } from '../../components/certificate-toast/certificate-toast.component';
 import { CertificateApplyModalComponent } from '../../components/certificate-apply-modal/certificate-apply-modal.component';
-import { CertificateMyIssuedPanelComponent } from '../../components/certificate-my-issued-panel/certificate-my-issued-panel.component';
 import { collectFocusableElements } from '../../lib/modal-focusables';
+import { LoggedInCitizenService } from '../../../../core/logged-in-citizen.service';
 
 /**
  * Certificates / services list from {@code GET /api/certificate-types}; apply modal for a selected type.
@@ -38,7 +39,7 @@ import { collectFocusableElements } from '../../lib/modal-focusables';
     CertificateToolbarComponent,
     CertificateCatalogListComponent,
     CertificateApplyModalComponent,
-    CertificateMyIssuedPanelComponent
+    RouterLink
   ],
   templateUrl: './certificate.component.html',
   styleUrls: ['./certificate.component.scss']
@@ -70,14 +71,16 @@ export class CertificateComponent implements OnInit, OnDestroy {
   @ViewChild(CertificateApplyModalComponent)
   private applyModal?: CertificateApplyModalComponent;
 
-  @ViewChild(CertificateMyIssuedPanelComponent)
-  private issuedPanel?: CertificateMyIssuedPanelComponent;
-
   constructor(
     private readonly translate: TranslateService,
     private readonly certificateTypeService: CertificateTypeService,
-    private readonly i18n: I18nService
+    private readonly i18n: I18nService,
+    private readonly loggedInCitizen: LoggedInCitizenService
   ) {}
+
+  get showMyApplicationsLink(): boolean {
+    return !!this.loggedInCitizen.getCurrentLoggedInCitizenId()?.trim();
+  }
 
   get displayRows(): CertificateTypeDto[] {
     return buildCertificateDisplayRows(
@@ -248,6 +251,5 @@ export class CertificateComponent implements OnInit, OnDestroy {
     this.restoreFocus();
     this.syncBodyScrollLock();
     this.scheduleToastDismiss();
-    this.issuedPanel?.refresh();
   }
 }

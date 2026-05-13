@@ -56,7 +56,7 @@
               <th>{{ 'ADMIN_HOME.PENDING_CERT_COL_APP' | translate }}</th>
               <th>{{ 'ADMIN_HOME.PENDING_CERT_COL_APPLICANT' | translate }}</th>
               <th>{{ 'ADMIN_HOME.PENDING_CERT_COL_MOBILE' | translate }}</th>
-              <th></th>
+              <th>{{ 'ADMIN_HOME.PENDING_CERT_COL_ACTIONS' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -68,7 +68,16 @@
               <td>
                 <span class="admin-pending-cert__mono">{{ row.applicantMobile }}</span>
               </td>
-              <td>
+              <td class="admin-pending-cert__actions-cell">
+                <button type="button" class="admin-pending-cert__view" (click)="openApplicationDetail(row)">
+                  {{ 'ADMIN_CERT_APP_DETAIL.VIEW' | translate }}
+                </button>
+                <button *ngIf="canRemarksOnlyRow(row)" type="button" class="admin-pending-cert__remarks" (click)="openRemarksOnlyDialog(row)">
+                  {{ 'ADMIN_CERT_APP_DETAIL.REMARKS_ONLY' | translate }}
+                </button>
+                <button *ngIf="canRejectRow(row)" type="button" class="admin-pending-cert__reject" (click)="openRejectDialog(row)">
+                  {{ 'ADMIN_CERT_APP_DETAIL.REJECT' | translate }}
+                </button>
                 <button type="button" class="admin-pending-cert__approve" (click)="openApproveDialog(row)">
                   {{ 'ADMIN_HOME.PENDING_CERT_APPROVE' | translate }}
                 </button>
@@ -129,6 +138,15 @@
         <input class="admin-modal__input" type="text" formControlName="identifier" autocomplete="username" />
         <label class="admin-modal__label">{{ 'LOGIN.ADMIN.LABEL_PASSWORD' | translate }}</label>
         <input class="admin-modal__input" type="password" formControlName="password" autocomplete="current-password" />
+        <label class="admin-modal__label">{{ 'ADMIN_CERT_APP_DETAIL.APPROVE_REMARKS_LABEL' | translate }}</label>
+        <p class="admin-modal__hint">{{ 'ADMIN_CERT_APP_DETAIL.APPROVE_REMARKS_HINT' | translate }}</p>
+        <textarea
+          class="admin-modal__textarea"
+          rows="3"
+          name="approveRemarks"
+          [(ngModel)]="approveRemarksDraft"
+          [ngModelOptions]="{ standalone: true }"
+          [attr.placeholder]="'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_PH' | translate"></textarea>
         <div class="admin-modal__actions">
           <button type="button" class="admin-modal__btn admin-modal__btn--ghost" (click)="closeApproveDialog()">
             {{ 'ADMIN_FORMATS.CANCEL' | translate }}
@@ -143,4 +161,85 @@
       </form>
     </div>
   </div>
+
+  <div class="admin-modal-backdrop" *ngIf="rejectDialogOpen" (click)="closeRejectDialog()">
+    <div class="admin-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+      <h4 class="admin-modal__title">{{ 'ADMIN_CERT_APP_DETAIL.DIALOG_REJECT_TITLE' | translate }}</h4>
+      <p class="admin-modal__meta" *ngIf="rejectTarget">
+        {{ rejectTarget.applicationNumber }} — {{ rejectTarget.applicantFullName }}
+      </p>
+      <form [formGroup]="rejectForm" (ngSubmit)="confirmReject()">
+        <label class="admin-modal__label">{{ 'ADMIN_HOME.PENDING_CERT_FIELD_ID' | translate }}</label>
+        <input class="admin-modal__input" type="text" formControlName="identifier" autocomplete="username" />
+        <label class="admin-modal__label">{{ 'LOGIN.ADMIN.LABEL_PASSWORD' | translate }}</label>
+        <input class="admin-modal__input" type="password" formControlName="password" autocomplete="current-password" />
+        <label class="admin-modal__label">{{ 'ADMIN_CERT_APP_DETAIL.REJECT_REMARKS_LABEL' | translate }}</label>
+        <p class="admin-modal__hint">{{ 'ADMIN_CERT_APP_DETAIL.REJECT_REMARKS_HINT' | translate }}</p>
+        <textarea
+          class="admin-modal__textarea"
+          rows="3"
+          name="rejectRemarks"
+          [(ngModel)]="rejectRemarksDraft"
+          [ngModelOptions]="{ standalone: true }"
+          [attr.placeholder]="'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_PH' | translate"></textarea>
+        <div class="admin-modal__actions">
+          <button type="button" class="admin-modal__btn admin-modal__btn--ghost" (click)="closeRejectDialog()">
+            {{ 'ADMIN_FORMATS.CANCEL' | translate }}
+          </button>
+          <button
+            type="submit"
+            class="admin-modal__btn admin-modal__btn--danger"
+            [disabled]="rejectSubmitting || rejectForm.invalid">
+            {{ 'ADMIN_CERT_APP_DETAIL.REJECT' | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="admin-modal-backdrop" *ngIf="remarksOnlyDialogOpen" (click)="closeRemarksOnlyDialog()">
+    <div class="admin-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+      <h4 class="admin-modal__title">{{ 'ADMIN_CERT_APP_DETAIL.DIALOG_REMARKS_ONLY_TITLE' | translate }}</h4>
+      <p class="admin-modal__meta" *ngIf="remarksOnlyTarget">
+        {{ remarksOnlyTarget.applicationNumber }} — {{ remarksOnlyTarget.applicantFullName }}
+      </p>
+      <form [formGroup]="remarksOnlyForm" (ngSubmit)="confirmRemarksOnly()">
+        <label class="admin-modal__label">{{ 'ADMIN_HOME.PENDING_CERT_FIELD_ID' | translate }}</label>
+        <input class="admin-modal__input" type="text" formControlName="identifier" autocomplete="username" />
+        <label class="admin-modal__label">{{ 'LOGIN.ADMIN.LABEL_PASSWORD' | translate }}</label>
+        <input class="admin-modal__input" type="password" formControlName="password" autocomplete="current-password" />
+        <label class="admin-modal__label">{{ 'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_BODY' | translate }}</label>
+        <p class="admin-modal__hint">{{ 'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_HINT' | translate }}</p>
+        <textarea
+          class="admin-modal__textarea"
+          rows="4"
+          name="remarksOnlyBody"
+          [(ngModel)]="remarksOnlyDraft"
+          [ngModelOptions]="{ standalone: true }"
+          [attr.placeholder]="'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_PH' | translate"></textarea>
+        <div class="admin-modal__actions">
+          <button type="button" class="admin-modal__btn admin-modal__btn--ghost" (click)="closeRemarksOnlyDialog()">
+            {{ 'ADMIN_FORMATS.CANCEL' | translate }}
+          </button>
+          <button
+            type="submit"
+            class="admin-modal__btn admin-modal__btn--primary"
+            [disabled]="remarksOnlySubmitting || remarksOnlyForm.invalid">
+            {{ 'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_SAVE' | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <app-certificate-application-detail-sheet
+    [open]="detailSheetOpen"
+    [loading]="detailSheetLoading"
+    [application]="detailApplication"
+    [certificateTypeLabel]="detailCertificateTypeLabel"
+    [statusLabel]="detailStatusLabel"
+    [canAppendStaffRemarks]="detailCanAppendStaffRemarks"
+    [defaultStaffLoginIdentifier]="staffDefaultLoginIdentifier()"
+    (closed)="closeApplicationDetail()"
+    (staffRemarksUpdated)="onDetailStaffRemarksUpdated($event)" />
 </div>

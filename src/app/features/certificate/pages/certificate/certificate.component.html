@@ -1,7 +1,17 @@
 <div>
   <app-certificate-page-header />
+  <a
+    *ngIf="showMyApplicationsLink"
+    routerLink="/certificate/my-applications"
+    class="cert-my-apps-entry">
+    <span class="cert-my-apps-entry__icon" aria-hidden="true">📑</span>
+    <span class="cert-my-apps-entry__text">
+      <span class="cert-my-apps-entry__title">{{ 'CERTIFICATE.MY_APPLICATIONS_ENTRY' | translate }}</span>
+      <span class="cert-my-apps-entry__hint">{{ 'CERTIFICATE.MY_APPLICATIONS_HINT' | translate }}</span>
+    </span>
+    <span class="cert-my-apps-entry__chev" aria-hidden="true">›</span>
+  </a>
   <app-certificate-suggestions-peek />
-  <app-certificate-my-issued-panel />
   <app-certificate-toast
     *ngIf="submitMessage as toastKey"
     [messageKey]="toastKey"

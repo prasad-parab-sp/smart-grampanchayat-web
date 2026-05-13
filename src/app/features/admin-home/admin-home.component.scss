@@ -333,6 +333,7 @@
 
 .admin-pending-cert__table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   font-size: 11px;
 }
@@ -342,7 +343,16 @@
   border-bottom: 1px solid var(--border);
   padding: 8px 6px;
   text-align: left;
-  vertical-align: top;
+  vertical-align: middle;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.admin-pending-cert__table th:last-child,
+.admin-pending-cert__table td:last-child {
+  width: 12.25rem;
+  max-width: 13rem;
+  text-align: center;
 }
 
 .admin-pending-cert__table th {
@@ -365,6 +375,73 @@
   color: #fff;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(22, 163, 74, 0.35);
+}
+
+.admin-pending-cert__actions-cell {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  align-content: center;
+  min-width: 0;
+}
+
+.admin-pending-cert__actions-cell .admin-pending-cert__view,
+.admin-pending-cert__actions-cell .admin-pending-cert__remarks,
+.admin-pending-cert__actions-cell .admin-pending-cert__reject,
+.admin-pending-cert__actions-cell .admin-pending-cert__approve {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  min-height: 2.25rem;
+  padding: 6px 4px;
+  font-size: 10px;
+  line-height: 1.25;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  word-break: break-word;
+}
+
+.admin-pending-cert__view {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  color: #334155;
+  cursor: pointer;
+}
+
+.admin-pending-cert__view:active {
+  transform: scale(0.98);
+}
+
+.admin-pending-cert__remarks {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 7px 8px;
+  border-radius: 8px;
+  border: 1px solid #6366f1;
+  background: #eef2ff;
+  color: #3730a3;
+  cursor: pointer;
+}
+
+.admin-pending-cert__reject {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid #dc2626;
+  background: #fff;
+  color: #b91c1c;
+  cursor: pointer;
+}
+
+.admin-pending-cert__reject:active {
+  transform: scale(0.98);
 }
 
 .admin-pending-cert__approve:active {
@@ -421,6 +498,24 @@
   font-size: 13px;
 }
 
+.admin-modal__hint {
+  margin: 0 0 6px;
+  font-size: 10px;
+  color: #64748b;
+  line-height: 1.35;
+}
+
+.admin-modal__textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 13px;
+  resize: vertical;
+  min-height: 72px;
+}
+
 .admin-modal__actions {
   display: flex;
   justify-content: flex-end;
@@ -446,6 +541,12 @@
 .admin-modal__btn--primary {
   background: #1b5e20;
   border-color: #1b5e20;
+  color: #fff;
+}
+
+.admin-modal__btn--danger {
+  background: #b91c1c;
+  border-color: #b91c1c;
   color: #fff;
 }
 

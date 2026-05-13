@@ -200,6 +200,15 @@
   white-space: nowrap;
 }
 
+.formats-editor-toolbar__placeholder-chip--extra {
+  border-color: var(--blue);
+  background: var(--blt);
+  color: var(--blue);
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .formats-editor-body {
   min-height: 200px;
   border: 1.5px solid var(--border);

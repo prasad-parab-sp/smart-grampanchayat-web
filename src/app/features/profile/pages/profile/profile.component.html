@@ -24,12 +24,15 @@
 
     <!-- माझे अर्ज — live certificate applications -->
     <h3 class="profile-subtitle">{{ 'PROFILE.SECTION_APPLICATIONS' | translate }}</h3>
+    <div class="profile-apps-more" *ngIf="applications.length">
+      <a routerLink="/certificate/my-applications" class="profile-apps-more__link">{{ 'PROFILE.VIEW_ALL_APPLICATIONS' | translate }}</a>
+    </div>
     <ng-container *ngIf="applications.length === 0">
       <div class="card profile-empty">
         {{ 'PROFILE.EMPTY_APPLICATIONS' | translate }}
       </div>
     </ng-container>
-    <div *ngFor="let app of applications" class="card profile-app-card" [class.profile-app-card--approved]="app.status === 'APPROVED'" [class.profile-app-card--rejected]="app.status === 'REJECTED' || app.status === 'CANCELLED'">
+    <div *ngFor="let app of applicationsPreview" class="card profile-app-card" [class.profile-app-card--approved]="app.status === 'APPROVED'" [class.profile-app-card--rejected]="app.status === 'REJECTED' || app.status === 'CANCELLED'">
       <div class="row profile-app-head">
         <div class="profile-app-main">
           <div class="profile-app-type">{{ certificateTypeLabel(app.certificateTypeId) }}</div>

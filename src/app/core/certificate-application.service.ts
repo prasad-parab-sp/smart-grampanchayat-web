@@ -4,7 +4,9 @@ import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import type {
+  CertificateApplicationAddStaffRemarksRequest,
   CertificateApplicationApproveRequest,
+  CertificateApplicationRejectRequest,
   CertificateApplicationDto,
   CertificateApplicationStatus,
   CertificateApplicationSubmitRequest,
@@ -39,11 +41,34 @@ export class CertificateApplicationService {
     return this.http.get<CertificateApplicationDto[]>(url, { params });
   }
 
+  /** {@code GET /api/certificate-applications/{id}} — tenant scoped. */
+  getById(applicationId: string): Observable<CertificateApplicationDto> {
+    const url = `${environment.apiBaseUrl}/api/certificate-applications/${encodeURIComponent(applicationId)}`;
+    return this.http.get<CertificateApplicationDto>(url);
+  }
+
   /**
    * Gramsevak only — server checks stored role and credentials.
    */
   approve(applicationId: string, body: CertificateApplicationApproveRequest): Observable<CertificateApplicationDto> {
     const url = `${environment.apiBaseUrl}/api/certificate-applications/${encodeURIComponent(applicationId)}/approve`;
+    return this.http.post<CertificateApplicationDto>(url, body);
+  }
+
+  /** Gramsevak only — rejects application; optional remarks appended first. */
+  reject(applicationId: string, body: CertificateApplicationRejectRequest): Observable<CertificateApplicationDto> {
+    const url = `${environment.apiBaseUrl}/api/certificate-applications/${encodeURIComponent(applicationId)}/reject`;
+    return this.http.post<CertificateApplicationDto>(url, body);
+  }
+
+  /**
+   * Gramsevak only — appends remark lines (same credential model as approve).
+   */
+  appendStaffRemarks(
+    applicationId: string,
+    body: CertificateApplicationAddStaffRemarksRequest
+  ): Observable<CertificateApplicationDto> {
+    const url = `${environment.apiBaseUrl}/api/certificate-applications/${encodeURIComponent(applicationId)}/staff-remarks`;
     return this.http.post<CertificateApplicationDto>(url, body);
   }
 
