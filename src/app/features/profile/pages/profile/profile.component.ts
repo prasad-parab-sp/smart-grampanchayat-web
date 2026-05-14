@@ -32,6 +32,11 @@ export class ProfileComponent implements OnInit {
 
   private typeById = new Map<string, CertificateTypeDto>();
 
+  /** At most three cards on the profile; full history is on the certificate “My applications” page. */
+  get applicationsPreview(): CertificateApplicationDto[] {
+    return this.applications.slice(0, 3);
+  }
+
   constructor(
     private readonly router: Router,
     private readonly loggedInCitizen: LoggedInCitizenService,

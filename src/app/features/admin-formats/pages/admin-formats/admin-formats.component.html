@@ -107,6 +107,18 @@
         <button type="button" class="formats-editor-toolbar__placeholder-chip" (click)="insertBodyPlaceholderToken('[पत्ता]')">[पत्ता]</button>
         <button type="button" class="formats-editor-toolbar__placeholder-chip" (click)="insertBodyPlaceholderToken('[दिनांक]')">[दिनांक]</button>
         <button type="button" class="formats-editor-toolbar__placeholder-chip" (click)="insertBodyPlaceholderToken('[दाखला_क्र]')">[दाखला_क्र]</button>
+        <ng-container *ngIf="extraFieldsForSelectedCertificate().length">
+          <span class="formats-editor-toolbar__separator"></span>
+          <span class="formats-editor-toolbar__placeholder-label">{{ 'ADMIN_FORMATS.EXTRA_FIELDS' | translate }}</span>
+          <button
+            *ngFor="let f of extraFieldsForSelectedCertificate()"
+            type="button"
+            class="formats-editor-toolbar__placeholder-chip formats-editor-toolbar__placeholder-chip--extra"
+            [title]="extraFieldChipTitle(f)"
+            (click)="insertExtraFieldPlaceholder(f)">
+            {{ f.fieldKey }}
+          </button>
+        </ng-container>
       </div>
 
       <div

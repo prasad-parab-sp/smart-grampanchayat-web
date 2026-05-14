@@ -1,0 +1,112 @@
+<div class="cad-sheet__backdrop" *ngIf="open" (click)="dismiss()">
+  <div class="cad-sheet" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <div class="cad-sheet__head">
+      <h3 class="cad-sheet__title">{{ 'ADMIN_CERT_APP_DETAIL.TITLE' | translate }}</h3>
+      <button type="button" class="cad-sheet__close" (click)="dismiss()">{{ 'ADMIN_CERT_APP_DETAIL.CLOSE' | translate }}</button>
+    </div>
+
+    <p *ngIf="loading" class="cad-sheet__loading">{{ 'ADMIN_CERT_APP_DETAIL.LOADING' | translate }}</p>
+
+    <div *ngIf="!loading && application" class="cad-sheet__body">
+      <dl class="cad-sheet__dl">
+        <dt>{{ 'ADMIN_CERT_APP_DETAIL.FIELD_TYPE' | translate }}</dt>
+        <dd>{{ certificateTypeLabel || application.certificateTypeId }}</dd>
+
+        <dt>{{ 'ADMIN_CERT_APP_DETAIL.FIELD_APP_NO' | translate }}</dt>
+        <dd class="cad-sheet__mono">{{ application.applicationNumber }}</dd>
+
+        <dt>{{ 'ADMIN_CERT_APP_DETAIL.FIELD_STATUS' | translate }}</dt>
+        <dd>{{ statusLabel }}</dd>
+
+        <dt>{{ 'ADMIN_CERT_APP_DETAIL.FIELD_SUBMITTED' | translate }}</dt>
+        <dd>{{ formatDateTime(application.submittedAt) }}</dd>
+
+        <ng-container *ngIf="application.paidAt">
+          <dt>{{ 'ADMIN_CERT_APP_DETAIL.FIELD_PAID_AT' | translate }}</dt>
+          <dd>{{ formatDateTime(application.paidAt) }}</dd>
+        </ng-container>
+
+        <ng-container *ngIf="application.paymentReference?.trim()">
+          <dt>{{ 'ADMIN_CERT_APP_DETAIL.FIELD_PAYMENT_REF' | translate }}</dt>
+          <dd class="cad-sheet__mono">{{ application.paymentReference }}</dd>
+        </ng-container>
+
+        <ng-container *ngIf="application.approvedAt">
+          <dt>{{ 'ADMIN_CERT_APP_DETAIL.FIELD_APPROVED_AT' | translate }}</dt>
+          <dd>{{ formatDateTime(application.approvedAt) }}</dd>
+        </ng-container>
+
+        <dt>{{ 'ADMIN_CERT_APP_DETAIL.FIELD_APPLICANT' | translate }}</dt>
+        <dd>{{ application.applicantFullName }}</dd>
+
+        <dt>{{ 'ADMIN_CERT_APP_DETAIL.FIELD_MOBILE' | translate }}</dt>
+        <dd class="cad-sheet__mono">{{ application.applicantMobile }}</dd>
+
+        <ng-container *ngIf="application.forWhomName?.trim()">
+          <dt>{{ 'ADMIN_CERT_APP_DETAIL.FIELD_FOR_WHOM' | translate }}</dt>
+          <dd>{{ application.forWhomName }}</dd>
+        </ng-container>
+
+        <ng-container *ngIf="application.reasonShort?.trim()">
+          <dt>{{ 'ADMIN_CERT_APP_DETAIL.FIELD_REASON_SHORT' | translate }}</dt>
+          <dd>{{ application.reasonShort }}</dd>
+        </ng-container>
+
+        <ng-container *ngIf="application.reasonDetails?.trim()">
+          <dt>{{ 'ADMIN_CERT_APP_DETAIL.FIELD_REASON_DETAILS' | translate }}</dt>
+          <dd class="cad-sheet__multiline">{{ application.reasonDetails }}</dd>
+        </ng-container>
+
+        <ng-container *ngIf="application.addressText?.trim()">
+          <dt>{{ 'ADMIN_CERT_APP_DETAIL.FIELD_ADDRESS' | translate }}</dt>
+          <dd class="cad-sheet__multiline">{{ application.addressText }}</dd>
+        </ng-container>
+
+        <ng-container *ngIf="application.citizenId">
+          <dt>{{ 'ADMIN_CERT_APP_DETAIL.FIELD_CITIZEN_ID' | translate }}</dt>
+          <dd class="cad-sheet__mono cad-sheet__mono--sm">{{ application.citizenId }}</dd>
+        </ng-container>
+      </dl>
+
+      <section *ngIf="sortedStaffRemarks().length" class="cad-sheet__remarks">
+        <h4 class="cad-sheet__remarks-title">{{ 'ADMIN_CERT_APP_DETAIL.SECTION_STAFF_REMARKS' | translate }}</h4>
+        <ol class="cad-sheet__remarks-list">
+          <li *ngFor="let r of sortedStaffRemarks()" class="cad-sheet__remarks-item">
+            <div class="cad-sheet__remarks-meta">{{ formatDateTime(r.createdAt) }}</div>
+            <div class="cad-sheet__multiline">{{ r.text }}</div>
+          </li>
+        </ol>
+      </section>
+
+      <section *ngIf="extraFieldEntries().length" class="cad-sheet__extra">
+        <h4 class="cad-sheet__extra-title">{{ 'ADMIN_CERT_APP_DETAIL.SECTION_EXTRA' | translate }}</h4>
+        <div *ngFor="let row of extraFieldEntries()" class="cad-sheet__extra-row">
+          <div class="cad-sheet__extra-key">{{ row.key }}</div>
+          <div class="cad-sheet__multiline">{{ row.value }}</div>
+        </div>
+      </section>
+
+      <section *ngIf="canAppendStaffRemarks && application" class="cad-sheet__append-remarks">
+        <h4 class="cad-sheet__append-title">{{ 'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_TITLE' | translate }}</h4>
+        <p class="cad-sheet__append-hint">{{ 'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_HINT' | translate }}</p>
+        <label class="cad-sheet__append-label">{{ 'ADMIN_HOME.PENDING_CERT_FIELD_ID' | translate }}</label>
+        <input class="cad-sheet__append-input" type="text" [(ngModel)]="remarkAppendIdentifier" autocomplete="username" />
+        <label class="cad-sheet__append-label">{{ 'LOGIN.ADMIN.LABEL_PASSWORD' | translate }}</label>
+        <input class="cad-sheet__append-input" type="password" [(ngModel)]="remarkAppendPassword" autocomplete="current-password" />
+        <label class="cad-sheet__append-label">{{ 'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_BODY' | translate }}</label>
+        <textarea
+          class="cad-sheet__append-textarea"
+          rows="4"
+          [(ngModel)]="remarkAppendDraft"
+          [attr.placeholder]="'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_PH' | translate"></textarea>
+        <button
+          type="button"
+          class="cad-sheet__append-btn"
+          (click)="submitStaffRemarks()"
+          [disabled]="remarkAppendSubmitting">
+          {{ 'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_SAVE' | translate }}
+        </button>
+      </section>
+    </div>
+  </div>
+</div>

@@ -44,6 +44,17 @@
   margin: 14px 0 8px;
 }
 
+.profile-apps-more {
+  margin: -4px 0 10px;
+}
+
+.profile-apps-more__link {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--blue);
+  text-decoration: underline;
+}
+
 .profile-empty {
   text-align: center;
   color: var(--sub);

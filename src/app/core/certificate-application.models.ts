@@ -16,6 +16,17 @@ export interface CertificateApplicationSubmitRequest {
 export interface CertificateApplicationApproveRequest {
   identifier: string;
   password: string;
+  /** Optional: each string is one remark line (Gramsevak), stored before approval completes. */
+  remarksToAppend?: string[] | null;
+}
+
+/** Same JSON shape as approve — Gramsevak reject with optional remarks. */
+export type CertificateApplicationRejectRequest = CertificateApplicationApproveRequest;
+
+export interface CertificateApplicationAddStaffRemarksRequest {
+  identifier: string;
+  password: string;
+  texts: string[];
 }
 
 export type CertificateApplicationStatus =
@@ -29,6 +40,12 @@ export type CertificateApplicationStatus =
 export interface CertificateIssuedDocumentDto {
   applicationNumber: string;
   html: string;
+}
+
+export interface CertificateStaffRemarkDto {
+  createdAt: string;
+  createdByUserId: string;
+  text: string;
 }
 
 export interface CertificateApplicationDto {
@@ -50,4 +67,5 @@ export interface CertificateApplicationDto {
   approvedAt?: string | null;
   approvedByUserId?: string | null;
   additionalValues?: Record<string, unknown>;
+  staffRemarks?: CertificateStaffRemarkDto[] | null;
 }

@@ -4,6 +4,7 @@ import { tenantReadyGuard } from './core/tenant-ready.guard';
 import { HomeComponent } from './features/home/home.component';
 import { LoginComponent } from './features/login/login.component';
 import { AdminHomeComponent } from './features/admin-home/admin-home.component';
+import { AdminCertificateApplicationsComponent } from './features/admin-certificate-applications/admin-certificate-applications.component';
 import { MainShellComponent } from './layout/main-shell.component';
 import { ShellPlaceholderComponent } from './layout/shell-placeholder.component';
 import { TenantErrorComponent } from './layout/tenant-error.component';
@@ -13,6 +14,11 @@ export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: 'login', component: LoginComponent, canActivate: [tenantReadyGuard] },
   { path: 'admin/home', component: AdminHomeComponent, canActivate: [tenantReadyGuard, adminSessionGuard] },
+  {
+    path: 'admin/certificate-applications',
+    component: AdminCertificateApplicationsComponent,
+    canActivate: [tenantReadyGuard, adminSessionGuard]
+  },
   {
     path: 'admin/formats',
     canActivate: [tenantReadyGuard, adminSessionGuard],
