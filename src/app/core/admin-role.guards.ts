@@ -3,10 +3,11 @@ import { CanActivateFn, Router } from '@angular/router';
 
 import { AdminSessionService } from './admin-session.service';
 
-/** GP Admin certificate-type management routes. */
+/** GP Admin or System Admin — certificate type catalog writes. */
 export const gpAdminGuard: CanActivateFn = () => {
   const admin = inject(AdminSessionService).get();
-  if (admin?.storedRole === 'GP_ADMIN') {
+  const role = admin?.storedRole;
+  if (role === 'GP_ADMIN' || role === 'SYS_ADMIN') {
     return true;
   }
   return inject(Router).createUrlTree(['/admin/home']);

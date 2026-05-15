@@ -9,18 +9,41 @@
   </section>
 
   <button type="button" class="admin-cert-type-create__back-link" (click)="openAdminHome()">
-    ← {{ 'ADMIN_CERT_TYPE_CREATE.BACK' | translate }}
+    ←
+    {{
+      isEditMode
+        ? ('ADMIN_CERT_TYPE_CREATE.BACK_LIST' | translate)
+        : ('ADMIN_CERT_TYPE_CREATE.BACK' | translate)
+    }}
   </button>
 
-  <h2 class="admin-cert-type-create__page-title">{{ 'ADMIN_CERT_TYPE_CREATE.TITLE' | translate }}</h2>
-  <p class="admin-cert-type-create__page-subtitle">{{ 'ADMIN_CERT_TYPE_CREATE.SUBTITLE' | translate }}</p>
+  <p class="admin-cert-type-create__loading" *ngIf="loadingEdit">{{ 'ADMIN_CERT_TYPE_CREATE.LOADING' | translate }}</p>
 
-  <form class="admin-cert-type-create__form" [formGroup]="form" (ngSubmit)="submit()">
+  <ng-container *ngIf="!loadingEdit">
+    <h2 class="admin-cert-type-create__page-title">
+      {{ (isEditMode ? 'ADMIN_CERT_TYPE_CREATE.TITLE_EDIT' : 'ADMIN_CERT_TYPE_CREATE.TITLE') | translate }}
+    </h2>
+    <p class="admin-cert-type-create__page-subtitle">
+      {{ (isEditMode ? 'ADMIN_CERT_TYPE_CREATE.SUBTITLE_EDIT' : 'ADMIN_CERT_TYPE_CREATE.SUBTITLE') | translate }}
+    </p>
+
+    <form class="admin-cert-type-create__form" [formGroup]="form" (ngSubmit)="submit()">
     <label class="admin-cert-type-create__field-label admin-cert-type-create__field-label--required">{{
       'ADMIN_CERT_TYPE_CREATE.CODE' | translate
     }}</label>
-    <input class="admin-cert-type-create__text-input" type="text" formControlName="code" autocomplete="off" />
-    <p class="admin-cert-type-create__field-hint">{{ 'ADMIN_CERT_TYPE_CREATE.CODE_HINT' | translate }}</p>
+    <input
+      class="admin-cert-type-create__text-input"
+      type="text"
+      formControlName="code"
+      autocomplete="off"
+      [readonly]="isEditMode" />
+    <p class="admin-cert-type-create__field-hint">
+      {{
+        isEditMode
+          ? ('ADMIN_CERT_TYPE_CREATE.CODE_READONLY_HINT' | translate)
+          : ('ADMIN_CERT_TYPE_CREATE.CODE_HINT' | translate)
+      }}
+    </p>
 
     <label class="admin-cert-type-create__field-label admin-cert-type-create__field-label--required">{{
       'ADMIN_CERT_TYPE_CREATE.CATEGORY' | translate
@@ -175,6 +198,18 @@
       {{ 'ADMIN_CERT_TYPE_CREATE.EXTRA_ADD' | translate }}
     </button>
 
+    <ng-container *ngIf="!isEditMode">
+      <label class="admin-cert-type-create__field-label admin-cert-type-create__field-label--required">{{
+        'ADMIN_CERT_TYPE_CREATE.CONFIRM_PASSWORD' | translate
+      }}</label>
+      <input
+        class="admin-cert-type-create__text-input"
+        type="password"
+        formControlName="confirmPassword"
+        autocomplete="current-password" />
+      <p class="admin-cert-type-create__field-hint">{{ 'ADMIN_CERT_TYPE_CREATE.CONFIRM_PASSWORD_HINT' | translate }}</p>
+    </ng-container>
+
     <div class="admin-cert-type-create__form-actions">
       <button type="button" class="admin-cert-type-create__button admin-cert-type-create__button--ghost" (click)="openAdminHome()">
         {{ 'ADMIN_FORMATS.CANCEL' | translate }}
@@ -182,9 +217,12 @@
       <button
         type="submit"
         class="admin-cert-type-create__button admin-cert-type-create__button--primary"
-        [disabled]="submitting || form.invalid">
-        {{ 'ADMIN_CERT_TYPE_CREATE.SUBMIT' | translate }}
+        [disabled]="submitting || form.invalid || loadingEdit">
+        {{
+          (isEditMode ? 'ADMIN_CERT_TYPE_CREATE.SUBMIT_EDIT' : 'ADMIN_CERT_TYPE_CREATE.SUBMIT') | translate
+        }}
       </button>
     </div>
   </form>
+  </ng-container>
 </div>

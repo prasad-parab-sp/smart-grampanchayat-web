@@ -69,6 +69,12 @@
   line-height: 1.45;
 }
 
+.admin-cert-type-create__loading {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: #64748b;
+}
+
 .admin-cert-type-create__form {
   background: #fff;
   border: 1px solid var(--border);

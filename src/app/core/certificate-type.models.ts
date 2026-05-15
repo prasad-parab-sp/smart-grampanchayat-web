@@ -59,6 +59,13 @@ export interface CertificateTypeFieldUpsertRequest {
   maxBytes?: number | null;
 }
 
+/** Body for {@code POST /api/certificate-types} — staff re-auth plus nested type payload. */
+export interface CertificateTypeCreateRequest {
+  identifier: string;
+  password: string;
+  certificateType: CertificateTypeUpsertRequest;
+}
+
 /** Request body for {@code POST /api/certificate-types} (tenant-owned type). */
 export interface CertificateTypeUpsertRequest {
   code: string;

@@ -7,6 +7,7 @@ import { LoginComponent } from './features/login/login.component';
 import { AdminHomeComponent } from './features/admin-home/admin-home.component';
 import { AdminCertificateApplicationsComponent } from './features/admin-certificate-applications/admin-certificate-applications.component';
 import { AdminCertificateTypeCreateComponent } from './features/admin-certificate-type-create/admin-certificate-type-create.component';
+import { AdminCertificateTypeListComponent } from './features/admin-certificate-type-list/admin-certificate-type-list.component';
 import { MainShellComponent } from './layout/main-shell.component';
 import { ShellPlaceholderComponent } from './layout/shell-placeholder.component';
 import { TenantErrorComponent } from './layout/tenant-error.component';
@@ -22,7 +23,17 @@ export const routes: Routes = [
     canActivate: [tenantReadyGuard, adminSessionGuard, nonGpAdminGuard]
   },
   {
+    path: 'admin/certificate-types',
+    component: AdminCertificateTypeListComponent,
+    canActivate: [tenantReadyGuard, adminSessionGuard, gpAdminGuard]
+  },
+  {
     path: 'admin/certificate-types/new',
+    component: AdminCertificateTypeCreateComponent,
+    canActivate: [tenantReadyGuard, adminSessionGuard, gpAdminGuard]
+  },
+  {
+    path: 'admin/certificate-types/:id/edit',
     component: AdminCertificateTypeCreateComponent,
     canActivate: [tenantReadyGuard, adminSessionGuard, gpAdminGuard]
   },

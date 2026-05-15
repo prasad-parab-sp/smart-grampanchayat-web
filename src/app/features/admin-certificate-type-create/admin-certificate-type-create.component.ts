@@ -2,13 +2,15 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { firstValueFrom } from 'rxjs';
 import { AdminSessionService } from '../../core/admin-session.service';
 import { CertificateTypeService } from '../../core/certificate-type.service';
 import {
   CertificateTypeCategory,
+  CertificateTypeDto,
+  CertificateTypeFieldDto,
   CertificateTypeFieldUpsertRequest,
   CertificateTypeUpsertRequest
 } from '../../core/certificate-type.models';
@@ -39,6 +41,13 @@ export class AdminCertificateTypeCreateComponent implements OnInit {
   readonly dataTypes = ['TEXT', 'TEXTAREA', 'DATE', 'NUMBER', 'SELECT', 'FILE'] as const;
 
   submitting = false;
+  loadingEdit = false;
+  /** Set when route is {@code /admin/certificate-types/:id/edit}. */
+  editId: string | null = null;
+
+  get isEditMode(): boolean {
+    return this.editId != null;
+  }
 
   readonly form = this.fb.nonNullable.group({
     code: [
@@ -57,16 +66,25 @@ export class AdminCertificateTypeCreateComponent implements OnInit {
     icon: ['', Validators.maxLength(32)],
     sortOrder: [100, Validators.required],
     active: [true],
-    extraFields: this.fb.array<FormGroup>([])
+    extraFields: this.fb.array<FormGroup>([]),
+    confirmPassword: ['', Validators.required]
   });
 
   constructor(
     private readonly adminSession: AdminSessionService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly route: ActivatedRoute
   ) {}
 
   get extraFields(): FormArray {
     return this.form.controls.extraFields as FormArray;
+  }
+
+  private clearConfirmPasswordForEdit(): void {
+    const c = this.form.controls.confirmPassword;
+    c.clearValidators();
+    c.setValue('');
+    c.updateValueAndValidity();
   }
 
   ngOnInit(): void {
@@ -75,12 +93,26 @@ export class AdminCertificateTypeCreateComponent implements OnInit {
       void this.router.navigate(['/login']);
       return;
     }
-    if (admin.storedRole !== 'GP_ADMIN') {
+    if (admin.storedRole !== 'GP_ADMIN' && admin.storedRole !== 'SYS_ADMIN') {
       void this.router.navigate(['/admin/home']);
       return;
     }
     this.adminDisplayName = `${admin.firstName ?? ''} ${admin.lastName ?? ''}`.trim() || null;
     this.adminRoleLabel = admin.role?.trim().replaceAll('_', ' ') || null;
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.editId = id;
+      this.clearConfirmPasswordForEdit();
+      void this.loadForEdit(id);
+    }
+  }
+
+  openAdminHome(): void {
+    if (this.isEditMode) {
+      void this.router.navigate(['/admin/certificate-types']);
+      return;
+    }
+    void this.router.navigate(['/admin/home']);
   }
 
   logout(): void {
@@ -88,8 +120,67 @@ export class AdminCertificateTypeCreateComponent implements OnInit {
     void this.router.navigate(['/login']);
   }
 
-  openAdminHome(): void {
-    void this.router.navigate(['/admin/home']);
+  private async loadForEdit(id: string): Promise<void> {
+    this.loadingEdit = true;
+    try {
+      const row = await firstValueFrom(this.certificateTypes.getTenantOwnedById(id));
+      this.patchFormFromDto(row);
+      this.form.controls.code.disable();
+    } catch {
+      this.toast.show(`${this.icons.ERROR} ${this.i18n.translate('ADMIN_CERT_TYPE_CREATE.ERR_LOAD')}`, 'error');
+      void this.router.navigate(['/admin/certificate-types']);
+    } finally {
+      this.loadingEdit = false;
+    }
+  }
+
+  private patchFormFromDto(row: CertificateTypeDto): void {
+    this.form.patchValue({
+      code: row.code,
+      category: row.category,
+      nameMr: row.nameMr ?? '',
+      nameEn: row.nameEn ?? '',
+      descriptionMr: row.descriptionMr ?? '',
+      descriptionEn: row.descriptionEn ?? '',
+      extraFieldsSectionTitleMr: row.extraFieldsSectionTitleMr ?? '',
+      extraFieldsSectionTitleEn: row.extraFieldsSectionTitleEn ?? '',
+      defaultFeeAmount: row.defaultFeeAmount ?? 0,
+      estimatedDaysTxt: row.estimatedDaysTxt ?? '',
+      icon: row.icon ?? '',
+      sortOrder: row.sortOrder ?? 0,
+      active: row.active ?? row.isActive ?? true
+    });
+    while (this.extraFields.length > 0) {
+      this.extraFields.removeAt(0);
+    }
+    for (const field of row.extraFields ?? []) {
+      this.extraFields.push(this.createExtraFieldGroupFromDto(field));
+    }
+  }
+
+  private createExtraFieldGroupFromDto(field: CertificateTypeFieldDto): FormGroup {
+    const optionsJsonText =
+      field.dataType === 'SELECT' && field.optionsJson != null
+        ? JSON.stringify(field.optionsJson, null, 2)
+        : '';
+    return this.fb.nonNullable.group({
+      fieldKey: [
+        field.fieldKey,
+        [Validators.required, Validators.pattern(/^[a-z][a-z0-9_]*$/), Validators.maxLength(120)]
+      ],
+      labelMr: [field.labelMr ?? '', [Validators.required, Validators.maxLength(500)]],
+      labelEn: [field.labelEn ?? '', Validators.maxLength(500)],
+      placeholderMr: [field.placeholderMr ?? '', Validators.maxLength(500)],
+      placeholderEn: [field.placeholderEn ?? '', Validators.maxLength(500)],
+      helpTextMr: [field.helpTextMr ?? ''],
+      helpTextEn: [field.helpTextEn ?? ''],
+      dataType: [field.dataType || 'TEXT', Validators.required],
+      required: [field.required ?? false],
+      sortOrder: [field.sortOrder ?? 0, Validators.required],
+      optionsJsonText: [optionsJsonText],
+      maxFiles: [field.maxFiles ?? 1, [Validators.min(1), Validators.max(20)]],
+      maxBytes: [field.maxBytes ?? 5242880, [Validators.min(1)]]
+    });
   }
 
   private nextExtraSortOrder(): number {
@@ -225,8 +316,58 @@ export class AdminCertificateTypeCreateComponent implements OnInit {
       return;
     }
     const v = this.form.getRawValue();
+
+    if (this.isEditMode && this.editId) {
+      const iconTrimmed = this.opt(v.icon, 32);
+      const certificateType: CertificateTypeUpsertRequest = {
+        code: v.code.trim(),
+        category: v.category,
+        nameMr: v.nameMr.trim(),
+        nameEn: v.nameEn.trim(),
+        descriptionMr: v.descriptionMr.trim(),
+        descriptionEn: v.descriptionEn.trim(),
+        extraFieldsSectionTitleMr: v.extraFieldsSectionTitleMr.trim(),
+        extraFieldsSectionTitleEn: v.extraFieldsSectionTitleEn.trim(),
+        defaultFeeAmount: Number(v.defaultFeeAmount),
+        estimatedDaysTxt: v.estimatedDaysTxt.trim(),
+        icon: iconTrimmed,
+        sortOrder: Math.trunc(Number(v.sortOrder)) || 0,
+        active: v.active,
+        extraFields: this.buildExtraFieldsPayload()
+      };
+      this.submitting = true;
+      try {
+        await firstValueFrom(this.certificateTypes.update(this.editId, certificateType));
+        this.toast.show(this.i18n.translate('ADMIN_CERT_TYPE_CREATE.SUCCESS_EDIT'), 'success');
+        void this.router.navigate(['/admin/certificate-types']);
+      } catch (err) {
+        const status = (err as HttpErrorResponse | undefined)?.status ?? 0;
+        if (status === 409) {
+          this.toast.show(`${this.icons.ERROR} ${this.i18n.translate('ADMIN_CERT_TYPE_CREATE.ERR_CONFLICT')}`, 'error');
+        } else if (status === 400) {
+          this.toast.show(`${this.icons.ERROR} ${this.i18n.translate('ADMIN_CERT_TYPE_CREATE.ERR_VALIDATION')}`, 'error');
+        } else {
+          this.toast.show(`${this.icons.ERROR} ${this.i18n.translate('ADMIN_CERT_TYPE_CREATE.ERR_GENERIC')}`, 'error');
+        }
+      } finally {
+        this.submitting = false;
+      }
+      return;
+    }
+
+    const admin = this.adminSession.get();
+    const identifier = admin?.loginIdentifier?.trim() ?? '';
+    if (!identifier) {
+      this.toast.show(`${this.icons.ERROR} ${this.i18n.translate('ADMIN_CERT_TYPE_CREATE.ERR_NO_LOGIN_ID')}`, 'error');
+      return;
+    }
+    const password = String(v.confirmPassword ?? '').trim();
+    if (!password) {
+      this.form.controls.confirmPassword.markAsTouched();
+      return;
+    }
     const iconTrimmed = this.opt(v.icon, 32);
-    const body: CertificateTypeUpsertRequest = {
+    const certificateType: CertificateTypeUpsertRequest = {
       code: v.code.trim(),
       category: v.category,
       nameMr: v.nameMr.trim(),
@@ -244,7 +385,13 @@ export class AdminCertificateTypeCreateComponent implements OnInit {
     };
     this.submitting = true;
     try {
-      await firstValueFrom(this.certificateTypes.create(body));
+      await firstValueFrom(
+        this.certificateTypes.create({
+          identifier,
+          password,
+          certificateType
+        })
+      );
       this.toast.show(this.i18n.translate('ADMIN_CERT_TYPE_CREATE.SUCCESS'), 'success');
       void this.router.navigate(['/admin/home']);
     } catch (err) {
@@ -253,6 +400,10 @@ export class AdminCertificateTypeCreateComponent implements OnInit {
         this.toast.show(`${this.icons.ERROR} ${this.i18n.translate('ADMIN_CERT_TYPE_CREATE.ERR_CONFLICT')}`, 'error');
       } else if (status === 400) {
         this.toast.show(`${this.icons.ERROR} ${this.i18n.translate('ADMIN_CERT_TYPE_CREATE.ERR_VALIDATION')}`, 'error');
+      } else if (status === 401) {
+        this.toast.show(`${this.icons.ERROR} ${this.i18n.translate('ADMIN_CERT_TYPE_CREATE.ERR_UNAUTHORIZED')}`, 'error');
+      } else if (status === 403) {
+        this.toast.show(`${this.icons.ERROR} ${this.i18n.translate('ADMIN_CERT_TYPE_CREATE.ERR_FORBIDDEN')}`, 'error');
       } else {
         this.toast.show(`${this.icons.ERROR} ${this.i18n.translate('ADMIN_CERT_TYPE_CREATE.ERR_GENERIC')}`, 'error');
       }

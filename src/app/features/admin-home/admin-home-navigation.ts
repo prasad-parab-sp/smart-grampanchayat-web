@@ -1,6 +1,6 @@
 /**
  * Admin home quick actions by {@link AdminSessionUser.storedRole}.
- * Keep routes aligned with {@link app.routes.ts} guards (e.g. GP_ADMIN vs nonGpAdminGuard).
+ * Keep routes aligned with {@link app.routes.ts} guards (e.g. GP_ADMIN / SYS_ADMIN vs nonGpAdminGuard).
  */
 
 export interface AdminQuickAction {
@@ -78,10 +78,10 @@ const VIEWER_QUICK_ACTIONS: AdminQuickAction[] = [
 
 const GP_ADMIN_QUICK_ACTIONS: AdminQuickAction[] = [
   {
-    icon: '➕',
-    titleKey: 'ADMIN_GP.ACTION_ADD_CERT_TYPE_TITLE',
-    subtitleKey: 'ADMIN_GP.ACTION_ADD_CERT_TYPE_SUB',
-    route: '/admin/certificate-types/new'
+    icon: '📋',
+    titleKey: 'ADMIN_GP.ACTION_MANAGE_CERT_TYPES_TITLE',
+    subtitleKey: 'ADMIN_GP.ACTION_MANAGE_CERT_TYPES_SUB',
+    route: '/admin/certificate-types'
   }
 ];
 
@@ -100,6 +100,7 @@ export function resolveAdminHomeQuickActions(storedRole: string): AdminQuickActi
   const role = storedRole.trim();
   switch (role) {
     case 'GP_ADMIN':
+    case 'SYS_ADMIN':
       return cloneQuickActions(GP_ADMIN_QUICK_ACTIONS);
     case 'SARPANCH':
       return cloneQuickActions(SARPANCH_QUICK_ACTIONS);
