@@ -89,18 +89,8 @@
     </div>
   </section>
 
-  <div class="chip-strip">
-    <button
-      type="button"
-      class="chip"
-      *ngFor="let chip of chips"
-      [class.chip--active]="chip.active"
-      (click)="openRoute(chip.route)">
-      {{ chip.icon }} {{ chip.labelKey | translate }}
-    </button>
-  </div>
-
-  <div class="stats-grid">
+  <!-- Future: role-specific summary strip (set showHomeStatsRow or replace with dynamic sections). -->
+  <div class="stats-grid" *ngIf="showHomeStatsRow">
     <article class="stat-card">
       <div class="stat-value stat-value--orange">0</div>
       <div class="stat-label">🚜 {{ 'ADMIN_HOME.STAT_MACHINE' | translate }}</div>
@@ -115,7 +105,7 @@
     </article>
   </div>
 
-  <div class="actions-grid">
+  <div class="actions-grid" [class.actions-grid--single]="quickActions.length <= 1">
     <article
       class="action-card"
       *ngFor="let action of quickActions"
@@ -127,110 +117,32 @@
     </article>
   </div>
 
-  <div class="admin-modal-backdrop" *ngIf="approveDialogOpen" (click)="closeApproveDialog()">
-    <div class="admin-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
-      <h4 class="admin-modal__title">{{ 'ADMIN_HOME.PENDING_CERT_DIALOG_TITLE' | translate }}</h4>
-      <p class="admin-modal__meta" *ngIf="approveTarget">
-        {{ approveTarget.applicationNumber }} — {{ approveTarget.applicantFullName }}
-      </p>
-      <form [formGroup]="approveForm" (ngSubmit)="confirmApprove()">
-        <label class="admin-modal__label">{{ 'ADMIN_HOME.PENDING_CERT_FIELD_ID' | translate }}</label>
-        <input class="admin-modal__input" type="text" formControlName="identifier" autocomplete="username" />
-        <label class="admin-modal__label">{{ 'LOGIN.ADMIN.LABEL_PASSWORD' | translate }}</label>
-        <input class="admin-modal__input" type="password" formControlName="password" autocomplete="current-password" />
-        <label class="admin-modal__label">{{ 'ADMIN_CERT_APP_DETAIL.APPROVE_REMARKS_LABEL' | translate }}</label>
-        <p class="admin-modal__hint">{{ 'ADMIN_CERT_APP_DETAIL.APPROVE_REMARKS_HINT' | translate }}</p>
-        <textarea
-          class="admin-modal__textarea"
-          rows="3"
-          name="approveRemarks"
-          [(ngModel)]="approveRemarksDraft"
-          [ngModelOptions]="{ standalone: true }"
-          [attr.placeholder]="'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_PH' | translate"></textarea>
-        <div class="admin-modal__actions">
-          <button type="button" class="admin-modal__btn admin-modal__btn--ghost" (click)="closeApproveDialog()">
-            {{ 'ADMIN_FORMATS.CANCEL' | translate }}
-          </button>
-          <button
-            type="submit"
-            class="admin-modal__btn admin-modal__btn--primary"
-            [disabled]="approveSubmitting || approveForm.invalid">
-            {{ 'ADMIN_HOME.PENDING_CERT_CONFIRM' | translate }}
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <app-staff-certificate-action-dialog
+    *ngIf="approveDialogOpen"
+    [intent]="'approve'"
+    [metaLine]="approveTarget ? approveTarget.applicationNumber + ' — ' + approveTarget.applicantFullName : null"
+    [credentialForm]="approveForm"
+    [(remarksDraft)]="approveRemarksDraft"
+    [submitting]="approveSubmitting"
+    (dialogResult)="handleStaffCertDialog('approve', $event)" />
 
-  <div class="admin-modal-backdrop" *ngIf="rejectDialogOpen" (click)="closeRejectDialog()">
-    <div class="admin-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
-      <h4 class="admin-modal__title">{{ 'ADMIN_CERT_APP_DETAIL.DIALOG_REJECT_TITLE' | translate }}</h4>
-      <p class="admin-modal__meta" *ngIf="rejectTarget">
-        {{ rejectTarget.applicationNumber }} — {{ rejectTarget.applicantFullName }}
-      </p>
-      <form [formGroup]="rejectForm" (ngSubmit)="confirmReject()">
-        <label class="admin-modal__label">{{ 'ADMIN_HOME.PENDING_CERT_FIELD_ID' | translate }}</label>
-        <input class="admin-modal__input" type="text" formControlName="identifier" autocomplete="username" />
-        <label class="admin-modal__label">{{ 'LOGIN.ADMIN.LABEL_PASSWORD' | translate }}</label>
-        <input class="admin-modal__input" type="password" formControlName="password" autocomplete="current-password" />
-        <label class="admin-modal__label">{{ 'ADMIN_CERT_APP_DETAIL.REJECT_REMARKS_LABEL' | translate }}</label>
-        <p class="admin-modal__hint">{{ 'ADMIN_CERT_APP_DETAIL.REJECT_REMARKS_HINT' | translate }}</p>
-        <textarea
-          class="admin-modal__textarea"
-          rows="3"
-          name="rejectRemarks"
-          [(ngModel)]="rejectRemarksDraft"
-          [ngModelOptions]="{ standalone: true }"
-          [attr.placeholder]="'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_PH' | translate"></textarea>
-        <div class="admin-modal__actions">
-          <button type="button" class="admin-modal__btn admin-modal__btn--ghost" (click)="closeRejectDialog()">
-            {{ 'ADMIN_FORMATS.CANCEL' | translate }}
-          </button>
-          <button
-            type="submit"
-            class="admin-modal__btn admin-modal__btn--danger"
-            [disabled]="rejectSubmitting || rejectForm.invalid">
-            {{ 'ADMIN_CERT_APP_DETAIL.REJECT' | translate }}
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <app-staff-certificate-action-dialog
+    *ngIf="rejectDialogOpen"
+    [intent]="'reject'"
+    [metaLine]="rejectTarget ? rejectTarget.applicationNumber + ' — ' + rejectTarget.applicantFullName : null"
+    [credentialForm]="rejectForm"
+    [(remarksDraft)]="rejectRemarksDraft"
+    [submitting]="rejectSubmitting"
+    (dialogResult)="handleStaffCertDialog('reject', $event)" />
 
-  <div class="admin-modal-backdrop" *ngIf="remarksOnlyDialogOpen" (click)="closeRemarksOnlyDialog()">
-    <div class="admin-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
-      <h4 class="admin-modal__title">{{ 'ADMIN_CERT_APP_DETAIL.DIALOG_REMARKS_ONLY_TITLE' | translate }}</h4>
-      <p class="admin-modal__meta" *ngIf="remarksOnlyTarget">
-        {{ remarksOnlyTarget.applicationNumber }} — {{ remarksOnlyTarget.applicantFullName }}
-      </p>
-      <form [formGroup]="remarksOnlyForm" (ngSubmit)="confirmRemarksOnly()">
-        <label class="admin-modal__label">{{ 'ADMIN_HOME.PENDING_CERT_FIELD_ID' | translate }}</label>
-        <input class="admin-modal__input" type="text" formControlName="identifier" autocomplete="username" />
-        <label class="admin-modal__label">{{ 'LOGIN.ADMIN.LABEL_PASSWORD' | translate }}</label>
-        <input class="admin-modal__input" type="password" formControlName="password" autocomplete="current-password" />
-        <label class="admin-modal__label">{{ 'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_BODY' | translate }}</label>
-        <p class="admin-modal__hint">{{ 'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_HINT' | translate }}</p>
-        <textarea
-          class="admin-modal__textarea"
-          rows="4"
-          name="remarksOnlyBody"
-          [(ngModel)]="remarksOnlyDraft"
-          [ngModelOptions]="{ standalone: true }"
-          [attr.placeholder]="'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_PH' | translate"></textarea>
-        <div class="admin-modal__actions">
-          <button type="button" class="admin-modal__btn admin-modal__btn--ghost" (click)="closeRemarksOnlyDialog()">
-            {{ 'ADMIN_FORMATS.CANCEL' | translate }}
-          </button>
-          <button
-            type="submit"
-            class="admin-modal__btn admin-modal__btn--primary"
-            [disabled]="remarksOnlySubmitting || remarksOnlyForm.invalid">
-            {{ 'ADMIN_CERT_APP_DETAIL.APPEND_REMARKS_SAVE' | translate }}
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <app-staff-certificate-action-dialog
+    *ngIf="remarksOnlyDialogOpen"
+    [intent]="'remark'"
+    [metaLine]="remarksOnlyTarget ? remarksOnlyTarget.applicationNumber + ' — ' + remarksOnlyTarget.applicantFullName : null"
+    [credentialForm]="remarksOnlyForm"
+    [(remarksDraft)]="remarksOnlyDraft"
+    [submitting]="remarksOnlySubmitting"
+    (dialogResult)="handleStaffCertDialog('remark', $event)" />
 
   <app-certificate-application-detail-sheet
     [open]="detailSheetOpen"

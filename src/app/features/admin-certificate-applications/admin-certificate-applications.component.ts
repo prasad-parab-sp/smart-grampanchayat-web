@@ -19,6 +19,8 @@ import { I18nService } from '../../i18n/i18n.service';
 import { ToastService } from '../../core/toast.service';
 import { GramAppHeaderComponent } from '../../shared/components/gram-app-header/gram-app-header.component';
 import { CertificateApplicationDetailSheetComponent } from '../../shared/components/certificate-application-detail-sheet/certificate-application-detail-sheet.component';
+import { StaffCertificateActionDialogComponent } from '../../shared/components/staff-certificate-action-dialog/staff-certificate-action-dialog.component';
+import type { StaffCertificateDialogIntent } from '../../shared/components/staff-certificate-action-dialog/staff-certificate-action-dialog.models';
 import { ICONS } from '../../shared';
 
 type RegistryStatusFilter = 'ALL' | CertificateApplicationStatus;
@@ -32,7 +34,8 @@ type RegistryStatusFilter = 'ALL' | CertificateApplicationStatus;
     TranslateModule,
     GramAppHeaderComponent,
     ReactiveFormsModule,
-    CertificateApplicationDetailSheetComponent
+    CertificateApplicationDetailSheetComponent,
+    StaffCertificateActionDialogComponent
   ],
   templateUrl: './admin-certificate-applications.component.html',
   styleUrls: ['./admin-certificate-applications.component.scss']
@@ -191,12 +194,12 @@ export class AdminCertificateApplicationsComponent implements OnInit {
   statusBadgeClass(status: CertificateApplicationStatus): string {
     switch (status) {
       case 'APPROVED':
-        return 'acr-badge acr-badge--g';
+        return 'admin-cert-applications__status-badge admin-cert-applications__status-badge--approved';
       case 'REJECTED':
       case 'CANCELLED':
-        return 'acr-badge acr-badge--r';
+        return 'admin-cert-applications__status-badge admin-cert-applications__status-badge--terminal';
       default:
-        return 'acr-badge acr-badge--o';
+        return 'admin-cert-applications__status-badge admin-cert-applications__status-badge--in-progress';
     }
   }
 
@@ -282,6 +285,26 @@ export class AdminCertificateApplicationsComponent implements OnInit {
     this.detailCertificateTypeLabel = '';
     this.detailStatusLabel = '';
     this.detailCanAppendStaffRemarks = false;
+  }
+
+  handleStaffCertDialog(intent: StaffCertificateDialogIntent, result: 'dismiss' | 'submit'): void {
+    if (result === 'dismiss') {
+      if (intent === 'approve') {
+        this.closeApproveDialog();
+      } else if (intent === 'reject') {
+        this.closeRejectDialog();
+      } else {
+        this.closeRemarksOnlyDialog();
+      }
+      return;
+    }
+    if (intent === 'approve') {
+      void this.confirmApprove();
+    } else if (intent === 'reject') {
+      void this.confirmReject();
+    } else {
+      void this.confirmRemarksOnly();
+    }
   }
 
   openApproveDialog(row: CertificateApplicationDto): void {

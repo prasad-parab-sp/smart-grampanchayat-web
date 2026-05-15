@@ -4,7 +4,11 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
-import { CertificateTypeCategory, CertificateTypeDto } from './certificate-type.models';
+import {
+  CertificateTypeCategory,
+  CertificateTypeDto,
+  CertificateTypeUpsertRequest
+} from './certificate-type.models';
 
 function normalizeCertificateTypeDto(raw: CertificateTypeDto): CertificateTypeDto {
   const iconRaw = raw.icon;
@@ -28,5 +32,11 @@ export class CertificateTypeService {
       ? this.http.get<CertificateTypeDto[]>(url, { params: { category } })
       : this.http.get<CertificateTypeDto[]>(url);
     return req.pipe(map((rows) => rows.map(normalizeCertificateTypeDto)));
+  }
+
+  /** {@code POST /api/certificate-types} — creates a tenant-scoped certificate type. */
+  create(body: CertificateTypeUpsertRequest): Observable<CertificateTypeDto> {
+    const url = `${environment.apiBaseUrl}/api/certificate-types`;
+    return this.http.post<CertificateTypeDto>(url, body).pipe(map(normalizeCertificateTypeDto));
   }
 }

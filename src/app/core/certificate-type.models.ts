@@ -40,7 +40,41 @@ export interface CertificateTypeFieldDto {
   optionsJson?: unknown;
   maxFiles?: number | null;
   maxBytes?: number | null;
-  allowedMimeCsv?: string | null;
+}
+
+/** Request row for {@code extraFields} on {@code CertificateTypeUpsertRequest}. */
+export interface CertificateTypeFieldUpsertRequest {
+  fieldKey: string;
+  labelMr: string;
+  labelEn?: string | null;
+  placeholderMr?: string | null;
+  placeholderEn?: string | null;
+  helpTextMr?: string | null;
+  helpTextEn?: string | null;
+  dataType: string;
+  required: boolean;
+  sortOrder: number;
+  optionsJson?: unknown;
+  maxFiles?: number | null;
+  maxBytes?: number | null;
+}
+
+/** Request body for {@code POST /api/certificate-types} (tenant-owned type). */
+export interface CertificateTypeUpsertRequest {
+  code: string;
+  category: CertificateTypeCategory;
+  nameMr: string;
+  nameEn: string;
+  descriptionMr: string;
+  descriptionEn: string;
+  extraFieldsSectionTitleMr: string;
+  extraFieldsSectionTitleEn: string;
+  defaultFeeAmount: number;
+  estimatedDaysTxt: string;
+  icon?: string | null;
+  sortOrder: number;
+  active: boolean;
+  extraFields?: CertificateTypeFieldUpsertRequest[];
 }
 
 export interface CertificateTypeDto {
