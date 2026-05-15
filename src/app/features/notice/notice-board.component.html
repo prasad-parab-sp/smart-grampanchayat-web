@@ -1,0 +1,39 @@
+<section class="notice-board">
+  <h2 class="sec-title">{{ 'NOTICE.BOARD_TITLE' | translate }}</h2>
+
+  <div class="chips notice-board__chips" aria-label="Notice filters">
+    <button
+      type="button"
+      class="chip"
+      *ngFor="let chip of filterChips"
+      [class.on]="activeFilter === chip.key"
+      (click)="setFilter($any(chip.key))">
+      {{ chip.labelKey | translate }}
+      <span class="chip__count" *ngIf="chipCount($any(chip.key)) > 0">({{ chipCount($any(chip.key)) }})</span>
+    </button>
+  </div>
+
+  <p *ngIf="loading" class="notice-board__hint">{{ 'NOTICE.LOADING' | translate }}</p>
+  <p *ngIf="errorKey" class="notice-board__error">{{ errorKey | translate }}</p>
+
+  <div *ngIf="!loading && !errorKey && rows.length === 0" class="card notice-board__empty">
+    {{ 'NOTICE.EMPTY' | translate }}
+  </div>
+
+  <article
+    *ngFor="let n of rows"
+    class="notice-card"
+    [ngClass]="cardModifier(n.noticeType)"
+    [class.notice-card--recent]="isRecent(n.publishedOn)">
+    <div class="notice-card__head">
+      <span class="notice-card__type">{{ noticeTypeLabelKey(n.noticeType) | translate }}</span>
+      <span *ngIf="isRecent(n.publishedOn)" class="notice-card__badge">{{ 'NOTICE.BADGE_NEW' | translate }}</span>
+    </div>
+    <h3 class="notice-card__title">{{ n.title }}</h3>
+    <p class="notice-card__body">{{ n.body }}</p>
+    <div class="notice-card__meta">
+      📅 {{ formatDate(n.publishedOn) }}
+      <span *ngIf="n.expiresOn"> • ⏳ {{ 'NOTICE.VALID_UNTIL' | translate }} {{ formatDate(n.expiresOn) }}</span>
+    </div>
+  </article>
+</section>

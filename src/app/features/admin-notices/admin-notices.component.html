@@ -1,0 +1,113 @@
+<div class="admin-notices-page">
+  <app-gram-app-header [badgeDisplayNameOverride]="adminDisplayName" (logout)="logout()" />
+
+  <main class="admin-notices-page__main card">
+    <div class="admin-notices-page__head">
+      <h1 class="sec-title">{{ 'NOTICE.ADMIN_TITLE' | translate }}</h1>
+      <div class="admin-notices-page__actions">
+        <button type="button" class="btn btn-g btn-sm" (click)="openPublish()">
+          ➕ {{ 'NOTICE.NEW_BTN' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <p *ngIf="loading" class="admin-notices-page__hint">{{ 'NOTICE.LOADING' | translate }}</p>
+
+    <div *ngIf="!loading && rows.length === 0" class="admin-notices-page__empty">
+      {{ 'NOTICE.ADMIN_EMPTY' | translate }}
+    </div>
+
+    <article
+      *ngFor="let n of rows"
+      class="notice-card admin-notice-row"
+      [class.admin-notice-row--expired]="isNoticeExpired(n)">
+      <div class="admin-notice-row__top">
+        <div>
+          <h3 class="notice-card__title">{{ n.title }}</h3>
+          <p class="admin-notice-row__meta">
+            {{ formatDate(n.publishedOn) }} • {{ noticeTypeLabelKey(n.noticeType) | translate }}
+            <span *ngIf="isNoticeExpired(n)" class="admin-notice-row__expired">
+              • {{ 'NOTICE.BADGE_EXPIRED' | translate }}
+            </span>
+          </p>
+          <p class="admin-notice-row__meta admin-notice-row__validity">
+            ⏳ {{ 'NOTICE.VALID_UNTIL' | translate }}: {{ formatDate(n.expiresOn) }}
+          </p>
+        </div>
+        <button type="button" class="btn btn-sm btn-danger" (click)="confirmDelete(n)">
+          🗑️
+        </button>
+      </div>
+      <p class="notice-card__body">{{ n.body }}</p>
+      <div class="admin-notice-row__tools">
+        <button type="button" class="btn btn-sm btn-navy" (click)="printNotice(n)">
+          🖨️ {{ 'NOTICE.PRINT' | translate }}
+        </button>
+        <button
+          *ngIf="n.sendToCitizens"
+          type="button"
+          class="btn btn-sm btn-wa"
+          (click)="whatsAppShare(n, 'citizens')">
+          👥 {{ 'NOTICE.SHARE_CITIZENS' | translate }}
+        </button>
+        <button
+          *ngIf="n.sendToMembers"
+          type="button"
+          class="btn btn-sm btn-blue"
+          (click)="whatsAppShare(n, 'members')">
+          🏛️ {{ 'NOTICE.SHARE_MEMBERS' | translate }}
+        </button>
+      </div>
+    </article>
+  </main>
+</div>
+
+<div *ngIf="publishOpen" class="admin-modal-backdrop" (click)="closePublish()">
+  <div class="admin-modal admin-modal--wide" role="dialog" (click)="$event.stopPropagation()">
+    <h3 class="admin-modal__title">📢 {{ 'NOTICE.MODAL_PUBLISH_TITLE' | translate }}</h3>
+    <form [formGroup]="publishForm" (ngSubmit)="submitPublish()">
+      <label class="admin-modal__label">{{ 'NOTICE.FIELD_TITLE' | translate }} *</label>
+      <input class="admin-modal__input" type="text" formControlName="title" />
+      <label class="admin-modal__label">{{ 'NOTICE.FIELD_TYPE' | translate }}</label>
+      <select class="admin-modal__input" formControlName="noticeType">
+        <option *ngFor="let t of typeOptions" [value]="t">{{ noticeTypeLabelKey(t) | translate }}</option>
+      </select>
+      <label class="admin-modal__label">{{ 'NOTICE.FIELD_BODY' | translate }} *</label>
+      <textarea class="admin-modal__textarea" formControlName="body" rows="4"></textarea>
+      <label class="admin-modal__label">{{ 'NOTICE.FIELD_DATE' | translate }} *</label>
+      <input class="admin-modal__input" type="date" formControlName="publishedOn" />
+      <label class="admin-modal__label">{{ 'NOTICE.FIELD_EXPIRES' | translate }} *</label>
+      <input class="admin-modal__input" type="date" formControlName="expiresOn" />
+      <div class="notice-panel notice-panel--wa">
+        <p class="notice-panel__title">{{ 'NOTICE.WA_TARGET_TITLE' | translate }}</p>
+        <label class="notice-check">
+          <input type="checkbox" formControlName="sendToCitizens" />
+          <span>{{ 'NOTICE.WA_CITIZENS' | translate }}</span>
+        </label>
+        <label class="notice-check">
+          <input type="checkbox" formControlName="sendToSadasya" />
+          <span>{{ 'NOTICE.WA_MEMBERS' | translate }}</span>
+        </label>
+      </div>
+      <div class="admin-modal__actions">
+        <button type="button" class="btn btn-sm" (click)="closePublish()">{{ 'ADMIN_FORMATS.CANCEL' | translate }}</button>
+        <button type="submit" class="btn btn-g btn-sm" [disabled]="publishSubmitting">
+          📢 {{ 'NOTICE.PUBLISH_BTN' | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div *ngIf="deleteOpen" class="admin-modal-backdrop" (click)="closeDelete()">
+  <div class="admin-modal" role="dialog" (click)="$event.stopPropagation()">
+    <h3 class="admin-modal__title">{{ 'NOTICE.DELETE_TITLE' | translate }}</h3>
+    <p *ngIf="deleteTarget" class="admin-modal__meta">{{ deleteTarget.title }}</p>
+    <div class="admin-modal__actions">
+      <button type="button" class="btn btn-sm" (click)="closeDelete()">{{ 'ADMIN_FORMATS.CANCEL' | translate }}</button>
+      <button type="button" class="btn btn-danger btn-sm" [disabled]="deleteSubmitting" (click)="submitDelete()">
+        {{ 'NOTICE.DELETE_CONFIRM' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

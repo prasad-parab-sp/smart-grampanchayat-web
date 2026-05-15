@@ -13,7 +13,12 @@ export interface AdminQuickAction {
 const STAFF_FULL_QUICK_ACTIONS: AdminQuickAction[] = [
   { icon: '🏠', titleKey: 'ADMIN_HOME.ACTION_HOUSE_TAX', subtitleKey: 'ADMIN_HOME.ACTION_HOUSE_TAX_SUB' },
   { icon: '💧', titleKey: 'ADMIN_HOME.ACTION_WATER', subtitleKey: 'ADMIN_HOME.ACTION_WATER_SUB' },
-  { icon: '📢', titleKey: 'ADMIN_HOME.ACTION_NOTICE', subtitleKey: 'ADMIN_HOME.ACTION_NOTICE_SUB' },
+  {
+    icon: '📢',
+    titleKey: 'ADMIN_HOME.ACTION_NOTICE',
+    subtitleKey: 'ADMIN_HOME.ACTION_NOTICE_SUB',
+    route: '/admin/notices'
+  },
   {
     icon: '📄',
     titleKey: 'ADMIN_HOME.ACTION_FORMAT',
@@ -38,7 +43,12 @@ const STAFF_FULL_QUICK_ACTIONS: AdminQuickAction[] = [
 
 /** Sarpanch: oversight / governance — fewer operational shortcuts. */
 const SARPANCH_QUICK_ACTIONS: AdminQuickAction[] = [
-  { icon: '📢', titleKey: 'ADMIN_HOME.ACTION_NOTICE', subtitleKey: 'ADMIN_HOME.ACTION_NOTICE_SUB' },
+  {
+    icon: '📢',
+    titleKey: 'ADMIN_HOME.ACTION_NOTICE',
+    subtitleKey: 'ADMIN_HOME.ACTION_NOTICE_SUB',
+    route: '/admin/notices'
+  },
   {
     icon: '📄',
     titleKey: 'ADMIN_HOME.ACTION_FORMAT',
@@ -73,7 +83,12 @@ const VIEWER_QUICK_ACTIONS: AdminQuickAction[] = [
     route: '/admin/certificate-applications'
   },
   { icon: '📊', titleKey: 'ADMIN_HOME.ACTION_REPORT', subtitleKey: 'ADMIN_HOME.ACTION_REPORT_SUB' },
-  { icon: '📢', titleKey: 'ADMIN_HOME.ACTION_NOTICE', subtitleKey: 'ADMIN_HOME.ACTION_NOTICE_SUB' }
+  {
+    icon: '📢',
+    titleKey: 'ADMIN_HOME.ACTION_NOTICE',
+    subtitleKey: 'ADMIN_HOME.ACTION_NOTICE_SUB',
+    route: '/admin/notices'
+  }
 ];
 
 const GP_ADMIN_QUICK_ACTIONS: AdminQuickAction[] = [
