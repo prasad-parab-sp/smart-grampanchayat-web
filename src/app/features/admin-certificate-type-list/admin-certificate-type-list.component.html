@@ -1,0 +1,57 @@
+<div class="admin-cert-type-list">
+  <app-gram-app-header [badgeDisplayNameOverride]="adminDisplayName" (logout)="logout()" />
+
+  <section class="admin-cert-type-list__identity" *ngIf="adminDisplayName || adminRoleLabel">
+    <div class="admin-cert-type-list__identity-name" *ngIf="adminDisplayName">👤 {{ adminDisplayName }}</div>
+    <div class="admin-cert-type-list__identity-role" *ngIf="adminRoleLabel">
+      🛡️ {{ 'ADMIN_HOME.ROLE' | translate }}: {{ adminRoleLabel }}
+    </div>
+  </section>
+
+  <button type="button" class="admin-cert-type-list__back-link" (click)="openAdminHome()">
+    ← {{ 'ADMIN_CERT_TYPE_LIST.BACK' | translate }}
+  </button>
+
+  <div class="admin-cert-type-list__header">
+    <div>
+      <h2 class="admin-cert-type-list__page-title">{{ 'ADMIN_CERT_TYPE_LIST.TITLE' | translate }}</h2>
+      <p class="admin-cert-type-list__page-subtitle">{{ 'ADMIN_CERT_TYPE_LIST.SUBTITLE' | translate }}</p>
+    </div>
+    <button type="button" class="admin-cert-type-list__add-button" (click)="openCreate()">
+      {{ 'ADMIN_CERT_TYPE_LIST.ADD' | translate }}
+    </button>
+  </div>
+
+  <p class="admin-cert-type-list__loading" *ngIf="loading">{{ 'ADMIN_CERT_TYPE_LIST.LOADING' | translate }}</p>
+
+  <p class="admin-cert-type-list__empty" *ngIf="!loading && rows.length === 0">
+    {{ 'ADMIN_CERT_TYPE_LIST.EMPTY' | translate }}
+  </p>
+
+  <ul class="admin-cert-type-list__rows" *ngIf="!loading && rows.length > 0">
+    <li *ngFor="let row of rows; trackBy: trackRow" class="admin-cert-type-list__row">
+      <div class="admin-cert-type-list__row-main">
+        <span class="admin-cert-type-list__row-icon" *ngIf="row.icon">{{ row.icon }}</span>
+        <div>
+          <div class="admin-cert-type-list__row-title">{{ labelFor(row) }}</div>
+          <div class="admin-cert-type-list__row-meta">
+            <span class="admin-cert-type-list__code">{{ row.code }}</span>
+            <span class="admin-cert-type-list__category">{{ row.category }}</span>
+            <span
+              class="admin-cert-type-list__status"
+              [class.admin-cert-type-list__status--inactive]="!isActive(row)">
+              {{
+                isActive(row)
+                  ? ('ADMIN_CERT_TYPE_LIST.STATUS_ACTIVE' | translate)
+                  : ('ADMIN_CERT_TYPE_LIST.STATUS_INACTIVE' | translate)
+              }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="admin-cert-type-list__edit-button" (click)="openEdit(row)">
+        {{ 'ADMIN_CERT_TYPE_LIST.EDIT' | translate }}
+      </button>
+    </li>
+  </ul>
+</div>

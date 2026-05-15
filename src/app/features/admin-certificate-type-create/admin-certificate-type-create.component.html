@@ -1,0 +1,228 @@
+<div class="admin-cert-type-create">
+  <app-gram-app-header [badgeDisplayNameOverride]="adminDisplayName" (logout)="logout()" />
+
+  <section class="admin-cert-type-create__identity" *ngIf="adminDisplayName || adminRoleLabel">
+    <div class="admin-cert-type-create__identity-name" *ngIf="adminDisplayName">👤 {{ adminDisplayName }}</div>
+    <div class="admin-cert-type-create__identity-role" *ngIf="adminRoleLabel">
+      🛡️ {{ 'ADMIN_HOME.ROLE' | translate }}: {{ adminRoleLabel }}
+    </div>
+  </section>
+
+  <button type="button" class="admin-cert-type-create__back-link" (click)="openAdminHome()">
+    ←
+    {{
+      isEditMode
+        ? ('ADMIN_CERT_TYPE_CREATE.BACK_LIST' | translate)
+        : ('ADMIN_CERT_TYPE_CREATE.BACK' | translate)
+    }}
+  </button>
+
+  <p class="admin-cert-type-create__loading" *ngIf="loadingEdit">{{ 'ADMIN_CERT_TYPE_CREATE.LOADING' | translate }}</p>
+
+  <ng-container *ngIf="!loadingEdit">
+    <h2 class="admin-cert-type-create__page-title">
+      {{ (isEditMode ? 'ADMIN_CERT_TYPE_CREATE.TITLE_EDIT' : 'ADMIN_CERT_TYPE_CREATE.TITLE') | translate }}
+    </h2>
+    <p class="admin-cert-type-create__page-subtitle">
+      {{ (isEditMode ? 'ADMIN_CERT_TYPE_CREATE.SUBTITLE_EDIT' : 'ADMIN_CERT_TYPE_CREATE.SUBTITLE') | translate }}
+    </p>
+
+    <form class="admin-cert-type-create__form" [formGroup]="form" (ngSubmit)="submit()">
+    <label class="admin-cert-type-create__field-label admin-cert-type-create__field-label--required">{{
+      'ADMIN_CERT_TYPE_CREATE.CODE' | translate
+    }}</label>
+    <input
+      class="admin-cert-type-create__text-input"
+      type="text"
+      formControlName="code"
+      autocomplete="off"
+      [readonly]="isEditMode" />
+    <p class="admin-cert-type-create__field-hint">
+      {{
+        isEditMode
+          ? ('ADMIN_CERT_TYPE_CREATE.CODE_READONLY_HINT' | translate)
+          : ('ADMIN_CERT_TYPE_CREATE.CODE_HINT' | translate)
+      }}
+    </p>
+
+    <label class="admin-cert-type-create__field-label admin-cert-type-create__field-label--required">{{
+      'ADMIN_CERT_TYPE_CREATE.CATEGORY' | translate
+    }}</label>
+    <select class="admin-cert-type-create__text-input" formControlName="category">
+      <option *ngFor="let c of categories" [ngValue]="c">{{ c }}</option>
+    </select>
+
+    <label class="admin-cert-type-create__field-label admin-cert-type-create__field-label--required">{{
+      'ADMIN_CERT_TYPE_CREATE.NAME_MR' | translate
+    }}</label>
+    <input class="admin-cert-type-create__text-input" type="text" formControlName="nameMr" />
+
+    <label class="admin-cert-type-create__field-label admin-cert-type-create__field-label--required">{{
+      'ADMIN_CERT_TYPE_CREATE.NAME_EN' | translate
+    }}</label>
+    <input class="admin-cert-type-create__text-input" type="text" formControlName="nameEn" />
+
+    <label class="admin-cert-type-create__field-label admin-cert-type-create__field-label--required">{{
+      'ADMIN_CERT_TYPE_CREATE.DESC_MR' | translate
+    }}</label>
+    <textarea class="admin-cert-type-create__textarea" rows="3" formControlName="descriptionMr"></textarea>
+
+    <label class="admin-cert-type-create__field-label admin-cert-type-create__field-label--required">{{
+      'ADMIN_CERT_TYPE_CREATE.DESC_EN' | translate
+    }}</label>
+    <textarea class="admin-cert-type-create__textarea" rows="3" formControlName="descriptionEn"></textarea>
+
+    <label class="admin-cert-type-create__field-label admin-cert-type-create__field-label--required">{{
+      'ADMIN_CERT_TYPE_CREATE.SECTION_MR' | translate
+    }}</label>
+    <input class="admin-cert-type-create__text-input" type="text" formControlName="extraFieldsSectionTitleMr" />
+
+    <label class="admin-cert-type-create__field-label admin-cert-type-create__field-label--required">{{
+      'ADMIN_CERT_TYPE_CREATE.SECTION_EN' | translate
+    }}</label>
+    <input class="admin-cert-type-create__text-input" type="text" formControlName="extraFieldsSectionTitleEn" />
+
+    <label class="admin-cert-type-create__field-label admin-cert-type-create__field-label--required">{{
+      'ADMIN_CERT_TYPE_CREATE.FEE' | translate
+    }}</label>
+    <input class="admin-cert-type-create__text-input" type="number" formControlName="defaultFeeAmount" min="0" step="1" />
+
+    <label class="admin-cert-type-create__field-label admin-cert-type-create__field-label--required">{{
+      'ADMIN_CERT_TYPE_CREATE.DAYS_TXT' | translate
+    }}</label>
+    <input class="admin-cert-type-create__text-input" type="text" formControlName="estimatedDaysTxt" />
+
+    <label class="admin-cert-type-create__field-label">{{ 'ADMIN_CERT_TYPE_CREATE.ICON' | translate }}</label>
+    <input class="admin-cert-type-create__text-input" type="text" formControlName="icon" />
+    <p class="admin-cert-type-create__field-hint">{{ 'ADMIN_CERT_TYPE_CREATE.ICON_HINT' | translate }}</p>
+
+    <label class="admin-cert-type-create__field-label admin-cert-type-create__field-label--required">{{
+      'ADMIN_CERT_TYPE_CREATE.SORT' | translate
+    }}</label>
+    <input class="admin-cert-type-create__text-input" type="number" formControlName="sortOrder" step="1" />
+
+    <label class="admin-cert-type-create__checkbox-field">
+      <input type="checkbox" formControlName="active" />
+      {{ 'ADMIN_CERT_TYPE_CREATE.ACTIVE' | translate }}
+    </label>
+
+    <div class="admin-cert-type-create__extra-fields-header">
+      <h3 class="admin-cert-type-create__extra-fields-title">{{ 'ADMIN_CERT_TYPE_CREATE.EXTRA_TITLE' | translate }}</h3>
+      <span class="admin-cert-type-create__extra-fields-count">{{ extraFields.length }} / 40</span>
+    </div>
+    <p class="admin-cert-type-create__field-hint admin-cert-type-create__field-hint--block">
+      {{ 'ADMIN_CERT_TYPE_CREATE.EXTRA_HINT' | translate }}
+    </p>
+
+    <div formArrayName="extraFields" class="admin-cert-type-create__extra-fields-list">
+      <div
+        *ngFor="let row of extraFields.controls; let i = index"
+        [formGroupName]="i"
+        class="admin-cert-type-create__extra-field-card">
+        <div class="admin-cert-type-create__extra-field-card-header">
+          <span class="admin-cert-type-create__extra-field-index">
+            {{ 'ADMIN_CERT_TYPE_CREATE.EXTRA_ROW' | translate }} {{ i + 1 }}
+          </span>
+          <button type="button" class="admin-cert-type-create__extra-field-remove-button" (click)="removeExtraFieldRow(i)">
+            {{ 'ADMIN_CERT_TYPE_CREATE.EXTRA_REMOVE' | translate }}
+          </button>
+        </div>
+
+        <label class="admin-cert-type-create__field-label admin-cert-type-create__field-label--required">{{
+          'ADMIN_CERT_TYPE_CREATE.EXTRA_FIELD_KEY' | translate
+        }}</label>
+        <input class="admin-cert-type-create__text-input" type="text" formControlName="fieldKey" />
+
+        <label class="admin-cert-type-create__field-label admin-cert-type-create__field-label--required">{{
+          'ADMIN_CERT_TYPE_CREATE.EXTRA_LABEL_MR' | translate
+        }}</label>
+        <input class="admin-cert-type-create__text-input" type="text" formControlName="labelMr" />
+
+        <label class="admin-cert-type-create__field-label">{{ 'ADMIN_CERT_TYPE_CREATE.EXTRA_LABEL_EN' | translate }}</label>
+        <input class="admin-cert-type-create__text-input" type="text" formControlName="labelEn" />
+
+        <label class="admin-cert-type-create__field-label">{{ 'ADMIN_CERT_TYPE_CREATE.EXTRA_PH_MR' | translate }}</label>
+        <input class="admin-cert-type-create__text-input" type="text" formControlName="placeholderMr" />
+
+        <label class="admin-cert-type-create__field-label">{{ 'ADMIN_CERT_TYPE_CREATE.EXTRA_PH_EN' | translate }}</label>
+        <input class="admin-cert-type-create__text-input" type="text" formControlName="placeholderEn" />
+
+        <label class="admin-cert-type-create__field-label">{{ 'ADMIN_CERT_TYPE_CREATE.EXTRA_HELP_MR' | translate }}</label>
+        <textarea class="admin-cert-type-create__textarea" rows="2" formControlName="helpTextMr"></textarea>
+
+        <label class="admin-cert-type-create__field-label">{{ 'ADMIN_CERT_TYPE_CREATE.EXTRA_HELP_EN' | translate }}</label>
+        <textarea class="admin-cert-type-create__textarea" rows="2" formControlName="helpTextEn"></textarea>
+
+        <label class="admin-cert-type-create__field-label admin-cert-type-create__field-label--required">{{
+          'ADMIN_CERT_TYPE_CREATE.EXTRA_DATATYPE' | translate
+        }}</label>
+        <select class="admin-cert-type-create__text-input" formControlName="dataType">
+          <option *ngFor="let dt of dataTypes" [ngValue]="dt">{{ dt }}</option>
+        </select>
+
+        <label class="admin-cert-type-create__checkbox-field">
+          <input type="checkbox" formControlName="required" />
+          {{ 'ADMIN_CERT_TYPE_CREATE.EXTRA_REQUIRED' | translate }}
+        </label>
+
+        <label class="admin-cert-type-create__field-label admin-cert-type-create__field-label--required">{{
+          'ADMIN_CERT_TYPE_CREATE.EXTRA_SORT' | translate
+        }}</label>
+        <input class="admin-cert-type-create__text-input" type="number" formControlName="sortOrder" step="1" />
+
+        <ng-container *ngIf="rowDataType(i) === 'SELECT'">
+          <label class="admin-cert-type-create__field-label admin-cert-type-create__field-label--required">{{
+            'ADMIN_CERT_TYPE_CREATE.EXTRA_OPTIONS_JSON' | translate
+          }}</label>
+          <textarea
+            class="admin-cert-type-create__textarea admin-cert-type-create__textarea--monospace"
+            rows="4"
+            formControlName="optionsJsonText"></textarea>
+          <p class="admin-cert-type-create__field-hint">{{ 'ADMIN_CERT_TYPE_CREATE.EXTRA_OPTIONS_HINT' | translate }}</p>
+        </ng-container>
+
+        <ng-container *ngIf="rowDataType(i) === 'FILE'">
+          <label class="admin-cert-type-create__field-label">{{ 'ADMIN_CERT_TYPE_CREATE.EXTRA_MAX_FILES' | translate }}</label>
+          <input class="admin-cert-type-create__text-input" type="number" formControlName="maxFiles" min="1" max="20" step="1" />
+          <label class="admin-cert-type-create__field-label">{{ 'ADMIN_CERT_TYPE_CREATE.EXTRA_MAX_BYTES' | translate }}</label>
+          <input class="admin-cert-type-create__text-input" type="number" formControlName="maxBytes" min="1" step="1024" />
+        </ng-container>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="admin-cert-type-create__add-field-button"
+      (click)="addExtraFieldRow()"
+      [disabled]="extraFields.length >= 40">
+      {{ 'ADMIN_CERT_TYPE_CREATE.EXTRA_ADD' | translate }}
+    </button>
+
+    <ng-container *ngIf="!isEditMode">
+      <label class="admin-cert-type-create__field-label admin-cert-type-create__field-label--required">{{
+        'ADMIN_CERT_TYPE_CREATE.CONFIRM_PASSWORD' | translate
+      }}</label>
+      <input
+        class="admin-cert-type-create__text-input"
+        type="password"
+        formControlName="confirmPassword"
+        autocomplete="current-password" />
+      <p class="admin-cert-type-create__field-hint">{{ 'ADMIN_CERT_TYPE_CREATE.CONFIRM_PASSWORD_HINT' | translate }}</p>
+    </ng-container>
+
+    <div class="admin-cert-type-create__form-actions">
+      <button type="button" class="admin-cert-type-create__button admin-cert-type-create__button--ghost" (click)="openAdminHome()">
+        {{ 'ADMIN_FORMATS.CANCEL' | translate }}
+      </button>
+      <button
+        type="submit"
+        class="admin-cert-type-create__button admin-cert-type-create__button--primary"
+        [disabled]="submitting || form.invalid || loadingEdit">
+        {{
+          (isEditMode ? 'ADMIN_CERT_TYPE_CREATE.SUBMIT_EDIT' : 'ADMIN_CERT_TYPE_CREATE.SUBMIT') | translate
+        }}
+      </button>
+    </div>
+  </form>
+  </ng-container>
+</div>

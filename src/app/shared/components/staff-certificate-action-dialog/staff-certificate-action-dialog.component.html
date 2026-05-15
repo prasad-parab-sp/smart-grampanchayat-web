@@ -1,0 +1,35 @@
+<div class="admin-modal-backdrop" (click)="onBackdrop()">
+  <div class="admin-modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <h4 class="admin-modal__title">{{ ui.titleKey | translate }}</h4>
+    <p class="admin-modal__meta" *ngIf="metaLine">{{ metaLine }}</p>
+    <form [formGroup]="credentialForm" (ngSubmit)="onFormSubmit()">
+      <label class="admin-modal__label">{{ 'ADMIN_HOME.PENDING_CERT_FIELD_ID' | translate }}</label>
+      <input class="admin-modal__input" type="text" formControlName="identifier" autocomplete="username" />
+      <label class="admin-modal__label">{{ 'LOGIN.ADMIN.LABEL_PASSWORD' | translate }}</label>
+      <input class="admin-modal__input" type="password" formControlName="password" autocomplete="current-password" />
+      <label class="admin-modal__label">{{ ui.remarksBodyLabelKey | translate }}</label>
+      <p class="admin-modal__hint">{{ ui.remarksHintKey | translate }}</p>
+      <textarea
+        class="admin-modal__textarea"
+        [rows]="ui.remarksRows"
+        [name]="ui.textareaName"
+        [ngModel]="remarksDraft"
+        (ngModelChange)="remarksDraftChange.emit($event)"
+        [ngModelOptions]="{ standalone: true }"
+        [attr.placeholder]="remarksPlaceholderKey | translate"></textarea>
+      <div class="admin-modal__actions">
+        <button type="button" class="admin-modal__btn admin-modal__btn--ghost" (click)="onCancel()">
+          {{ 'ADMIN_FORMATS.CANCEL' | translate }}
+        </button>
+        <button
+          type="submit"
+          class="admin-modal__btn"
+          [class.admin-modal__btn--primary]="ui.submitVariant === 'primary'"
+          [class.admin-modal__btn--danger]="ui.submitVariant === 'danger'"
+          [disabled]="submitting || credentialForm.invalid">
+          {{ ui.submitLabelKey | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

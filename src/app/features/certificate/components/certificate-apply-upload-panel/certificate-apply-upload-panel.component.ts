@@ -57,16 +57,8 @@ export class CertificateApplyUploadPanelComponent {
     return certificateTypeFieldHelpText(field, this.i18n.currentLang);
   }
 
-  fileAccept(field: CertificateTypeFieldDto): string {
-    const csv = field.allowedMimeCsv?.trim();
-    if (!csv) {
-      return 'image/*,.pdf';
-    }
-    return csv
-      .split(',')
-      .map((s) => s.trim())
-      .filter(Boolean)
-      .join(',');
+  fileAccept(_field: CertificateTypeFieldDto): string {
+    return 'image/*,.pdf';
   }
 
   private effectiveMaxBytes(field: CertificateTypeFieldDto): number {

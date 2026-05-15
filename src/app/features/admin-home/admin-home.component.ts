@@ -17,21 +17,10 @@ import { I18nService } from '../../i18n/i18n.service';
 import { ToastService } from '../../core/toast.service';
 import { CertificateApplicationDetailSheetComponent } from '../../shared/components/certificate-application-detail-sheet/certificate-application-detail-sheet.component';
 import { GramAppHeaderComponent } from '../../shared/components/gram-app-header/gram-app-header.component';
+import { StaffCertificateActionDialogComponent } from '../../shared/components/staff-certificate-action-dialog/staff-certificate-action-dialog.component';
+import type { StaffCertificateDialogIntent } from '../../shared/components/staff-certificate-action-dialog/staff-certificate-action-dialog.models';
 import { ICONS } from '../../shared';
-
-interface AdminChip {
-  icon: string;
-  labelKey: string;
-  active?: boolean;
-  route?: string;
-}
-
-interface AdminQuickAction {
-  icon: string;
-  titleKey: string;
-  subtitleKey: string;
-  route?: string;
-}
+import { resolveAdminHomeQuickActions, type AdminQuickAction } from './admin-home-navigation';
 
 @Component({
   selector: 'app-admin-home',
@@ -42,7 +31,8 @@ interface AdminQuickAction {
     GramAppHeaderComponent,
     ReactiveFormsModule,
     FormsModule,
-    CertificateApplicationDetailSheetComponent
+    CertificateApplicationDetailSheetComponent,
+    StaffCertificateActionDialogComponent
   ],
   templateUrl: './admin-home.component.html',
   styleUrls: ['./admin-home.component.scss']
@@ -57,6 +47,12 @@ export class AdminHomeComponent implements OnInit {
   adminDisplayName: string | null = null;
   adminRoleLabel: string | null = null;
   readonly icons = ICONS;
+
+  /**
+   * Placeholder stats row (machine / complaints / suggestions). Hidden until APIs exist.
+   * Later: drive from role + live counts, similar to {@link isGramsevak} pending block at top.
+   */
+  readonly showHomeStatsRow = false;
 
   /** Only stored-role Gramsevak may see the pending-approval queue (not acting Sarpanch). */
   isGramsevak = false;
@@ -101,45 +97,7 @@ export class AdminHomeComponent implements OnInit {
     password: ['', Validators.required]
   });
 
-  readonly chips: AdminChip[] = [
-    { icon: '🏠', labelKey: 'ADMIN_HOME.CHIP_DASHBOARD', active: true, route: '/admin/home' },
-    { icon: '📝', labelKey: 'ADMIN_HOME.CHIP_RECORDS' },
-    { icon: '📢', labelKey: 'ADMIN_HOME.CHIP_NOTICES' },
-    { icon: '📄', labelKey: 'ADMIN_HOME.CHIP_FORMATS', route: '/admin/formats' },
-    { icon: '📑', labelKey: 'ADMIN_HOME.CHIP_CERT_APPS', route: '/admin/certificate-applications' },
-    { icon: '🚜', labelKey: 'ADMIN_HOME.CHIP_MACHINERY' },
-    { icon: '🏗️', labelKey: 'ADMIN_HOME.CHIP_FUNDS' },
-    { icon: '🏦', labelKey: 'ADMIN_HOME.CHIP_BANK' },
-    { icon: '👥', labelKey: 'ADMIN_HOME.CHIP_VILLAGERS' },
-    { icon: '📊', labelKey: 'ADMIN_HOME.CHIP_REPORTS' },
-    { icon: '⚙️', labelKey: 'ADMIN_HOME.CHIP_SETTINGS' }
-  ];
-
-  readonly quickActions: AdminQuickAction[] = [
-    { icon: '🏠', titleKey: 'ADMIN_HOME.ACTION_HOUSE_TAX', subtitleKey: 'ADMIN_HOME.ACTION_HOUSE_TAX_SUB' },
-    { icon: '💧', titleKey: 'ADMIN_HOME.ACTION_WATER', subtitleKey: 'ADMIN_HOME.ACTION_WATER_SUB' },
-    { icon: '📢', titleKey: 'ADMIN_HOME.ACTION_NOTICE', subtitleKey: 'ADMIN_HOME.ACTION_NOTICE_SUB' },
-    {
-      icon: '📄',
-      titleKey: 'ADMIN_HOME.ACTION_FORMAT',
-      subtitleKey: 'ADMIN_HOME.ACTION_FORMAT_SUB',
-      route: '/admin/formats'
-    },
-    {
-      icon: '📑',
-      titleKey: 'ADMIN_HOME.ACTION_CERT_REGISTRY_TITLE',
-      subtitleKey: 'ADMIN_HOME.ACTION_CERT_REGISTRY_SUB',
-      route: '/admin/certificate-applications'
-    },
-    { icon: '📱', titleKey: 'ADMIN_HOME.ACTION_WHATSAPP', subtitleKey: 'ADMIN_HOME.ACTION_WHATSAPP_SUB' },
-    { icon: '⚙️', titleKey: 'ADMIN_HOME.ACTION_SETTINGS', subtitleKey: 'ADMIN_HOME.ACTION_SETTINGS_SUB' },
-    { icon: '🚜', titleKey: 'ADMIN_HOME.ACTION_MACHINERY', subtitleKey: 'ADMIN_HOME.ACTION_MACHINERY_SUB' },
-    { icon: '🏗️', titleKey: 'ADMIN_HOME.ACTION_FUNDS', subtitleKey: 'ADMIN_HOME.ACTION_FUNDS_SUB' },
-    { icon: '🏦', titleKey: 'ADMIN_HOME.ACTION_BANK', subtitleKey: 'ADMIN_HOME.ACTION_BANK_SUB' },
-    { icon: '👥', titleKey: 'ADMIN_HOME.ACTION_VILLAGERS', subtitleKey: 'ADMIN_HOME.ACTION_VILLAGERS_SUB' },
-    { icon: '📊', titleKey: 'ADMIN_HOME.ACTION_REPORT', subtitleKey: 'ADMIN_HOME.ACTION_REPORT_SUB' },
-    { icon: '🔔', titleKey: 'ADMIN_HOME.ACTION_MEETING', subtitleKey: 'ADMIN_HOME.ACTION_MEETING_SUB' }
-  ];
+  quickActions: AdminQuickAction[] = [];
 
   constructor(
     private readonly adminSession: AdminSessionService,
@@ -155,6 +113,7 @@ export class AdminHomeComponent implements OnInit {
     this.adminDisplayName = `${admin.firstName ?? ''} ${admin.lastName ?? ''}`.trim() || null;
     this.adminRoleLabel = admin.role?.trim().replaceAll('_', ' ') || null;
     this.isGramsevak = admin.storedRole === 'GRAMSEVAK';
+    this.quickActions = resolveAdminHomeQuickActions(admin.storedRole);
     if (this.isGramsevak) {
       void this.loadPendingCertificates();
     }
@@ -267,6 +226,26 @@ export class AdminHomeComponent implements OnInit {
     this.detailCertificateTypeLabel = '';
     this.detailStatusLabel = '';
     this.detailCanAppendStaffRemarks = false;
+  }
+
+  handleStaffCertDialog(intent: StaffCertificateDialogIntent, result: 'dismiss' | 'submit'): void {
+    if (result === 'dismiss') {
+      if (intent === 'approve') {
+        this.closeApproveDialog();
+      } else if (intent === 'reject') {
+        this.closeRejectDialog();
+      } else {
+        this.closeRemarksOnlyDialog();
+      }
+      return;
+    }
+    if (intent === 'approve') {
+      void this.confirmApprove();
+    } else if (intent === 'reject') {
+      void this.confirmReject();
+    } else {
+      void this.confirmRemarksOnly();
+    }
   }
 
   openApproveDialog(row: CertificateApplicationDto): void {
