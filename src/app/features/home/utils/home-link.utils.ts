@@ -1,6 +1,6 @@
 import type { HomeLinkSlug, HomeQuickLink } from '../models/home.models';
 
-const LIVE_HOME_SLUGS = new Set<HomeLinkSlug>(['certificate', 'notice']);
+const LIVE_HOME_SLUGS = new Set<HomeLinkSlug>(['certificate', 'notice', 'kar']);
 
 export function homeLinkRoute(slug: HomeLinkSlug): string[] {
   if (slug === 'certificate') {
@@ -8,6 +8,9 @@ export function homeLinkRoute(slug: HomeLinkSlug): string[] {
   }
   if (slug === 'notice') {
     return ['/notice'];
+  }
+  if (slug === 'kar') {
+    return ['/kar'];
   }
   return ['/stub', slug];
 }

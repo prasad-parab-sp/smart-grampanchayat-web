@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { gpAdminGuard, nonGpAdminGuard } from './core/admin-role.guards';
+import { gpAdminGuard, nonGpAdminGuard, taxCatalogGuard, taxStaffGuard } from './core/admin-role.guards';
 import { adminSessionGuard } from './core/admin-session.guard';
 import { tenantReadyGuard } from './core/tenant-ready.guard';
 import { HomeComponent } from './features/home/home.component';
@@ -13,6 +13,9 @@ import { ShellPlaceholderComponent } from './layout/shell-placeholder.component'
 import { TenantErrorComponent } from './layout/tenant-error.component';
 import { NoticeBoardComponent } from './features/notice/notice-board.component';
 import { AdminNoticesComponent } from './features/admin-notices/admin-notices.component';
+import { AdminTaxTypesComponent } from './features/admin-tax-types/admin-tax-types.component';
+import { AdminCitizenTaxesComponent } from './features/admin-citizen-taxes/admin-citizen-taxes.component';
+import { CitizenTaxesComponent } from './features/tax/citizen-taxes.component';
 
 export const routes: Routes = [
   { path: 'tenant-error', component: TenantErrorComponent },
@@ -45,6 +48,16 @@ export const routes: Routes = [
     canActivate: [tenantReadyGuard, adminSessionGuard, gpAdminGuard]
   },
   {
+    path: 'admin/tax-types',
+    component: AdminTaxTypesComponent,
+    canActivate: [tenantReadyGuard, adminSessionGuard, taxCatalogGuard]
+  },
+  {
+    path: 'admin/citizen-taxes',
+    component: AdminCitizenTaxesComponent,
+    canActivate: [tenantReadyGuard, adminSessionGuard, taxStaffGuard]
+  },
+  {
     path: 'admin/formats',
     canActivate: [tenantReadyGuard, adminSessionGuard, nonGpAdminGuard],
     loadChildren: () =>
@@ -67,7 +80,7 @@ export const routes: Routes = [
         loadChildren: () => import('./features/profile/profile.module').then((m) => m.ProfileModule)
       },
       { path: 'stub/:slug', component: ShellPlaceholderComponent },
-      { path: 'kar', component: ShellPlaceholderComponent },
+      { path: 'kar', component: CitizenTaxesComponent },
       { path: 'notice', component: NoticeBoardComponent }
     ]
   },

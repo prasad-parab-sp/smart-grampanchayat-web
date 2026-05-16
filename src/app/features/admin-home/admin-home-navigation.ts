@@ -11,8 +11,18 @@ export interface AdminQuickAction {
 }
 
 const STAFF_FULL_QUICK_ACTIONS: AdminQuickAction[] = [
-  { icon: '🏠', titleKey: 'ADMIN_HOME.ACTION_HOUSE_TAX', subtitleKey: 'ADMIN_HOME.ACTION_HOUSE_TAX_SUB' },
-  { icon: '💧', titleKey: 'ADMIN_HOME.ACTION_WATER', subtitleKey: 'ADMIN_HOME.ACTION_WATER_SUB' },
+  {
+    icon: '🏠',
+    titleKey: 'ADMIN_HOME.ACTION_HOUSE_TAX',
+    subtitleKey: 'ADMIN_HOME.ACTION_HOUSE_TAX_SUB',
+    route: '/admin/citizen-taxes'
+  },
+  {
+    icon: '💧',
+    titleKey: 'ADMIN_HOME.ACTION_WATER',
+    subtitleKey: 'ADMIN_HOME.ACTION_WATER_SUB',
+    route: '/admin/tax-types'
+  },
   {
     icon: '📢',
     titleKey: 'ADMIN_HOME.ACTION_NOTICE',
@@ -97,6 +107,12 @@ const GP_ADMIN_QUICK_ACTIONS: AdminQuickAction[] = [
     titleKey: 'ADMIN_GP.ACTION_MANAGE_CERT_TYPES_TITLE',
     subtitleKey: 'ADMIN_GP.ACTION_MANAGE_CERT_TYPES_SUB',
     route: '/admin/certificate-types'
+  },
+  {
+    icon: '💰',
+    titleKey: 'ADMIN_TAX.MANAGE_TYPES_TITLE',
+    subtitleKey: 'ADMIN_TAX.MANAGE_TYPES_SUB',
+    route: '/admin/tax-types'
   }
 ];
 

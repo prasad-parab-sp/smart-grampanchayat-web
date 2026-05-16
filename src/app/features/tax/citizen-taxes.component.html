@@ -1,0 +1,32 @@
+<div class="citizen-tax">
+  <app-gram-app-header />
+
+  <a routerLink="/home" class="citizen-tax__back">← {{ 'CITIZEN_TAX.BACK_HOME' | translate }}</a>
+
+  <h1 class="citizen-tax__title">{{ 'CITIZEN_TAX.TITLE' | translate }}</h1>
+  <p class="citizen-tax__subtitle">{{ 'CITIZEN_TAX.SUBTITLE' | translate }}</p>
+
+  <div *ngIf="pendingCount > 0" class="citizen-tax__alert" role="status">
+    <strong>{{ 'CITIZEN_TAX.PENDING_ALERT' | translate : { count: pendingCount } }}</strong>
+    <p>{{ 'CITIZEN_TAX.PENDING_TOTAL' | translate : { amount: formatMoney(pendingTotal) } }}</p>
+  </div>
+
+  <p *ngIf="loading" class="citizen-tax__msg">{{ 'CITIZEN_TAX.LOADING' | translate }}</p>
+  <p *ngIf="!loading && !rows.length" class="citizen-tax__msg">{{ 'CITIZEN_TAX.EMPTY' | translate }}</p>
+
+  <ul *ngIf="!loading && rows.length" class="citizen-tax__list">
+    <li *ngFor="let row of rows" class="citizen-tax__card" [class.citizen-tax__card--due]="isTaxOutstanding(row)">
+      <div class="citizen-tax__card-head">
+        <strong>{{ taxTypeLabel(row) }}</strong>
+        <span [ngClass]="statusBadgeClass(row.status)">{{ taxStatusLabelKey(row.status) | translate }}</span>
+      </div>
+      <p class="citizen-tax__meta">{{ 'CITIZEN_TAX.FY' | translate }}: {{ row.financialYear }}</p>
+      <p class="citizen-tax__amounts">
+        <span>{{ 'CITIZEN_TAX.OUTSTANDING' | translate }}: {{ formatMoney(row.amountOutstanding) }}</span>
+        <span class="citizen-tax__meta"> · {{ 'CITIZEN_TAX.ASSESSED' | translate }}: {{ formatMoney(row.amountAssessed) }}</span>
+      </p>
+      <p class="citizen-tax__meta">{{ 'CITIZEN_TAX.DUE' | translate }}: {{ row.dueDate }}</p>
+      <p *ngIf="row.remarks" class="citizen-tax__remarks">{{ row.remarks }}</p>
+    </li>
+  </ul>
+</div>

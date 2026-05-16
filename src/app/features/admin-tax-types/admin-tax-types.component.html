@@ -1,0 +1,73 @@
+<div class="admin-tax-page">
+  <app-gram-app-header [badgeDisplayNameOverride]="adminDisplayName" (logout)="logout()" />
+
+  <button type="button" class="admin-tax-page__back" (click)="openAdminHome()">
+    ← {{ 'ADMIN_TAX_TYPES.BACK' | translate }}
+  </button>
+
+  <h2 class="admin-tax-page__title">{{ 'ADMIN_TAX_TYPES.TITLE' | translate }}</h2>
+  <p class="admin-tax-page__subtitle">{{ 'ADMIN_TAX_TYPES.SUBTITLE' | translate }}</p>
+
+  <div class="admin-tax-page__toolbar">
+    <button type="button" class="admin-tax-page__btn admin-tax-page__btn--ghost" (click)="load()" [disabled]="loading">
+      {{ 'ADMIN_TAX_TYPES.REFRESH' | translate }}
+    </button>
+    <button type="button" class="admin-tax-page__btn admin-tax-page__btn--primary" (click)="openCreate()">
+      + {{ 'ADMIN_TAX_TYPES.ADD' | translate }}
+    </button>
+  </div>
+
+  <p *ngIf="loading" class="admin-tax-page__msg">{{ 'ADMIN_TAX_TYPES.LOADING' | translate }}</p>
+  <p *ngIf="!loading && !rows.length" class="admin-tax-page__msg">{{ 'ADMIN_TAX_TYPES.EMPTY' | translate }}</p>
+
+  <ul *ngIf="!loading && rows.length" class="admin-tax-page__cards">
+    <li *ngFor="let row of rows" class="admin-tax-page__card">
+      <div class="admin-tax-page__card-head">
+        <strong>{{ labelFor(row) }}</strong>
+        <span class="admin-tax-page__badge" [class.admin-tax-page__badge--off]="!row.active">
+          {{ row.active ? ('ADMIN_TAX_TYPES.ACTIVE' | translate) : ('ADMIN_TAX_TYPES.INACTIVE' | translate) }}
+        </span>
+      </div>
+      <p *ngIf="row.description" class="admin-tax-page__card-desc">{{ row.description }}</p>
+      <p class="admin-tax-page__card-meta">
+        <span>{{ row.nameEn }}</span>
+        <span *ngIf="row.nameMr"> · {{ row.nameMr }}</span>
+      </p>
+      <button type="button" class="admin-tax-page__btn admin-tax-page__btn--ghost" (click)="openEdit(row)">
+        {{ 'ADMIN_TAX_TYPES.EDIT' | translate }}
+      </button>
+    </li>
+  </ul>
+</div>
+
+<div *ngIf="editorOpen" class="admin-tax-page__overlay" role="dialog" aria-modal="true">
+  <div class="admin-tax-page__dialog">
+    <h3>{{ (editTarget ? 'ADMIN_TAX_TYPES.EDIT_TITLE' : 'ADMIN_TAX_TYPES.ADD_TITLE') | translate }}</h3>
+    <form [formGroup]="editorForm" (ngSubmit)="submitEditor()">
+      <label class="admin-tax-page__field">
+        <span>{{ 'ADMIN_TAX_TYPES.NAME_EN' | translate }}</span>
+        <input type="text" formControlName="nameEn" maxlength="200" />
+      </label>
+      <label class="admin-tax-page__field">
+        <span>{{ 'ADMIN_TAX_TYPES.NAME_MR' | translate }}</span>
+        <input type="text" formControlName="nameMr" maxlength="200" />
+      </label>
+      <label class="admin-tax-page__field">
+        <span>{{ 'ADMIN_TAX_TYPES.DESCRIPTION' | translate }}</span>
+        <textarea formControlName="description" rows="2"></textarea>
+      </label>
+      <label class="admin-tax-page__check">
+        <input type="checkbox" formControlName="active" />
+        {{ 'ADMIN_TAX_TYPES.ACTIVE_LABEL' | translate }}
+      </label>
+      <div class="admin-tax-page__dialog-actions">
+        <button type="button" class="admin-tax-page__btn admin-tax-page__btn--ghost" (click)="closeEditor()">
+          {{ 'ADMIN_TAX_TYPES.CANCEL' | translate }}
+        </button>
+        <button type="submit" class="admin-tax-page__btn admin-tax-page__btn--primary" [disabled]="editorSubmitting">
+          {{ 'ADMIN_TAX_TYPES.SAVE' | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
