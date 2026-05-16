@@ -1,14 +1,22 @@
 import type { HomeLinkSlug, HomeQuickLink } from '../models/home.models';
 
+const LIVE_HOME_SLUGS = new Set<HomeLinkSlug>(['certificate', 'notice']);
+
 export function homeLinkRoute(slug: HomeLinkSlug): string[] {
-  return slug === 'certificate' ? ['/certificate'] : ['/stub', slug];
+  if (slug === 'certificate') {
+    return ['/certificate'];
+  }
+  if (slug === 'notice') {
+    return ['/notice'];
+  }
+  return ['/stub', slug];
 }
 
 export function homeQuickLinkRoute(q: HomeQuickLink): string[] {
   return homeLinkRoute(q.slug);
 }
 
-/** All routes except certificate currently go to a placeholder screen. */
+/** Placeholder screen for modules not yet wired to a real route. */
 export function isHomeStubLink(q: HomeQuickLink): boolean {
-  return q.slug !== 'certificate';
+  return !LIVE_HOME_SLUGS.has(q.slug);
 }

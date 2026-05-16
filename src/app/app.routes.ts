@@ -11,12 +11,19 @@ import { AdminCertificateTypeListComponent } from './features/admin-certificate-
 import { MainShellComponent } from './layout/main-shell.component';
 import { ShellPlaceholderComponent } from './layout/shell-placeholder.component';
 import { TenantErrorComponent } from './layout/tenant-error.component';
+import { NoticeBoardComponent } from './features/notice/notice-board.component';
+import { AdminNoticesComponent } from './features/admin-notices/admin-notices.component';
 
 export const routes: Routes = [
   { path: 'tenant-error', component: TenantErrorComponent },
   { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: 'login', component: LoginComponent, canActivate: [tenantReadyGuard] },
   { path: 'admin/home', component: AdminHomeComponent, canActivate: [tenantReadyGuard, adminSessionGuard] },
+  {
+    path: 'admin/notices',
+    component: AdminNoticesComponent,
+    canActivate: [tenantReadyGuard, adminSessionGuard]
+  },
   {
     path: 'admin/certificate-applications',
     component: AdminCertificateApplicationsComponent,
@@ -61,7 +68,7 @@ export const routes: Routes = [
       },
       { path: 'stub/:slug', component: ShellPlaceholderComponent },
       { path: 'kar', component: ShellPlaceholderComponent },
-      { path: 'notice', component: ShellPlaceholderComponent }
+      { path: 'notice', component: NoticeBoardComponent }
     ]
   },
   { path: '**', redirectTo: 'login' }
