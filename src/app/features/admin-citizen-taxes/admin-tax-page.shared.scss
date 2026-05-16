@@ -1,0 +1,383 @@
+.admin-tax-page {
+  max-width: 900px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 14px;
+  background: var(--bg);
+}
+
+.admin-tax-page > app-gram-app-header {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.admin-tax-page__back {
+  display: inline-block;
+  margin-bottom: 10px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0d47a1;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.admin-tax-page__title {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.admin-tax-page__subtitle {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.admin-tax-page__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.admin-tax-page__btn {
+  font-size: 12px;
+  font-weight: 800;
+  border-radius: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  background: #fff;
+  color: #0f172a;
+
+  &--primary {
+    background: #0d47a1;
+    border-color: #0d47a1;
+    color: #fff;
+  }
+
+  &--ghost {
+    background: #f8fafc;
+  }
+
+  &--danger {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #b91c1c;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.admin-tax-page__msg {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.admin-tax-page__search {
+  display: block;
+  margin-bottom: 10px;
+
+  span {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 4px;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+}
+
+.admin-tax-page__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.admin-tax-page__chip {
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  background: #fff;
+  cursor: pointer;
+
+  &--active {
+    background: #e3f2fd;
+    border-color: #90caf9;
+    color: #0d47a1;
+  }
+}
+
+.admin-tax-page__table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.admin-tax-page__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+
+  th,
+  td {
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  th {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #64748b;
+    background: #f8fafc;
+  }
+}
+
+.admin-tax-page__badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #e8f5e9;
+  color: #2e7d32;
+
+  &--off {
+    background: #f1f5f9;
+    color: #64748b;
+  }
+
+  &--pending {
+    background: #fff3e0;
+    color: #e65100;
+  }
+
+  &--partial {
+    background: #e3f2fd;
+    color: #1565c0;
+  }
+
+  &--paid {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  &--waived {
+    background: #f3e5f5;
+    color: #6a1b9a;
+  }
+}
+
+.admin-tax-page__row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.admin-tax-page__cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.admin-tax-page__card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.admin-tax-page__card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.admin-tax-page__card-desc,
+.admin-tax-page__card-meta {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.admin-tax-page__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 12px;
+  z-index: 1000;
+}
+
+.admin-tax-page__dialog {
+  width: 100%;
+  max-width: 480px;
+
+  &--wide {
+    max-width: 560px;
+  }
+  max-height: 90vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 16px 16px 12px 12px;
+  padding: 16px;
+
+  h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+  }
+}
+
+.admin-tax-page__field {
+  display: block;
+  margin-bottom: 10px;
+
+  span {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 4px;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+}
+
+.admin-tax-page__check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.admin-tax-page__dialog-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.admin-tax-page__picker {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.admin-tax-page__picker-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-end;
+  margin-bottom: 8px;
+}
+
+.admin-tax-page__field--grow {
+  flex: 1;
+  min-width: 160px;
+}
+
+.admin-tax-page__picker-count {
+  font-size: 12px;
+  font-weight: 800;
+  color: #0d47a1;
+  white-space: nowrap;
+}
+
+.admin-tax-page__picker-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.admin-tax-page__quick-add-row {
+  display: flex;
+  gap: 6px;
+
+  input {
+    flex: 1;
+  }
+}
+
+.admin-tax-page__picker-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.admin-tax-page__selected-chips {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.admin-tax-page__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #e3f2fd;
+  border: 1px solid #90caf9;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0d47a1;
+}
+
+.admin-tax-page__chip-remove {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  color: #1565c0;
+  padding: 0 2px;
+}

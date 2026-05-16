@@ -1,0 +1,266 @@
+<div class="admin-tax-page">
+  <app-gram-app-header [badgeDisplayNameOverride]="adminDisplayName" (logout)="logout()" />
+
+  <button type="button" class="admin-tax-page__back" (click)="openAdminHome()">
+    ← {{ 'ADMIN_CITIZEN_TAXES.BACK' | translate }}
+  </button>
+
+  <h2 class="admin-tax-page__title">{{ 'ADMIN_CITIZEN_TAXES.TITLE' | translate }}</h2>
+  <p class="admin-tax-page__subtitle">{{ 'ADMIN_CITIZEN_TAXES.SUBTITLE' | translate }}</p>
+
+  <div class="admin-tax-page__toolbar">
+    <button type="button" class="admin-tax-page__btn admin-tax-page__btn--ghost" (click)="load()" [disabled]="loading">
+      {{ 'ADMIN_CITIZEN_TAXES.REFRESH' | translate }}
+    </button>
+    <button type="button" class="admin-tax-page__btn admin-tax-page__btn--primary" (click)="openAssign()">
+      + {{ 'ADMIN_CITIZEN_TAXES.ASSIGN' | translate }}
+    </button>
+  </div>
+
+  <label class="admin-tax-page__search">
+    <span>{{ 'ADMIN_CITIZEN_TAXES.SEARCH' | translate }}</span>
+    <input type="search" [(ngModel)]="searchQuery" [ngModelOptions]="{ standalone: true }" autocomplete="off" />
+  </label>
+
+  <label class="admin-tax-page__search">
+    <span>{{ 'ADMIN_CITIZEN_TAXES.FY' | translate }}</span>
+    <input
+      type="text"
+      [(ngModel)]="financialYearFilter"
+      [ngModelOptions]="{ standalone: true }"
+      (change)="load()"
+      placeholder="2025-26" />
+  </label>
+
+  <div class="admin-tax-page__chips" role="tablist">
+    <button
+      type="button"
+      *ngFor="let c of statusChips"
+      class="admin-tax-page__chip"
+      [class.admin-tax-page__chip--active]="statusFilter === c.value"
+      (click)="setStatusFilter(c.value)">
+      {{ c.labelKey | translate }}
+    </button>
+  </div>
+
+  <p *ngIf="loading" class="admin-tax-page__msg">{{ 'ADMIN_CITIZEN_TAXES.LOADING' | translate }}</p>
+  <p *ngIf="!loading && !filteredRows.length" class="admin-tax-page__msg">{{ 'ADMIN_CITIZEN_TAXES.EMPTY' | translate }}</p>
+
+  <div *ngIf="!loading && filteredRows.length" class="admin-tax-page__table-wrap">
+    <table class="admin-tax-page__table">
+      <thead>
+        <tr>
+          <th>{{ 'ADMIN_CITIZEN_TAXES.COL_CITIZEN' | translate }}</th>
+          <th>{{ 'ADMIN_CITIZEN_TAXES.COL_TAX' | translate }}</th>
+          <th>{{ 'ADMIN_CITIZEN_TAXES.COL_FY' | translate }}</th>
+          <th>{{ 'ADMIN_CITIZEN_TAXES.COL_AMOUNT' | translate }}</th>
+          <th>{{ 'ADMIN_CITIZEN_TAXES.COL_DUE' | translate }}</th>
+          <th>{{ 'ADMIN_CITIZEN_TAXES.COL_STATUS' | translate }}</th>
+          <th>{{ 'ADMIN_CITIZEN_TAXES.COL_ACTIONS' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of filteredRows">
+          <td>
+            <strong>{{ citizenTaxDisplayName(row) }}</strong>
+            <div *ngIf="row.citizenMobile" class="admin-tax-page__card-meta">{{ row.citizenMobile }}</div>
+          </td>
+          <td>{{ taxTypeLabel(row) }}</td>
+          <td>{{ row.financialYear }}</td>
+          <td>
+            {{ formatMoney(row.amountOutstanding) }}
+            <span class="admin-tax-page__card-meta"> / {{ formatMoney(row.amountAssessed) }}</span>
+          </td>
+          <td>{{ row.dueDate }}</td>
+          <td>
+            <span [ngClass]="statusBadgeClass(row.status)">{{ taxStatusLabelKey(row.status) | translate }}</span>
+          </td>
+          <td class="admin-tax-page__row-actions">
+            <button
+              type="button"
+              class="admin-tax-page__btn admin-tax-page__btn--ghost"
+              (click)="openPayments(row)">
+              {{ 'ADMIN_CITIZEN_TAXES.PAYMENTS' | translate }}
+            </button>
+            <button
+              *ngIf="canRecordPayment(row)"
+              type="button"
+              class="admin-tax-page__btn admin-tax-page__btn--primary"
+              (click)="openPayment(row)">
+              {{ 'ADMIN_CITIZEN_TAXES.RECORD_PAYMENT' | translate }}
+            </button>
+            <button
+              *ngIf="canWaive(row)"
+              type="button"
+              class="admin-tax-page__btn admin-tax-page__btn--danger"
+              (click)="openWaive(row)">
+              {{ 'ADMIN_CITIZEN_TAXES.WAIVE' | translate }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Assign dialog -->
+<div *ngIf="assignOpen" class="admin-tax-page__overlay" role="dialog" aria-modal="true">
+  <div class="admin-tax-page__dialog admin-tax-page__dialog--wide">
+    <h3>{{ 'ADMIN_CITIZEN_TAXES.ASSIGN_TITLE' | translate }}</h3>
+    <p class="admin-tax-page__card-meta">{{ 'ADMIN_CITIZEN_TAXES.ASSIGN_HINT' | translate }}</p>
+    <form [formGroup]="assignForm" (ngSubmit)="submitAssign()">
+      <div class="admin-tax-page__picker">
+        <div class="admin-tax-page__picker-toolbar">
+          <span class="admin-tax-page__picker-count">
+            {{ 'ADMIN_CITIZEN_TAXES.SELECTED_COUNT' | translate : { count: selectedCitizenCount } }}
+          </span>
+          <button
+            type="button"
+            class="admin-tax-page__btn admin-tax-page__btn--ghost"
+            (click)="clearCitizenSelection()"
+            [disabled]="selectedCitizenCount === 0">
+            {{ 'ADMIN_CITIZEN_TAXES.CLEAR_SELECTION' | translate }}
+          </button>
+        </div>
+        <label class="admin-tax-page__field admin-tax-page__quick-add">
+          <span>{{ 'ADMIN_CITIZEN_TAXES.QUICK_MOBILE' | translate }}</span>
+          <div class="admin-tax-page__quick-add-row">
+            <input type="tel" [(ngModel)]="quickAddMobile" [ngModelOptions]="{ standalone: true }" maxlength="15" />
+            <button type="button" class="admin-tax-page__btn admin-tax-page__btn--ghost" (click)="addCitizenByMobile()">
+              {{ 'ADMIN_CITIZEN_TAXES.ADD_MOBILE' | translate }}
+            </button>
+          </div>
+        </label>
+        <ul *ngIf="selectedCitizens.length" class="admin-tax-page__selected-chips">
+          <li *ngFor="let c of selectedCitizens" class="admin-tax-page__chip">
+            <span>{{ c.label }}</span>
+            <button type="button" class="admin-tax-page__chip-remove" (click)="removeSelectedCitizen(c.id)" aria-label="Remove">
+              ×
+            </button>
+          </li>
+        </ul>
+        <p *ngIf="!selectedCitizens.length" class="admin-tax-page__msg">
+          {{ 'ADMIN_CITIZEN_TAXES.ADD_MOBILE_HINT' | translate }}
+        </p>
+      </div>
+      <label class="admin-tax-page__field">
+        <span>{{ 'ADMIN_CITIZEN_TAXES.TAX_TYPE' | translate }}</span>
+        <select formControlName="taxTypeId">
+          <option *ngFor="let t of taxTypes" [value]="t.id">{{ t.nameEn }} / {{ t.nameMr }}</option>
+        </select>
+      </label>
+      <label class="admin-tax-page__field">
+        <span>{{ 'ADMIN_CITIZEN_TAXES.FY' | translate }}</span>
+        <input type="text" formControlName="financialYear" />
+      </label>
+      <label class="admin-tax-page__field">
+        <span>{{ 'ADMIN_CITIZEN_TAXES.AMOUNT' | translate }}</span>
+        <input type="number" formControlName="amountAssessed" min="0.01" step="0.01" />
+      </label>
+      <label class="admin-tax-page__field">
+        <span>{{ 'ADMIN_CITIZEN_TAXES.DUE_DATE' | translate }}</span>
+        <input type="date" formControlName="dueDate" />
+      </label>
+      <label class="admin-tax-page__field">
+        <span>{{ 'ADMIN_CITIZEN_TAXES.ASSESSMENT_NO' | translate }}</span>
+        <input type="text" formControlName="assessmentNumber" />
+      </label>
+      <label class="admin-tax-page__field">
+        <span>{{ 'ADMIN_CITIZEN_TAXES.REMARKS' | translate }}</span>
+        <textarea formControlName="remarks" rows="2"></textarea>
+      </label>
+      <div class="admin-tax-page__dialog-actions">
+        <button type="button" class="admin-tax-page__btn admin-tax-page__btn--ghost" (click)="closeAssign()">
+          {{ 'ADMIN_CITIZEN_TAXES.CANCEL' | translate }}
+        </button>
+        <button
+          type="submit"
+          class="admin-tax-page__btn admin-tax-page__btn--primary"
+          [disabled]="assignSubmitting || selectedCitizenCount === 0">
+          {{ 'ADMIN_CITIZEN_TAXES.SAVE_MULTI' | translate : { count: selectedCitizenCount } }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Waive dialog -->
+<div *ngIf="waiveOpen" class="admin-tax-page__overlay" role="dialog" aria-modal="true">
+  <div class="admin-tax-page__dialog">
+    <h3>{{ 'ADMIN_CITIZEN_TAXES.WAIVE_TITLE' | translate }}</h3>
+    <p *ngIf="waiveTarget">{{ citizenTaxDisplayName(waiveTarget) }} — {{ taxTypeLabel(waiveTarget) }}</p>
+    <label class="admin-tax-page__field">
+      <span>{{ 'ADMIN_CITIZEN_TAXES.REMARKS' | translate }}</span>
+      <textarea [(ngModel)]="waiveRemarks" [ngModelOptions]="{ standalone: true }" rows="3"></textarea>
+    </label>
+    <div class="admin-tax-page__dialog-actions">
+      <button type="button" class="admin-tax-page__btn admin-tax-page__btn--ghost" (click)="closeWaive()">
+        {{ 'ADMIN_CITIZEN_TAXES.CANCEL' | translate }}
+      </button>
+      <button
+        type="button"
+        class="admin-tax-page__btn admin-tax-page__btn--danger"
+        [disabled]="waiveSubmitting"
+        (click)="submitWaive()">
+        {{ 'ADMIN_CITIZEN_TAXES.CONFIRM_WAIVE' | translate }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Payment dialog -->
+<div *ngIf="paymentOpen" class="admin-tax-page__overlay" role="dialog" aria-modal="true">
+  <div class="admin-tax-page__dialog">
+    <h3>{{ 'ADMIN_CITIZEN_TAXES.PAYMENT_TITLE' | translate }}</h3>
+    <form [formGroup]="paymentForm" (ngSubmit)="submitPayment()">
+      <label class="admin-tax-page__field">
+        <span>{{ 'ADMIN_CITIZEN_TAXES.PAY_AMOUNT' | translate }}</span>
+        <input type="number" formControlName="amount" min="0.01" step="0.01" />
+      </label>
+      <label class="admin-tax-page__field">
+        <span>{{ 'ADMIN_CITIZEN_TAXES.PAY_DATE' | translate }}</span>
+        <input type="date" formControlName="paidOn" />
+      </label>
+      <label class="admin-tax-page__field">
+        <span>{{ 'ADMIN_CITIZEN_TAXES.PAY_MODE' | translate }}</span>
+        <select formControlName="paymentMode">
+          <option *ngFor="let m of paymentModes" [value]="m">{{ m }}</option>
+        </select>
+      </label>
+      <label class="admin-tax-page__field">
+        <span>{{ 'ADMIN_CITIZEN_TAXES.PAY_REF' | translate }}</span>
+        <input type="text" formControlName="reference" />
+      </label>
+      <div class="admin-tax-page__dialog-actions">
+        <button type="button" class="admin-tax-page__btn admin-tax-page__btn--ghost" (click)="closePayment()">
+          {{ 'ADMIN_CITIZEN_TAXES.CANCEL' | translate }}
+        </button>
+        <button type="submit" class="admin-tax-page__btn admin-tax-page__btn--primary" [disabled]="paymentSubmitting">
+          {{ 'ADMIN_CITIZEN_TAXES.SAVE' | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Payments list dialog -->
+<div *ngIf="paymentsOpen" class="admin-tax-page__overlay" role="dialog" aria-modal="true">
+  <div class="admin-tax-page__dialog">
+    <h3>{{ 'ADMIN_CITIZEN_TAXES.PAYMENTS_TITLE' | translate }}</h3>
+    <p *ngIf="paymentsLoading" class="admin-tax-page__msg">{{ 'ADMIN_CITIZEN_TAXES.LOADING' | translate }}</p>
+    <p *ngIf="!paymentsLoading && !payments.length" class="admin-tax-page__msg">
+      {{ 'ADMIN_CITIZEN_TAXES.NO_PAYMENTS' | translate }}
+    </p>
+    <ul *ngIf="!paymentsLoading && payments.length" class="admin-tax-page__cards">
+      <li *ngFor="let p of payments" class="admin-tax-page__card">
+        <strong>{{ formatMoney(p.amount) }}</strong> — {{ p.receiptNumber }}
+        <p class="admin-tax-page__card-meta">{{ p.paidOn }} · {{ p.paymentMode }}</p>
+      </li>
+    </ul>
+    <div class="admin-tax-page__dialog-actions">
+      <button type="button" class="admin-tax-page__btn admin-tax-page__btn--ghost" (click)="closePayments()">
+        {{ 'ADMIN_CITIZEN_TAXES.CLOSE' | translate }}
+      </button>
+    </div>
+  </div>
+</div>
