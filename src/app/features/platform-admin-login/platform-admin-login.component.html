@@ -1,0 +1,76 @@
+<div class="login-screen platform-login-screen">
+  <div class="login-top-actions">
+    <app-language-switcher />
+  </div>
+
+  <header class="platform-login-hero" aria-labelledby="platform-login-hero-title">
+    <span class="platform-login-hero__icon" aria-hidden="true">{{ icons.SECURITY }}</span>
+    <p class="platform-login-hero__eyebrow">{{ 'PLATFORM_ADMIN.LOGIN.HERO_EYEBROW' | translate }}</p>
+    <h1 id="platform-login-hero-title" class="platform-login-hero__title">
+      {{ 'PLATFORM_ADMIN.LOGIN.HERO_TITLE' | translate }}
+    </h1>
+    <p class="platform-login-hero__lead">{{ 'PLATFORM_ADMIN.LOGIN.HERO_LEAD' | translate }}</p>
+  </header>
+
+  <div class="login-page">
+    <div class="login-panel">
+      <h2>{{ icons.SECURITY }} {{ 'PLATFORM_ADMIN.LOGIN.TITLE' | translate }}</h2>
+      <p class="login-subtitle">{{ 'PLATFORM_ADMIN.LOGIN.SUBTITLE' | translate }}</p>
+
+      <div class="platform-badge">{{ 'PLATFORM_ADMIN.LOGIN.BADGE' | translate }}</div>
+
+      <ul class="platform-points" aria-label="Platform features">
+        <li>{{ 'PLATFORM_ADMIN.LOGIN.HERO_POINT_1' | translate }}</li>
+        <li>{{ 'PLATFORM_ADMIN.LOGIN.HERO_POINT_2' | translate }}</li>
+      </ul>
+
+      <form class="login-form" [formGroup]="form" (ngSubmit)="submit()">
+        <div class="login-form-group">
+          <label>{{ 'PLATFORM_ADMIN.LOGIN.MOBILE' | translate }} <span class="form-required-mark">*</span></label>
+          <input
+            type="tel"
+            inputmode="numeric"
+            maxlength="10"
+            formControlName="mobileNumber"
+            class="login-input-field"
+            autocomplete="tel"
+            [placeholder]="'PLATFORM_ADMIN.LOGIN.MOBILE_PLACEHOLDER' | translate"
+            (keydown)="onEnter($event)" />
+        </div>
+
+        <div class="login-form-group">
+          <label>{{ 'PLATFORM_ADMIN.LOGIN.PASSWORD' | translate }} <span class="form-required-mark">*</span></label>
+          <div class="password-field">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              class="login-input-field login-input-field--password"
+              autocomplete="current-password"
+              [placeholder]="'PLATFORM_ADMIN.LOGIN.PASSWORD_PLACEHOLDER' | translate"
+              (keydown)="onEnter($event)" />
+            <button
+              type="button"
+              class="password-toggle-btn"
+              (click)="showPassword = !showPassword"
+              [attr.aria-label]="
+                (showPassword ? 'LOGIN.ADMIN.HIDE_PASSWORD' : 'LOGIN.ADMIN.SHOW_PASSWORD') | translate
+              ">
+              {{ showPassword ? icons.HIDE : icons.SHOW }}
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-g login-submit-btn" [disabled]="pending">
+          {{ icons.ADMIN }}
+          {{ (pending ? 'PLATFORM_ADMIN.LOGIN.BUTTON_PENDING' : 'PLATFORM_ADMIN.LOGIN.BUTTON') | translate }}
+        </button>
+      </form>
+
+      <a routerLink="/login" class="platform-portal-link">
+        {{ icons.CITIZEN }} {{ 'PLATFORM_ADMIN.LOGIN.GP_PORTAL_LINK' | translate }}
+      </a>
+    </div>
+  </div>
+
+  <app-footer-brand [config]="footerBrandConfig"></app-footer-brand>
+</div>

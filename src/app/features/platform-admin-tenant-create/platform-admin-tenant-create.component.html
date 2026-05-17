@@ -1,0 +1,99 @@
+<section class="platform-page">
+  <header class="platform-page__head card">
+    <a routerLink="/admin/platform/home" class="platform-back-link">
+      {{ icons.BACK }} {{ 'PLATFORM_ADMIN.TENANT.BACK' | translate }}
+    </a>
+    <h1 class="platform-page__title">{{ 'PLATFORM_ADMIN.TENANT.TITLE' | translate }}</h1>
+    <p class="platform-page__lead">{{ 'PLATFORM_ADMIN.TENANT.LEAD' | translate }}</p>
+  </header>
+
+  <form class="tenant-form card" [formGroup]="form" (ngSubmit)="submit()">
+    <fieldset class="tenant-form__section">
+      <legend>{{ 'PLATFORM_ADMIN.TENANT.SECTION_ROUTING' | translate }}</legend>
+      <div class="tenant-form__stack">
+        <label class="tenant-field">
+          <span>{{ 'PLATFORM_ADMIN.TENANT.DISTRICT_CODE' | translate }} *</span>
+          <input formControlName="districtCode" class="login-input-field" placeholder="MH-ADL" />
+        </label>
+        <label class="tenant-field">
+          <span>{{ 'PLATFORM_ADMIN.TENANT.TENANT_CODE' | translate }} *</span>
+          <input formControlName="tenantCode" class="login-input-field" placeholder="ADALI" />
+        </label>
+        <label class="tenant-field">
+          <span>{{ 'PLATFORM_ADMIN.TENANT.GP_CODE' | translate }} *</span>
+          <input formControlName="gpCode" class="login-input-field" placeholder="GP001" />
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset class="tenant-form__section">
+      <legend>{{ 'PLATFORM_ADMIN.TENANT.SECTION_IDENTITY' | translate }}</legend>
+      <div class="tenant-form__stack">
+        <label class="tenant-field">
+          <span>{{ 'PLATFORM_ADMIN.TENANT.NAME' | translate }} *</span>
+          <input formControlName="name" class="login-input-field" />
+        </label>
+        <label class="tenant-field">
+          <span>{{ 'PLATFORM_ADMIN.TENANT.DISPLAY_EN' | translate }}</span>
+          <input formControlName="displayNameEn" class="login-input-field" />
+        </label>
+        <label class="tenant-field">
+          <span>{{ 'PLATFORM_ADMIN.TENANT.DISPLAY_MR' | translate }}</span>
+          <input formControlName="displayNameMr" class="login-input-field" />
+        </label>
+        <label class="tenant-field">
+          <span>{{ 'PLATFORM_ADMIN.TENANT.TALUKA_EN' | translate }}</span>
+          <input formControlName="talukaEn" class="login-input-field" />
+        </label>
+        <label class="tenant-field">
+          <span>{{ 'PLATFORM_ADMIN.TENANT.TALUKA_MR' | translate }}</span>
+          <input formControlName="talukaMr" class="login-input-field" />
+        </label>
+      </div>
+    </fieldset>
+
+    <fieldset class="tenant-form__section">
+      <legend>{{ 'PLATFORM_ADMIN.TENANT.SECTION_PLAN' | translate }}</legend>
+      <div class="tenant-form__stack">
+        <label class="tenant-field">
+          <span>{{ 'PLATFORM_ADMIN.TENANT.STATUS' | translate }}</span>
+          <select formControlName="status" class="login-input-field">
+            <option value="trial">{{ 'PLATFORM_ADMIN.TENANT.STATUS_TRIAL' | translate }}</option>
+            <option value="active">{{ 'PLATFORM_ADMIN.TENANT.STATUS_ACTIVE' | translate }}</option>
+            <option value="inactive">{{ 'PLATFORM_ADMIN.TENANT.STATUS_INACTIVE' | translate }}</option>
+            <option value="suspended">{{ 'PLATFORM_ADMIN.TENANT.STATUS_SUSPENDED' | translate }}</option>
+          </select>
+        </label>
+        <label class="tenant-field">
+          <span>{{ 'PLATFORM_ADMIN.TENANT.PLAN' | translate }}</span>
+          <select formControlName="planType" class="login-input-field">
+            <option value="basic">{{ 'PLATFORM_ADMIN.TENANT.PLAN_BASIC' | translate }}</option>
+            <option value="standard">{{ 'PLATFORM_ADMIN.TENANT.PLAN_STANDARD' | translate }}</option>
+            <option value="premium">{{ 'PLATFORM_ADMIN.TENANT.PLAN_PREMIUM' | translate }}</option>
+          </select>
+        </label>
+        <label class="tenant-field">
+          <span>{{ 'PLATFORM_ADMIN.TENANT.MAX_USERS' | translate }}</span>
+          <input type="number" formControlName="maxUsers" class="login-input-field" min="1" />
+        </label>
+        <label class="tenant-field">
+          <span>{{ 'PLATFORM_ADMIN.TENANT.CONTACT_EMAIL' | translate }}</span>
+          <input type="email" formControlName="contactEmail" class="login-input-field" />
+        </label>
+        <label class="tenant-field">
+          <span>{{ 'PLATFORM_ADMIN.TENANT.CONTACT_PHONE' | translate }}</span>
+          <input formControlName="contactPhone" class="login-input-field" />
+        </label>
+      </div>
+    </fieldset>
+
+    <button type="submit" class="btn btn-g tenant-form__submit" [disabled]="pending">
+      {{ icons.SUCCESS }}
+      {{ (pending ? 'PLATFORM_ADMIN.TENANT.SUBMIT_PENDING' : 'PLATFORM_ADMIN.TENANT.SUBMIT') | translate }}
+    </button>
+  </form>
+
+  <aside class="card tenant-success" *ngIf="lastCreatedCode as code">
+    <p>{{ icons.APPROVED }} {{ 'PLATFORM_ADMIN.TENANT.CREATED_BANNER' | translate : { code } }}</p>
+  </aside>
+</section>

@@ -1,6 +1,7 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
 import { environment } from '../../environments/environment';
+import { isPlatformAdminRoute } from './platform-admin-routes';
 import { TENANT_SESSION_STORAGE_KEY } from './tenant-session.store';
 
 /** Must match backend {@code TenantCodeHeaderFilter.HEADER_TENANT_CODE}. */
@@ -29,11 +30,29 @@ function tenantCodeFromSessionOrEnv(): string {
   return environment.tenantCode.trim();
 }
 
+/** Master platform APIs and tenant provisioning — no district shard header. */
+function omitsTenantHeader(req: { method: string; url: string }, apiBase: string): boolean {
+  if (!req.url.startsWith(apiBase)) {
+    return false;
+  }
+  const path = req.url.slice(apiBase.length).split('?')[0];
+  if (path.startsWith('/api/platform/')) {
+    return true;
+  }
+  return req.method === 'POST' && path === '/api/tenants';
+}
+
 /** Adds tenant code header for outbound API URLs under configured {@code apiBaseUrl}. */
 export const tenantCodeInterceptor: HttpInterceptorFn = (req, next) => {
   const apiBase = (environment.apiBaseUrl ?? '').trim();
+  if (
+    typeof window !== 'undefined' &&
+    isPlatformAdminRoute(window.location.pathname)
+  ) {
+    return next(req);
+  }
   /** Empty base would make `startsWith('')` true for every URL; never widen the header blindly. */
-  if (apiBase.length === 0) {
+  if (apiBase.length === 0 || omitsTenantHeader(req, apiBase)) {
     return next(req);
   }
   const code = tenantCodeFromSessionOrEnv().trim();
