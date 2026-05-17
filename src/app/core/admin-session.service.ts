@@ -31,13 +31,17 @@ export class AdminSessionService {
     }
     try {
       const parsed = JSON.parse(raw) as Partial<AdminSessionUser>;
-      if (!parsed.id || !parsed.role) {
+      if (!parsed.id) {
         return null;
       }
-      const stored = (parsed.storedRole ?? parsed.role).trim();
+      const stored = (parsed.storedRole ?? parsed.role ?? '').trim();
+      const effective = (parsed.role ?? parsed.storedRole ?? '').trim();
+      if (!stored) {
+        return null;
+      }
       return {
         id: parsed.id,
-        role: parsed.role,
+        role: effective,
         storedRole: stored,
         firstName: parsed.firstName ?? '',
         lastName: parsed.lastName ?? '',

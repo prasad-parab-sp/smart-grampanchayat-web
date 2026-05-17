@@ -1,0 +1,236 @@
+<div class="admin-tax-page admin-citizens-page">
+  <app-gram-app-header [badgeDisplayNameOverride]="adminDisplayName" (logout)="logout()" />
+
+  <button type="button" class="admin-tax-page__back" routerLink="/admin/home">
+    ← {{ 'ADMIN_CITIZENS.BACK' | translate }}
+  </button>
+
+  <h2 class="admin-tax-page__title">{{ 'ADMIN_CITIZENS.TITLE' | translate }}</h2>
+  <p class="admin-tax-page__subtitle">{{ 'ADMIN_CITIZENS.SUBTITLE' | translate }}</p>
+
+  <ng-container *ngIf="stats">
+    <div class="admin-citizens__strip admin-citizens__strip--primary">
+      <button
+        type="button"
+        class="gj-stat-card gj-stat-card--hero"
+        [class.gj-stat-card--active]="isStatusFilterActive('active')"
+        (click)="applyStatsFilter('active')">
+        <div class="gj-stat-card__value">{{ stats.totalActive }}</div>
+        <div class="gj-stat-card__label">{{ 'ADMIN_CITIZENS.STAT_ACTIVE' | translate }}</div>
+      </button>
+      <button
+        type="button"
+        class="gj-stat-card gj-stat-card--voters"
+        [class.gj-stat-card--active]="isStatusFilterActive('voter')"
+        (click)="applyStatsFilter('voter')">
+        <div class="gj-stat-card__value">{{ stats.voters }}</div>
+        <div class="gj-stat-card__label">{{ 'ADMIN_CITIZENS.STAT_VOTERS' | translate }}</div>
+      </button>
+      <div class="gj-stat-card gj-stat-card--inactive">
+        <div class="gj-stat-card__value">{{ stats.deceased }}+{{ stats.migrated }}</div>
+        <div class="gj-stat-card__label">{{ 'ADMIN_CITIZENS.STAT_INACTIVE' | translate }}</div>
+      </div>
+    </div>
+
+    <div class="admin-citizens__strip admin-citizens__strip--secondary">
+      <button
+        type="button"
+        class="gj-stat-card gj-stat-card--male"
+        [class.gj-stat-card--active]="isGenderFilterActive('male')"
+        (click)="applyGenderFilter(isGenderFilterActive('male') ? '' : 'male')">
+        <div class="gj-stat-card__value">{{ stats.male }}</div>
+        <div class="gj-stat-card__label">{{ 'ADMIN_CITIZENS.STAT_MALE' | translate }}</div>
+      </button>
+      <button
+        type="button"
+        class="gj-stat-card gj-stat-card--female"
+        [class.gj-stat-card--active]="isGenderFilterActive('female')"
+        (click)="applyGenderFilter(isGenderFilterActive('female') ? '' : 'female')">
+        <div class="gj-stat-card__value">{{ stats.female }}</div>
+        <div class="gj-stat-card__label">{{ 'ADMIN_CITIZENS.STAT_FEMALE' | translate }}</div>
+      </button>
+      <button
+        type="button"
+        class="gj-stat-card gj-stat-card--bpl"
+        [class.gj-stat-card--active]="isStatusFilterActive('bpl')"
+        (click)="applyStatsFilter('bpl')">
+        <div class="gj-stat-card__value">{{ stats.bpl }}</div>
+        <div class="gj-stat-card__label">{{ 'ADMIN_CITIZENS.STAT_BPL' | translate }}</div>
+      </button>
+      <button
+        type="button"
+        class="gj-stat-card gj-stat-card--disabled"
+        [class.gj-stat-card--active]="isStatusFilterActive('disabled')"
+        (click)="applyStatsFilter('disabled')">
+        <div class="gj-stat-card__value">{{ stats.disabled }}</div>
+        <div class="gj-stat-card__label">{{ 'ADMIN_CITIZENS.STAT_DISABLED' | translate }}</div>
+      </button>
+    </div>
+  </ng-container>
+
+  <div class="admin-citizens__filters">
+    <input
+      type="search"
+      class="admin-citizens__search"
+      [(ngModel)]="searchQuery"
+      [placeholder]="'ADMIN_CITIZENS.SEARCH_PLACEHOLDER' | translate"
+      (input)="onFiltersChanged()" />
+    <select class="admin-citizens__select" [(ngModel)]="genderFilter" (change)="onFiltersChanged()">
+      <option value="">{{ 'ADMIN_CITIZENS.GENDER_ALL' | translate }}</option>
+      <option *ngFor="let g of genderOptions" [value]="g">{{ genderLabelKey(g) | translate }}</option>
+    </select>
+    <select class="admin-citizens__select" [(ngModel)]="statusFilter" (change)="onFiltersChanged()">
+      <option *ngFor="let f of filterOptions" [value]="f">
+        {{ citizenRegisterFilterLabelKey(f) | translate }}
+      </option>
+    </select>
+  </div>
+
+  <div class="admin-tax-page__toolbar">
+    <button type="button" class="admin-tax-page__btn admin-tax-page__btn--ghost" (click)="load()" [disabled]="loading">
+      {{ 'ADMIN_CITIZENS.REFRESH' | translate }}
+    </button>
+    <button type="button" class="admin-tax-page__btn admin-tax-page__btn--primary" (click)="openCreate()">
+      + {{ 'ADMIN_CITIZENS.ADD' | translate }}
+    </button>
+  </div>
+
+  <p *ngIf="loading" class="admin-tax-page__msg">{{ 'ADMIN_CITIZENS.LOADING' | translate }}</p>
+  <p *ngIf="!loading && !rows.length" class="admin-tax-page__msg">{{ 'ADMIN_CITIZENS.EMPTY' | translate }}</p>
+
+  <ul *ngIf="!loading && rows.length" class="admin-citizens__list">
+    <li
+      *ngFor="let row of rows"
+      class="admin-citizens__card"
+      [class.admin-citizens__card--inactive]="row.status !== 'active'"
+      [attr.data-status]="row.status">
+      <div class="admin-citizens__card-head">
+        <div class="admin-citizens__person">
+          <span class="admin-citizens__avatar" [attr.data-gender]="row.gender" aria-hidden="true">
+            {{ row.gender === 'male' ? '👨' : row.gender === 'female' ? '👩' : '🏳️' }}
+          </span>
+          <div>
+            <strong class="admin-citizens__name">{{ citizenDtoDisplayName(row) }}</strong>
+            <div class="admin-citizens__meta-line">
+              {{ genderLabelKey(row.gender) | translate }}
+              <span *ngIf="calcCitizenAgeYears(row.dateOfBirth) !== null">
+                · {{ 'ADMIN_CITIZENS.AGE' | translate : { age: calcCitizenAgeYears(row.dateOfBirth) } }}
+              </span>
+              <span *ngIf="row.middleName"> · {{ row.middleName }}</span>
+            </div>
+          </div>
+        </div>
+        <span class="admin-citizens__badge" [attr.data-status]="row.status">
+          <ng-container *ngIf="row.status === 'active'">
+            {{ row.voterId ? ('ADMIN_CITIZENS.BADGE_VOTER' | translate) : ('ADMIN_CITIZENS.BADGE_ACTIVE' | translate) }}
+          </ng-container>
+          <ng-container *ngIf="row.status !== 'active'">
+            {{ citizenStatusLabelKey(row.status) | translate }}
+          </ng-container>
+        </span>
+      </div>
+      <div class="admin-citizens__meta-grid">
+        <span *ngIf="row.addressLine1">
+          🏠 <strong>{{ row.addressLine1 }}</strong>
+          <ng-container *ngIf="row.wardNumber"> {{ row.wardNumber }}</ng-container>
+        </span>
+        <span *ngIf="row.mobile">📱 {{ row.mobile }}</span>
+        <span *ngIf="row.dateOfBirth">🎂 {{ row.dateOfBirth }}</span>
+        <span *ngIf="row.voterId" class="admin-citizens__voter-id">🗳️ {{ row.voterId }}</span>
+        <span *ngIf="row.bpl" class="admin-citizens__tag admin-citizens__tag--bpl">🟡 BPL</span>
+        <span *ngIf="row.disabled" class="admin-citizens__tag admin-citizens__tag--disabled">♿ {{ 'ADMIN_CITIZENS.DISABLED' | translate }}</span>
+      </div>
+      <div class="admin-citizens__actions">
+        <button type="button" class="admin-tax-page__btn admin-tax-page__btn--ghost" (click)="openEdit(row)">
+          {{ 'ADMIN_CITIZENS.EDIT' | translate }}
+        </button>
+        <button
+          *ngIf="row.status === 'active'"
+          type="button"
+          class="admin-tax-page__btn admin-tax-page__btn--danger"
+          (click)="quickSetStatus(row, 'deceased')">
+          {{ 'ADMIN_CITIZENS.MARK_DECEASED' | translate }}
+        </button>
+        <button
+          *ngIf="row.status === 'active'"
+          type="button"
+          class="admin-tax-page__btn"
+          (click)="quickSetStatus(row, 'migrated')">
+          {{ 'ADMIN_CITIZENS.MARK_MIGRATED' | translate }}
+        </button>
+        <button
+          *ngIf="row.status !== 'active'"
+          type="button"
+          class="admin-tax-page__btn"
+          (click)="quickSetStatus(row, 'active')">
+          {{ 'ADMIN_CITIZENS.MARK_ACTIVE' | translate }}
+        </button>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<div *ngIf="editorOpen" class="admin-modal-backdrop" (click)="closeEditor()">
+  <div class="admin-modal admin-modal--wide" role="dialog" (click)="$event.stopPropagation()">
+    <h3 class="admin-modal__title">
+      {{ (editorTargetId ? 'ADMIN_CITIZENS.EDIT_TITLE' : 'ADMIN_CITIZENS.ADD_TITLE') | translate }}
+    </h3>
+    <form [formGroup]="editorForm" (ngSubmit)="saveEditor()">
+      <label class="admin-modal__label">{{ 'ADMIN_CITIZENS.FIELD_NAME' | translate }}</label>
+      <input class="admin-modal__input" formControlName="fullName" />
+
+      <div class="admin-citizens__form-row">
+        <label class="admin-modal__label">{{ 'ADMIN_CITIZENS.FIELD_GENDER' | translate }}</label>
+        <select class="admin-modal__input" formControlName="gender">
+          <option *ngFor="let g of genderOptions" [value]="g">{{ genderLabelKey(g) | translate }}</option>
+        </select>
+        <label class="admin-modal__label">{{ 'ADMIN_CITIZENS.FIELD_DOB' | translate }}</label>
+        <input class="admin-modal__input" type="date" formControlName="dateOfBirth" />
+      </div>
+
+      <label class="admin-modal__label">{{ 'ADMIN_CITIZENS.FIELD_FATHER' | translate }}</label>
+      <input class="admin-modal__input" formControlName="fatherName" />
+
+      <div class="admin-citizens__form-row">
+        <label class="admin-modal__label">{{ 'ADMIN_CITIZENS.FIELD_HOUSE' | translate }}</label>
+        <input class="admin-modal__input" formControlName="houseNo" />
+        <label class="admin-modal__label">{{ 'ADMIN_CITIZENS.FIELD_WARD' | translate }}</label>
+        <input class="admin-modal__input" formControlName="ward" />
+      </div>
+
+      <label class="admin-modal__label">{{ 'ADMIN_CITIZENS.FIELD_MOBILE' | translate }}</label>
+      <input class="admin-modal__input" type="tel" maxlength="10" formControlName="mobile" />
+
+      <label class="admin-modal__label">{{ 'ADMIN_CITIZENS.FIELD_VOTER' | translate }}</label>
+      <input class="admin-modal__input" formControlName="voterId" />
+
+      <label class="admin-modal__label">
+        <input type="checkbox" formControlName="bpl" />
+        {{ 'ADMIN_CITIZENS.FIELD_BPL' | translate }}
+      </label>
+      <input class="admin-modal__input" formControlName="rationCardNumber" [placeholder]="'ADMIN_CITIZENS.FIELD_RATION' | translate" />
+      <input class="admin-modal__input" formControlName="bplCardNumber" [placeholder]="'ADMIN_CITIZENS.FIELD_BPL_NO' | translate" />
+      <input class="admin-modal__input" type="number" formControlName="annualIncome" [placeholder]="'ADMIN_CITIZENS.FIELD_INCOME' | translate" />
+
+      <label class="admin-modal__label">
+        <input type="checkbox" formControlName="disabled" />
+        {{ 'ADMIN_CITIZENS.FIELD_DISABLED' | translate }}
+      </label>
+      <input class="admin-modal__input" formControlName="disabilityType" />
+
+      <label class="admin-modal__label">{{ 'ADMIN_CITIZENS.FIELD_STATUS' | translate }}</label>
+      <select class="admin-modal__input" formControlName="status">
+        <option *ngFor="let s of statusOptions" [value]="s">{{ citizenStatusLabelKey(s) | translate }}</option>
+      </select>
+
+      <div class="admin-modal__actions">
+        <button type="button" class="admin-tax-page__btn" (click)="closeEditor()" [disabled]="editorSubmitting">
+          {{ 'ADMIN_CITIZENS.CANCEL' | translate }}
+        </button>
+        <button type="submit" class="admin-tax-page__btn admin-tax-page__btn--primary" [disabled]="editorSubmitting">
+          {{ 'ADMIN_CITIZENS.SAVE' | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

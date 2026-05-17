@@ -1,5 +1,11 @@
 import { Routes } from '@angular/router';
-import { gpAdminGuard, nonGpAdminGuard, taxCatalogGuard, taxStaffGuard } from './core/admin-role.guards';
+import {
+  citizenRegisterGuard,
+  gpAdminGuard,
+  nonGpAdminGuard,
+  taxCatalogGuard,
+  taxStaffGuard
+} from './core/admin-role.guards';
 import { adminSessionGuard } from './core/admin-session.guard';
 import { tenantReadyGuard } from './core/tenant-ready.guard';
 import { HomeComponent } from './features/home/home.component';
@@ -15,6 +21,7 @@ import { NoticeBoardComponent } from './features/notice/notice-board.component';
 import { AdminNoticesComponent } from './features/admin-notices/admin-notices.component';
 import { AdminTaxTypesComponent } from './features/admin-tax-types/admin-tax-types.component';
 import { AdminCitizenTaxesComponent } from './features/admin-citizen-taxes/admin-citizen-taxes.component';
+import { AdminCitizensComponent } from './features/admin-citizens/admin-citizens.component';
 import { CitizenTaxesComponent } from './features/tax/citizen-taxes.component';
 
 export const routes: Routes = [
@@ -56,6 +63,11 @@ export const routes: Routes = [
     path: 'admin/citizen-taxes',
     component: AdminCitizenTaxesComponent,
     canActivate: [tenantReadyGuard, adminSessionGuard, taxStaffGuard]
+  },
+  {
+    path: 'admin/citizens',
+    component: AdminCitizensComponent,
+    canActivate: [tenantReadyGuard, adminSessionGuard, citizenRegisterGuard]
   },
   {
     path: 'admin/formats',
