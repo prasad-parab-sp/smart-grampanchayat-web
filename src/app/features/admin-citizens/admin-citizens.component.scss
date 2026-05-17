@@ -1,0 +1,453 @@
+.admin-citizens-page,
+.admin-tax-page {
+  max-width: 900px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 14px;
+  background: var(--bg);
+}
+
+.admin-tax-page__back {
+  display: inline-block;
+  margin-bottom: 10px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0d47a1;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.admin-tax-page__title {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.admin-tax-page__subtitle {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.admin-tax-page__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.admin-tax-page__btn {
+  font-size: 12px;
+  font-weight: 800;
+  border-radius: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  background: #fff;
+
+  &--primary {
+    background: #0d47a1;
+    border-color: #0d47a1;
+    color: #fff;
+  }
+
+  &--ghost {
+    background: #f8fafc;
+  }
+
+  &--danger {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #b91c1c;
+  }
+}
+
+.admin-tax-page__msg {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.admin-citizens-page {
+  --gj-green: #1b5e20;
+  --gj-green-light: #2e7d32;
+  --gj-blue: #1565c0;
+  --gj-sub: #64748b;
+  --gj-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
+/* Summary strips — master_fixed gjSummaryStrip */
+.admin-citizens__strip {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 8px;
+
+  &--primary {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  &--secondary {
+    grid-template-columns: repeat(4, 1fr);
+    margin-bottom: 12px;
+  }
+
+  @media (max-width: 480px) {
+    &--secondary {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}
+
+.gj-stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 100%;
+  min-height: 64px;
+  padding: 12px 8px;
+  border: 1.5px solid transparent;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: var(--gj-shadow);
+  text-align: center;
+  cursor: default;
+  font: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &__value {
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  &__label {
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  &--hero {
+    background: linear-gradient(135deg, var(--gj-green), var(--gj-green-light));
+    cursor: pointer;
+
+    .gj-stat-card__value,
+    .gj-stat-card__label {
+      color: #fff;
+    }
+
+    .gj-stat-card__label {
+      opacity: 0.9;
+    }
+  }
+
+  &--voters {
+    background: #e3f2fd;
+    cursor: pointer;
+
+    .gj-stat-card__value {
+      color: var(--gj-blue);
+    }
+
+    .gj-stat-card__label {
+      color: var(--gj-blue);
+    }
+  }
+
+  &--inactive {
+    background: #fff3e0;
+
+    .gj-stat-card__value {
+      font-size: 18px;
+      color: #e65100;
+    }
+
+    .gj-stat-card__label {
+      color: #e65100;
+    }
+  }
+
+  &--male {
+    cursor: pointer;
+
+    .gj-stat-card__value {
+      font-size: 16px;
+      color: var(--gj-blue);
+    }
+
+    .gj-stat-card__label {
+      font-size: 11px;
+      color: var(--gj-sub);
+    }
+  }
+
+  &--female {
+    cursor: pointer;
+
+    .gj-stat-card__value {
+      font-size: 16px;
+      color: #e91e63;
+    }
+
+    .gj-stat-card__label {
+      font-size: 11px;
+      color: var(--gj-sub);
+    }
+  }
+
+  &--bpl {
+    background: #fffde7;
+    cursor: pointer;
+
+    .gj-stat-card__value {
+      font-size: 16px;
+      color: #e65100;
+    }
+
+    .gj-stat-card__label {
+      color: #e65100;
+    }
+  }
+
+  &--disabled {
+    background: #e8eaf6;
+    cursor: pointer;
+
+    .gj-stat-card__value {
+      font-size: 16px;
+      color: #283593;
+    }
+
+    .gj-stat-card__label {
+      color: #283593;
+    }
+  }
+
+  &--active {
+    border-color: currentColor;
+    box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.2);
+  }
+
+  &--hero.gj-stat-card--active {
+    border-color: #fff;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.45);
+  }
+}
+
+/* Filter row — master_fixed gjSearch row */
+.admin-citizens__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.admin-citizens__search {
+  flex: 1;
+  min-width: 140px;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.admin-citizens__select {
+  padding: 9px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gj-green);
+  background: #fff;
+}
+
+.admin-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.admin-modal {
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.admin-modal__title {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.admin-modal__label {
+  display: block;
+  margin: 8px 0 4px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.admin-modal__input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.admin-modal__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.admin-citizens__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.admin-citizens__card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 10px;
+  box-shadow: var(--gj-shadow);
+  border-left: 4px solid var(--gj-green-light);
+
+  &[data-status='deceased'] {
+    border-left-color: #c62828;
+    opacity: 0.88;
+  }
+
+  &[data-status='migrated'] {
+    border-left-color: #e65100;
+    opacity: 0.88;
+  }
+}
+
+.admin-citizens__card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.admin-citizens__person {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.admin-citizens__avatar {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  background: #e8f5e9;
+
+  &[data-gender='female'] {
+    background: #fce4ec;
+  }
+
+  &[data-gender='other'],
+  &[data-gender='prefer_not_to_say'] {
+    background: #e8eaf6;
+  }
+}
+
+.admin-citizens__name {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--gj-green);
+}
+
+.admin-citizens__meta-line {
+  font-size: 11px;
+  color: var(--gj-sub);
+}
+
+.admin-citizens__badge {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 10px;
+  background: #e8f5e9;
+  color: var(--gj-green);
+
+  &[data-status='deceased'] {
+    background: #ffebee;
+    color: #c62828;
+  }
+
+  &[data-status='migrated'] {
+    background: #fff3e0;
+    color: #e65100;
+  }
+}
+
+.admin-citizens__meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--gj-sub);
+  margin-bottom: 10px;
+}
+
+.admin-citizens__voter-id {
+  color: var(--gj-blue);
+}
+
+.admin-citizens__tag {
+  grid-column: span 2;
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 10px;
+
+  &--bpl {
+    background: #fffde7;
+    color: #e65100;
+  }
+
+  &--disabled {
+    background: #e8eaf6;
+    color: #283593;
+  }
+}
+
+.admin-citizens__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.admin-citizens__form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}

@@ -2,6 +2,7 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 
 import { AdminSessionService } from './admin-session.service';
+import { canManageCitizenRegister } from './admin-staff-role.util';
 
 /** GP Admin or System Admin — certificate type catalog writes. */
 export const gpAdminGuard: CanActivateFn = () => {
@@ -31,6 +32,18 @@ export const taxStaffGuard: CanActivateFn = () => {
   }
   const role = admin.storedRole;
   if (role === 'GRAMSEVAK' || role === 'OPERATOR' || role === 'SYS_ADMIN') {
+    return true;
+  }
+  return inject(Router).createUrlTree(['/admin/home']);
+};
+
+/** Citizen / villager register — Gramsevak or Sarpanch only (stored or effective role). */
+export const citizenRegisterGuard: CanActivateFn = () => {
+  const admin = inject(AdminSessionService).get();
+  if (!admin) {
+    return inject(Router).createUrlTree(['/login']);
+  }
+  if (canManageCitizenRegister(admin)) {
     return true;
   }
   return inject(Router).createUrlTree(['/admin/home']);

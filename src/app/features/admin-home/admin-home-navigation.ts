@@ -1,3 +1,5 @@
+import { canManageCitizenRegisterByStoredRole } from '../../core/admin-staff-role.util';
+
 /**
  * Admin home quick actions by {@link AdminSessionUser.storedRole}.
  * Keep routes aligned with {@link app.routes.ts} guards (e.g. GP_ADMIN / SYS_ADMIN vs nonGpAdminGuard).
@@ -124,6 +126,18 @@ function cloneQuickActions(rows: AdminQuickAction[]): AdminQuickAction[] {
   return rows.map((a) => ({ ...a }));
 }
 
+const CITIZENS_ROUTE = '/admin/citizens';
+
+/** Villager register shortcut — gramsevak and sarpanch only. */
+function withCitizensRoute(rows: AdminQuickAction[], storedRole: string): AdminQuickAction[] {
+  if (!canManageCitizenRegisterByStoredRole(storedRole)) {
+    return rows;
+  }
+  return rows.map((a) =>
+    a.titleKey === 'ADMIN_HOME.ACTION_VILLAGERS' ? { ...a, route: CITIZENS_ROUTE } : a
+  );
+}
+
 /**
  * @param storedRole {@link AdminSessionUser.storedRole} (database role, not acting elevation).
  */
@@ -134,10 +148,11 @@ export function resolveAdminHomeQuickActions(storedRole: string): AdminQuickActi
     case 'SYS_ADMIN':
       return cloneQuickActions(GP_ADMIN_QUICK_ACTIONS);
     case 'SARPANCH':
-      return cloneQuickActions(SARPANCH_QUICK_ACTIONS);
+      return withCitizensRoute(cloneQuickActions(SARPANCH_QUICK_ACTIONS), role);
     case 'VIEWER':
       return cloneQuickActions(VIEWER_QUICK_ACTIONS);
     case 'GRAMSEVAK':
+      return withCitizensRoute(cloneQuickActions(STAFF_FULL_QUICK_ACTIONS), role);
     case 'OPERATOR':
       return cloneQuickActions(STAFF_FULL_QUICK_ACTIONS);
     default:
