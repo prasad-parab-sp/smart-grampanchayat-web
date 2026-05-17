@@ -1,0 +1,43 @@
+<div class="platform-shell">
+  <header class="platform-header">
+    <div class="platform-header__brand">
+      <span class="platform-header__icon" aria-hidden="true">{{ icons.SECURITY }}</span>
+      <div class="platform-header__text">
+        <p class="platform-header__title">{{ 'PLATFORM_ADMIN.BRAND' | translate }}</p>
+        <p class="platform-header__sub" *ngIf="user as u">{{ u.displayName }}</p>
+      </div>
+    </div>
+    <div class="platform-header__actions">
+      <app-language-switcher />
+      <button type="button" class="platform-header__logout" (click)="logout()">
+        {{ icons.LOGOUT }} {{ 'PLATFORM_ADMIN.LOGOUT' | translate }}
+      </button>
+    </div>
+  </header>
+
+  <main class="platform-main">
+    <router-outlet />
+  </main>
+
+  <nav class="bottom-nav platform-bottom-nav" [attr.aria-label]="'PLATFORM_ADMIN.NAV_LABEL' | translate">
+    <a
+      routerLink="/admin/platform/home"
+      routerLinkActive="on"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="bottom-nav-item">
+      <span class="bottom-nav-icon">{{ icons.HOME }}</span>
+      {{ 'PLATFORM_ADMIN.NAV_HOME' | translate }}
+    </a>
+    <a
+      routerLink="/admin/platform/tenants/new"
+      routerLinkActive="on"
+      class="bottom-nav-item">
+      <span class="bottom-nav-icon">{{ icons.ADD }}</span>
+      {{ 'PLATFORM_ADMIN.NAV_NEW_TENANT' | translate }}
+    </a>
+    <button type="button" class="bottom-nav-item" (click)="logout()">
+      <span class="bottom-nav-icon">{{ icons.LOGOUT }}</span>
+      {{ 'PLATFORM_ADMIN.LOGOUT' | translate }}
+    </button>
+  </nav>
+</div>

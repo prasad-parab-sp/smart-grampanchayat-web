@@ -23,11 +23,31 @@ import { AdminTaxTypesComponent } from './features/admin-tax-types/admin-tax-typ
 import { AdminCitizenTaxesComponent } from './features/admin-citizen-taxes/admin-citizen-taxes.component';
 import { AdminCitizensComponent } from './features/admin-citizens/admin-citizens.component';
 import { CitizenTaxesComponent } from './features/tax/citizen-taxes.component';
+import { PlatformAdminLoginComponent } from './features/platform-admin-login/platform-admin-login.component';
+import { PlatformAdminShellComponent } from './features/platform-admin-shell/platform-admin-shell.component';
+import { PlatformAdminConsoleComponent } from './features/platform-admin-console/platform-admin-console.component';
+import { PlatformAdminTenantCreateComponent } from './features/platform-admin-tenant-create/platform-admin-tenant-create.component';
+import { platformAdminGuestGuard, platformAdminSessionGuard } from './core/master-admin.guards';
 
 export const routes: Routes = [
   { path: 'tenant-error', component: TenantErrorComponent },
   { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: 'login', component: LoginComponent, canActivate: [tenantReadyGuard] },
+  {
+    path: 'admin/login',
+    component: PlatformAdminLoginComponent,
+    canActivate: [platformAdminGuestGuard]
+  },
+  {
+    path: 'admin/platform',
+    component: PlatformAdminShellComponent,
+    canActivate: [platformAdminSessionGuard],
+    children: [
+      { path: '', pathMatch: 'full', redirectTo: 'home' },
+      { path: 'home', component: PlatformAdminConsoleComponent },
+      { path: 'tenants/new', component: PlatformAdminTenantCreateComponent }
+    ]
+  },
   { path: 'admin/home', component: AdminHomeComponent, canActivate: [tenantReadyGuard, adminSessionGuard] },
   {
     path: 'admin/notices',

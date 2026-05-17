@@ -264,6 +264,22 @@
   }
 }
 
+.login-platform-link-wrap {
+  text-align: center;
+  margin: 0.5rem 0 0;
+}
+
+.login-platform-link {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--green);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .login-input-field,
   .btn {

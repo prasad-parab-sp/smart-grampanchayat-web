@@ -1,0 +1,55 @@
+<section class="platform-page">
+  <header class="platform-page__hero card">
+    <p class="platform-page__eyebrow">
+      {{ 'PLATFORM_ADMIN.CONSOLE.GREETING' | translate : { name: user?.displayName ?? '' } }}
+    </p>
+    <h1 class="platform-page__title">{{ 'PLATFORM_ADMIN.CONSOLE.TITLE' | translate }}</h1>
+    <p class="platform-page__lead">{{ 'PLATFORM_ADMIN.CONSOLE.LEAD' | translate }}</p>
+    <a routerLink="/admin/platform/tenants/new" class="btn btn-g platform-page__cta">
+      {{ icons.ADD }} {{ 'PLATFORM_ADMIN.CONSOLE.CTA_NEW_TENANT' | translate }}
+    </a>
+  </header>
+
+  <div class="platform-stats">
+    <article class="card platform-stat platform-stat--accent">
+      <p class="platform-stat__label">{{ 'PLATFORM_ADMIN.CONSOLE.STAT_DISTRICTS' | translate }}</p>
+      <p class="platform-stat__value">{{ stats?.districtsTotal ?? '—' }}</p>
+      @if (stats) {
+        <p class="platform-stat__hint">
+          {{ 'PLATFORM_ADMIN.CONSOLE.STAT_ACTIVE_COUNT' | translate : { count: stats.districtsActive } }}
+        </p>
+      } @else if (statsError) {
+        <p class="platform-stat__hint platform-stat__hint--error">{{ 'PLATFORM_ADMIN.CONSOLE.STAT_ERROR' | translate }}</p>
+      }
+    </article>
+    <article class="card platform-stat">
+      <p class="platform-stat__label">{{ 'PLATFORM_ADMIN.CONSOLE.STAT_TENANTS' | translate }}</p>
+      <p class="platform-stat__value">{{ stats?.gramPanchayatsTotal ?? '—' }}</p>
+      @if (statsError) {
+        <p class="platform-stat__hint platform-stat__hint--error">{{ 'PLATFORM_ADMIN.CONSOLE.STAT_ERROR' | translate }}</p>
+      }
+    </article>
+    <article class="card platform-stat">
+      <p class="platform-stat__label">{{ 'PLATFORM_ADMIN.CONSOLE.STAT_ACTIVE' | translate }}</p>
+      <p class="platform-stat__value">{{ stats?.gramPanchayatsActive ?? '—' }}</p>
+      @if (stats) {
+        <p class="platform-stat__hint">{{ 'PLATFORM_ADMIN.CONSOLE.STAT_ACTIVE_HINT' | translate }}</p>
+      } @else if (statsError) {
+        <p class="platform-stat__hint platform-stat__hint--error">{{ 'PLATFORM_ADMIN.CONSOLE.STAT_ERROR' | translate }}</p>
+      }
+    </article>
+  </div>
+
+  <article class="card platform-action-card">
+    <h2>{{ icons.CERTIFICATE }} {{ 'PLATFORM_ADMIN.CONSOLE.PANEL_PROVISION_TITLE' | translate }}</h2>
+    <p>{{ 'PLATFORM_ADMIN.CONSOLE.PANEL_PROVISION_BODY' | translate }}</p>
+    <a routerLink="/admin/platform/tenants/new" class="platform-action-card__link">
+      {{ 'PLATFORM_ADMIN.CONSOLE.PANEL_PROVISION_ACTION' | translate }} →
+    </a>
+  </article>
+
+  <article class="card platform-action-card platform-action-card--muted">
+    <h2>{{ icons.DASHBOARD }} {{ 'PLATFORM_ADMIN.CONSOLE.PANEL_AUDIT_TITLE' | translate }}</h2>
+    <p>{{ 'PLATFORM_ADMIN.CONSOLE.PANEL_AUDIT_BODY' | translate }}</p>
+  </article>
+</section>

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { HeroBannerComponent } from '../../shared/components/hero-banner/hero-banner.component';
@@ -18,6 +18,7 @@ import { citizenFullDisplayName } from '../../core/citizen-name.util';
 import { AdminAuthService } from '../../core/admin-auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AdminSessionService } from '../../core/admin-session.service';
+import { MasterAdminSessionService } from '../../core/master-admin-session.service';
 
 @Component({
   selector: 'app-login',
@@ -29,7 +30,8 @@ import { AdminSessionService } from '../../core/admin-session.service';
     HeroBannerComponent,
     ContactBannerComponent,
     FooterBrandComponent,
-    LanguageSwitcherComponent
+    LanguageSwitcherComponent,
+    RouterLink
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
@@ -72,7 +74,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     private readonly loggedInCitizen: LoggedInCitizenService,
     private readonly citizenService: CitizenService,
     private readonly adminAuthService: AdminAuthService,
-    private readonly adminSession: AdminSessionService
+    private readonly adminSession: AdminSessionService,
+    private readonly masterAdminSession: MasterAdminSessionService
   ) {}
 
   ngOnInit() {
@@ -166,6 +169,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     try {
       const res = await firstValueFrom(this.adminAuthService.login(identifier, password));
       const fullName = `${res.user.firstName ?? ''} ${res.user.lastName ?? ''}`.trim() || identifier;
+      this.masterAdminSession.clear();
       this.adminSession.set({
         id: res.user.id,
         role: res.user.effectiveRole ?? res.user.role,

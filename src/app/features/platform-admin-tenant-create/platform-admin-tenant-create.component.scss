@@ -1,0 +1,76 @@
+@import '../login/login.component.scss';
+
+.platform-page__head {
+  margin-bottom: 12px;
+}
+
+.platform-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--green);
+  text-decoration: none;
+  margin-bottom: 8px;
+}
+
+.tenant-form {
+  margin-bottom: 12px;
+}
+
+.tenant-form__section {
+  border: none;
+  margin: 0 0 16px;
+  padding: 0;
+
+  legend {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 10px;
+  }
+}
+
+.tenant-form__stack {
+  display: grid;
+  gap: 12px;
+}
+
+.tenant-field {
+  display: grid;
+  gap: 4px;
+
+  span {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+}
+
+.tenant-form__submit {
+  width: 100%;
+  padding: 13px;
+  border-radius: var(--r);
+  font-size: 14px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.tenant-success {
+  background: var(--glt);
+  border: 1px solid rgba(46, 125, 50, 0.25);
+  color: var(--gdk);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+
+  p {
+    margin: 0;
+  }
+}
