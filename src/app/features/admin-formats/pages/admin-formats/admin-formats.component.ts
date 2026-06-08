@@ -449,12 +449,12 @@ export class AdminFormatsComponent implements OnInit {
       certificateNumber: 'CERT-2026-0042',
       dateDisplay: dateStr,
       sarpanchName: this.previewOfficerName(
-        this.tenantSession.getTenant()?.sarpanchName,
+        undefined,
         '(Sarpanch name)',
         '(सरपंचाचे नाव)'
       ),
       gramsevakName: this.previewOfficerName(
-        this.tenantSession.getTenant()?.gramsevakName,
+        undefined,
         '(Gramsevak name)',
         '(ग्रामसेवकाचे नाव)'
       )

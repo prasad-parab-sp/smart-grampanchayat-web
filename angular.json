@@ -73,6 +73,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
+            "hmr": false,
             "liveReload": false,
             "disableHostCheck": true,
             "headers": {
@@ -83,7 +84,8 @@
           },
           "configurations": {
             "production": {
-              "buildTarget": "smart-grampanchayat-web:build:production"
+              "buildTarget": "smart-grampanchayat-web:build:production",
+              "hmr": false
             },
             "development": {
               "buildTarget": "smart-grampanchayat-web:build:development"
